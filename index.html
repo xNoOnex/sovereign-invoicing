@@ -29,11 +29,14 @@
 
     .cat-header { font-size: 0.75rem; font-weight: bold; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; margin: 16px 0 6px 0; border-bottom: 1px solid var(--border); padding-bottom: 3px; }
     
-    .item { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: #0d1117; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 6px; cursor: pointer; }
-    .item-left { display: flex; align-items: center; gap: 10px; flex: 1; }
-    .item-left input { accent-color: var(--accent); width: 16px; height: 16px; }
-    .item-label { font-size: 0.82rem; font-weight: 500; color: #e6edf3; }
-    .item-price { font-size: 0.82rem; font-weight: bold; color: var(--blue); font-family: monospace; }
+    .item { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #0d1117; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 8px; cursor: pointer; }
+    .item-left { display: flex; align-items: flex-start; gap: 10px; flex: 1; padding-top: 2px; }
+    .item-left input { accent-color: var(--accent); width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; }
+    .item-text { display: flex; flex-direction: column; gap: 3px; }
+    .item-label { font-size: 0.82rem; font-weight: bold; color: #e6edf3; }
+    .item-desc { font-size: 0.7rem; color: #8b949e; line-height: 1.3; font-family: -apple-system, sans-serif; }
+    
+    .item-price { font-size: 0.82rem; font-weight: bold; color: var(--blue); font-family: monospace; padding-left: 10px; align-self: flex-start; margin-top: 2px; }
     .item-price.highlight { color: var(--purple); }
     .item-price.premium { color: var(--orange); }
     .item-price.wl { color: var(--red); }
@@ -82,73 +85,199 @@
     <!-- Tier 1: Platform Foundation -->
     <div class="cat-header">1. Platform Foundation</div>
     <label class="item">
-      <div class="item-left"><input type="radio" name="platform" id="p1" value="1000" data-name="Native Offline Android APK" checked onchange="calc()"><span class="item-label">Native Offline Android APK</span></div><span class="item-price">$1,000</span>
+      <div class="item-left">
+        <input type="radio" name="platform" id="p1" value="1000" data-name="Native Offline Android APK" checked onchange="calc()">
+        <div class="item-text">
+          <div class="item-label">Native Offline Android APK</div>
+          <div class="item-desc">Runs directly on your fleet's Android hardware. No constant internet connection required.</div>
+        </div>
+      </div>
+      <span class="item-price">$1,000</span>
     </label>
     <label class="item">
-      <div class="item-left"><input type="radio" name="platform" id="p2" value="1500" data-name="APK + Desktop Browser Sync" onchange="calc()"><span class="item-label">APK + Desktop Browser Sync</span></div><span class="item-price">$1,500</span>
+      <div class="item-left">
+        <input type="radio" name="platform" id="p2" value="1500" data-name="APK + Desktop Browser Sync" onchange="calc()">
+        <div class="item-text">
+          <div class="item-label">APK + Desktop Browser Sync</div>
+          <div class="item-desc">Mobile app for the field crews, plus an office dashboard for the desk.</div>
+        </div>
+      </div>
+      <span class="item-price">$1,500</span>
     </label>
 
     <!-- Tier 2: Interface & Customization -->
     <div class="cat-header">2. Interface & App Customization</div>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="i1" value="250" data-name="Advanced UI Settings (Scaling/Colors)" onchange="calc()"><span class="item-label">Advanced UI Settings (Scaling/Colors)</span></div><span class="item-price">+$250</span>
+      <div class="item-left">
+        <input type="checkbox" class="addon" id="i1" value="250" data-name="Advanced UI Settings (Scaling/Colors)" onchange="calc()">
+        <div class="item-text">
+          <div class="item-label">Advanced UI Settings</div>
+          <div class="item-desc">Custom layouts, high-contrast modes, and adjustable text scaling for visibility.</div>
+        </div>
+      </div>
+      <span class="item-price">+$250</span>
     </label>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="i2" value="200" data-name="Dynamic Video Wallpaper Engine" onchange="calc()"><span class="item-label">Video Wallpaper Engine</span></div><span class="item-price">+$200</span>
+      <div class="item-left">
+        <input type="checkbox" class="addon" id="i2" value="200" data-name="Dynamic Video Wallpaper Engine" onchange="calc()">
+        <div class="item-text">
+          <div class="item-label">Video Wallpaper Engine</div>
+          <div class="item-desc">Embed branded, looping video backgrounds natively into the app's home screen.</div>
+        </div>
+      </div>
+      <span class="item-price">+$200</span>
     </label>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="i3" value="150" data-name="English/Spanish Language Toggle" onchange="calc()"><span class="item-label">English / Spanish Toggle</span></div><span class="item-price">+$150</span>
+      <div class="item-left">
+        <input type="checkbox" class="addon" id="i3" value="150" data-name="English/Spanish Language Toggle" onchange="calc()">
+        <div class="item-text">
+          <div class="item-label">English / Spanish Toggle</div>
+          <div class="item-desc">Instantly flip the interface language to support bilingual crews.</div>
+        </div>
+      </div>
+      <span class="item-price">+$150</span>
     </label>
 
     <!-- Tier 3: Data & Core Logic -->
     <div class="cat-header">3. Data Storage & Core Logic</div>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="d1" value="250" data-name="Local Offline Database" checked onchange="calc()"><span class="item-label">Local Offline Database</span></div><span class="item-price">+$250</span>
+      <div class="item-left">
+        <input type="checkbox" class="addon" id="d1" value="250" data-name="Local Offline Database" checked onchange="calc()">
+        <div class="item-text">
+          <div class="item-label">Local Offline Database</div>
+          <div class="item-desc">True off-grid mode. Saves data directly to the device without cell service.</div>
+        </div>
+      </div>
+      <span class="item-price">+$250</span>
     </label>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="d2" value="150" data-name="Custom Storage Directory Pathing" onchange="calc()"><span class="item-label">Custom File Storage Pathing</span></div><span class="item-price">+$150</span>
+      <div class="item-left">
+        <input type="checkbox" class="addon" id="d2" value="150" data-name="Custom Storage Directory Pathing" onchange="calc()">
+        <div class="item-text">
+          <div class="item-label">Custom Storage Pathing</div>
+          <div class="item-desc">You control exactly which folders the app uses to save files on your hardware.</div>
+        </div>
+      </div>
+      <span class="item-price">+$150</span>
     </label>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="d3" value="200" data-name="PDF & CSV Document Export" checked onchange="calc()"><span class="item-label">PDF & CSV Document Export</span></div><span class="item-price">+$200</span>
+      <div class="item-left">
+        <input type="checkbox" class="addon" id="d3" value="200" data-name="PDF & CSV Document Export" checked onchange="calc()">
+        <div class="item-text">
+          <div class="item-label">PDF & CSV Document Export</div>
+          <div class="item-desc">Generate printable shift reports, timesheets, and ledger spreadsheets instantly.</div>
+        </div>
+      </div>
+      <span class="item-price">+$200</span>
     </label>
 
     <!-- Tier 4: Security & Privacy -->
     <div class="cat-header">4. Security, Access & Privacy</div>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="s1" value="750" data-name="Zero-Knowledge AES-256 Encryption" onchange="calc()"><span class="item-label">Zero-Knowledge AES-256 Encryption</span></div><span class="item-price highlight">+$750</span>
+      <div class="item-left">
+        <input type="checkbox" class="addon" id="s1" value="750" data-name="Zero-Knowledge AES-256 Encryption" onchange="calc()">
+        <div class="item-text">
+          <div class="item-label">Zero-Knowledge AES-256</div>
+          <div class="item-desc">Military-grade encrypted data vault. Nobody (not even the developer) can access it without the key.</div>
+        </div>
+      </div>
+      <span class="item-price highlight">+$750</span>
     </label>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="s2" value="200" data-name="Passcode / Biometric App Gate" onchange="calc()"><span class="item-label">Passcode / Biometric App Gate</span></div><span class="item-price">+$200</span>
+      <div class="item-left">
+        <input type="checkbox" class="addon" id="s2" value="200" data-name="Passcode / Biometric App Gate" onchange="calc()">
+        <div class="item-text">
+          <div class="item-label">Passcode / Biometric Gate</div>
+          <div class="item-desc">Lock the application behind a fingerprint scan or custom device PIN.</div>
+        </div>
+      </div>
+      <span class="item-price">+$200</span>
     </label>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="s3" value="150" data-name="Offline GPS Coordinate Tagging" onchange="calc()"><span class="item-label">Offline GPS Coordinate Tagging</span></div><span class="item-price">+$150</span>
+      <div class="item-left">
+        <input type="checkbox" class="addon" id="s3" value="150" data-name="Offline GPS Coordinate Tagging" onchange="calc()">
+        <div class="item-text">
+          <div class="item-label">Offline GPS Tagging</div>
+          <div class="item-desc">Stamp exact latitude/longitude coordinates on BOLs without needing cloud maps.</div>
+        </div>
+      </div>
+      <span class="item-price">+$150</span>
     </label>
 
     <!-- Tier 5: Hardware & Integrations -->
     <div class="cat-header">5. Hardware & Integrations</div>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="h1" value="250" data-name="Touchscreen Signature Pad" onchange="calc()"><span class="item-label">Touchscreen Signature Pad</span></div><span class="item-price">+$250</span>
+      <div class="item-left">
+        <input type="checkbox" class="addon" id="h1" value="250" data-name="Touchscreen Signature Pad" onchange="calc()">
+        <div class="item-text">
+          <div class="item-label">Touchscreen Signature Pad</div>
+          <div class="item-desc">Sign-on-glass canvas for client approvals, waivers, and delivery sign-offs.</div>
+        </div>
+      </div>
+      <span class="item-price">+$250</span>
     </label>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="h2" value="300" data-name="Camera Scanner (QR/Barcode/OCR)" onchange="calc()"><span class="item-label">Camera Scanner (QR/Barcode/OCR)</span></div><span class="item-price">+$300</span>
+      <div class="item-left">
+        <input type="checkbox" class="addon" id="h2" value="300" data-name="Camera Scanner (QR/Barcode/OCR)" onchange="calc()">
+        <div class="item-text">
+          <div class="item-label">Camera Scanner (QR/Barcode)</div>
+          <div class="item-desc">Scan inventory tags, scan driver's licenses, or read text directly from the lens.</div>
+        </div>
+      </div>
+      <span class="item-price">+$300</span>
     </label>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="h3" value="200" data-name="Bluetooth Thermal Printer Sync" onchange="calc()"><span class="item-label">Bluetooth Thermal Printer Sync</span></div><span class="item-price">+$200</span>
+      <div class="item-left">
+        <input type="checkbox" class="addon" id="h3" value="200" data-name="Bluetooth Thermal Printer Sync" onchange="calc()">
+        <div class="item-text">
+          <div class="item-label">Bluetooth Thermal Sync</div>
+          <div class="item-desc">Print physical receipts and tickets directly from the cab of the truck.</div>
+        </div>
+      </div>
+      <span class="item-price">+$200</span>
     </label>
 
     <!-- Tier 6: Ownership, Branding & Delivery -->
     <div class="cat-header">6. Branding, Delivery & Ownership</div>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="o1" value="600" data-name="White-Label (Remove Dev Watermarks)" onchange="calc()"><span class="item-label">White-Label (Remove Dev Watermarks)</span></div><span class="item-price wl">+$600</span>
+      <div class="item-left">
+        <input type="checkbox" class="addon" id="o1" value="600" data-name="White-Label (Remove Dev Watermarks)" onchange="calc()">
+        <div class="item-text">
+          <div class="item-label">White-Label Buyout</div>
+          <div class="item-desc">Strips all external branding so the app looks 100% built internally by your company.</div>
+        </div>
+      </div>
+      <span class="item-price wl">+$600</span>
     </label>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="o2" value="300" data-name="Priority 48-Hour Rush Delivery" onchange="calc()"><span class="item-label">Priority 48-Hour Rush Delivery</span></div><span class="item-price premium">+$300</span>
+      <div class="item-left">
+        <input type="checkbox" class="addon" id="o2" value="300" data-name="Priority 48-Hour Rush Delivery" onchange="calc()">
+        <div class="item-text">
+          <div class="item-label">Priority 48-Hour Delivery</div>
+          <div class="item-desc">Jump to the front of the development queue for immediate deployment.</div>
+        </div>
+      </div>
+      <span class="item-price premium">+$300</span>
     </label>
     <label class="item">
-      <div class="item-left"><input type="radio" name="rights" id="r1" value="0" data-name="Compiled App Binary (.apk) Only" checked onchange="calc()"><span class="item-label">Compiled Binary (.apk) Only</span></div><span class="item-price">$0</span>
+      <div class="item-left">
+        <input type="radio" name="rights" id="r1" value="0" data-name="Compiled App Binary (.apk) Only" checked onchange="calc()">
+        <div class="item-text">
+          <div class="item-label">Compiled Binary (.apk) Only</div>
+          <div class="item-desc">Standard installation file ready to load onto your fleet devices.</div>
+        </div>
+      </div>
+      <span class="item-price">$0</span>
     </label>
     <label class="item">
-      <div class="item-left"><input type="radio" name="rights" id="r2" value="800" data-name="Full Source Code & Git Handoff" onchange="calc()"><span class="item-label">Full Source Code & Git Handoff</span></div><span class="item-price premium">+$800</span>
+      <div class="item-left">
+        <input type="radio" name="rights" id="r2" value="800" data-name="Full Source Code & Git Handoff" onchange="calc()">
+        <div class="item-text">
+          <div class="item-label">Full Source Code Handoff</div>
+          <div class="item-desc">Take possession of the raw codebase. Zero vendor lock-in.</div>
+        </div>
+      </div>
+      <span class="item-price premium">+$800</span>
     </label>
 
     <!-- Calculations -->
