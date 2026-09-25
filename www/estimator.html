@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Software & App Scope Estimator</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --accent: #238636;
+      --blue: #58a6ff;
+      --purple: #bc8cff;
+      --white: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; background: var(--bg); color: var(--text); padding: 14px; }
+    .container { max-width: 600px; margin: 0 auto; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 18px; }
+    h1 { font-size: 1.15rem; color: var(--blue); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    p.sub { font-size: 0.78rem; color: #8b949e; margin-bottom: 16px; }
+
+    .input-group { margin-bottom: 14px; }
+    .input-group label { display: block; font-size: 0.75rem; color: #8b949e; margin-bottom: 4px; text-transform: uppercase; font-family: monospace; }
+    input[type="text"] { width: 100%; background: #0d1117; border: 1px solid var(--border); color: #fff; padding: 8px 10px; border-radius: 6px; font-size: 0.85rem; }
+
+    .cat-header { font-size: 0.75rem; font-weight: bold; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; margin: 16px 0 6px 0; border-bottom: 1px solid var(--border); padding-bottom: 3px; }
+    
+    .item { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: #0d1117; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 6px; cursor: pointer; }
+    .item-left { display: flex; align-items: center; gap: 10px; flex: 1; }
+    .item-left input { accent-color: var(--accent); width: 16px; height: 16px; }
+    .item-label { font-size: 0.82rem; font-weight: 500; color: #e6edf3; }
+    .item-price { font-size: 0.82rem; font-weight: bold; color: var(--blue); font-family: monospace; }
+    .item-price.highlight { color: var(--purple); }
+
+    .cost-card { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; padding: 14px; margin-top: 18px; }
+    .cost-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; }
+    .cost-row.total { font-size: 1.05rem; font-weight: bold; color: var(--white); border-top: 1px dashed var(--border); padding-top: 8px; margin-top: 8px; font-family: monospace; }
+    .cost-row.deposit { color: #7ee787; font-weight: bold; font-family: monospace; }
+
+    .btn-submit { width: 100%; margin-top: 14px; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 6px; font-size: 0.9rem; font-weight: bold; cursor: pointer; }
+
+    /* Quote Modal Preview */
+    #quote-modal { display: none; margin-top: 20px; background: #fff; color: #111; padding: 20px; border-radius: 6px; font-family: monospace; font-size: 11px; line-height: 1.4; border: 1px solid #ccc; word-wrap: break-word; }
+    .quote-header { text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px; }
+    .quote-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .quote-list { margin: 10px 0; border-bottom: 1px dashed #000; padding-bottom: 10px; }
+    .quote-total { border-top: 1px solid #000; padding-top: 6px; font-weight: bold; }
+    .btn-print { width: 100%; margin-top: 12px; padding: 10px; background: #000; color: #fff; border: none; font-weight: bold; cursor: pointer; }
+
+    @media print {
+      body { background: #fff !important; padding: 0 !important; }
+      .container { display: none !important; }
+      #quote-modal { display: block !important; border: none !important; padding: 0 !important; width: 100% !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Project Scope Estimator</h1>
+    <p class="sub">Select modular requirements to estimate upfront development and deployment fees. Perpetual ownership, zero recurring subscriptions.</p>
+
+    <div class="input-group">
+      <label>Client or Business Name</label>
+      <input type="text" id="clientName" placeholder="e.g. Self / Autonomous Logistics LLC">
+    </div>
+
+    <!-- Tier 1: Platform Foundation -->
+    <div class="cat-header">1. Platform Deployment</div>
+    <label class="item">
+      <div class="item-left">
+        <input type="radio" name="platform" value="650" data-name="Standalone Single-Page Web Tool (Self-Hosted)" checked onchange="calc()">
+        <span class="item-label">Single-Page Web Application</span>
+      </div>
+      <span class="item-price">$650</span>
+    </label>
+    <label class="item">
+      <div class="item-left">
+        <input type="radio" name="platform" value="1000" data-name="Cross-Platform PWA + Compiled Android APK" onchange="calc()">
+        <span class="item-label">PWA + Native Android APK</span>
+      </div>
+      <span class="item-price">$1,000</span>
+    </label>
+
+    <!-- Tier 2: Storage & Engine -->
+    <div class="cat-header">2. Data Storage & Core Logic</div>
+    <label class="item">
+      <div class="item-left">
+        <input type="checkbox" class="addon" value="250" data-name="Local Device Persistence (IndexedDB / LocalStorage)" checked onchange="calc()">
+        <span class="item-label">Local Device Database (Offline)</span>
+      </div>
+      <span class="item-price">+$250</span>
+    </label>
+    <label class="item">
+      <div class="item-left">
+        <input type="checkbox" class="addon" value="200" data-name="Export Engine (Direct PDF & CSV Reports)" checked onchange="calc()">
+        <span class="item-label">PDF & CSV Document Generator</span>
+      </div>
+      <span class="item-price">+$200</span>
+    </label>
+    <label class="item">
+      <div class="item-left">
+        <input type="checkbox" class="addon" value="300" data-name="Complex Math / Formula / Rule Engine" onchange="calc()">
+        <span class="item-label">Advanced Math / Calculation Logic</span>
+      </div>
+      <span class="item-price">+$300</span>
+    </label>
+
+    <!-- Tier 3: Security & Cryptography -->
+    <div class="cat-header">3. Security, Access & Privacy</div>
+    <label class="item">
+      <div class="item-left">
+        <input type="checkbox" class="addon" value="400" data-name="Zero-Knowledge Client-Side AES-256 Encryption" onchange="calc()">
+        <span class="item-label">Zero-Knowledge AES-256 Encryption</span>
+      </div>
+      <span class="item-price highlight">+$400</span>
+    </label>
+    <label class="item">
+      <div class="item-left">
+        <input type="checkbox" class="addon" value="200" data-name="Local PIN / Biometric App Security Gate" onchange="calc()">
+        <span class="item-label">Passcode / Biometric Gate</span>
+      </div>
+      <span class="item-price">+$200</span>
+    </label>
+
+    <!-- Tier 4: Hardware & Interactive Modules -->
+    <div class="cat-header">4. Hardware & Interface Features</div>
+    <label class="item">
+      <div class="item-left">
+        <input type="checkbox" class="addon" value="250" data-name="Touchscreen Sign-on-Glass / Canvas Tool" onchange="calc()">
+        <span class="item-label">Sign-On-Glass Signature Pad</span>
+      </div>
+      <span class="item-price">+$250</span>
+    </label>
+    <label class="item">
+      <div class="item-left">
+        <input type="checkbox" class="addon" value="300" data-name="Camera Integration / QR & Barcode Scanner" onchange="calc()">
+        <span class="item-label">Camera Scanner (QR/Barcode/OCR)</span>
+      </div>
+      <span class="item-price">+$300</span>
+    </label>
+    <label class="item">
+      <div class="item-left">
+        <input type="checkbox" class="addon" value="250" data-name="Audio/Media Manipulation or Timer Matrix" onchange="calc()">
+        <span class="item-label">Media Tools / Shift Timers</span>
+      </div>
+      <span class="item-price">+$250</span>
+    </label>
+
+    <!-- Calculations -->
+    <div class="cost-card">
+      <div class="cost-row">
+        <span>Delivery Target:</span>
+        <span style="font-family: monospace;">5-7 Business Days</span>
+      </div>
+      <div class="cost-row total">
+        <span>Total Deployment:</span>
+        <span id="txtTotal">$1,100.00</span>
+      </div>
+      <div class="cost-row deposit">
+        <span>50% Start Deposit:</span>
+        <span id="txtDeposit">$550.00</span>
+      </div>
+    </div>
+
+    <button class="btn-submit" onclick="generateEstimate()">Generate Formal Estimate</button>
+
+    <div id="quote-modal">
+      <div class="quote-header">
+        <div style="font-weight: bold; font-size: 13px;">DEVELOPMENT & SCOPE ESTIMATE</div>
+        <div>Quintan Middle | Tucson, AZ | (520) 634-9490</div>
+        <div>quintanmiddle@gmail.com</div>
+      </div>
+      <div class="quote-row">
+        <span>CLIENT:</span>
+        <span id="qClient" style="font-weight: bold;"></span>
+      </div>
+      <div class="quote-row">
+        <span>DATE:</span>
+        <span id="qDate"></span>
+      </div>
+
+      <div class="cat-header" style="color: #000; margin-top: 10px;">Scope Breakdown:</div>
+      <div class="quote-list" id="qList"></div>
+
+      <div class="quote-row quote-total">
+        <span>TOTAL INVESTMENT:</span>
+        <span id="qTotal"></span>
+      </div>
+      <div class="quote-row" style="color: #008000; font-weight: bold;">
+        <span>50% DEPOSIT TO COMMENCE:</span>
+        <span id="qDeposit"></span>
+      </div>
+      <div class="quote-row">
+        <span>BALANCE DUE ON SIGN-OFF:</span>
+        <span id="qBalance"></span>
+      </div>
+
+      <div style="margin-top: 12px; font-size: 10px; color: #444;">
+        * Includes perpetual runtime rights, zero monthly software subscriptions, and full client data ownership.
+      </div>
+      <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
+    </div>
+  </div>
+
+  <script>
+    function calc() {
+      let total = 0;
+      const baseRadio = document.querySelector('input[name="platform"]:checked');
+      if (baseRadio) total += parseFloat(baseRadio.value);
+
+      document.querySelectorAll('.addon:checked').forEach(box => {
+        total += parseFloat(box.value);
+      });
+
+      const deposit = total * 0.5;
+      document.getElementById('txtTotal').textContent = `$${total.toFixed(2)}`;
+      document.getElementById('txtDeposit').textContent = `$${deposit.toFixed(2)}`;
+      return { total, deposit };
+    }
+
+    function generateEstimate() {
+      const { total, deposit } = calc();
+      const client = document.getElementById('clientName').value.trim() || 'Direct Client';
+      const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+      document.getElementById('qClient').textContent = client;
+      document.getElementById('qDate').textContent = dateStr;
+      document.getElementById('qTotal').textContent = `$${total.toFixed(2)}`;
+      document.getElementById('qDeposit').textContent = `$${deposit.toFixed(2)}`;
+      document.getElementById('qBalance').textContent = `$${(total - deposit).toFixed(2)}`;
+
+      const listContainer = document.getElementById('qList');
+      listContainer.innerHTML = '';
+
+      // Platform selection
+      const baseRadio = document.querySelector('input[name="platform"]:checked');
+      let html = `<div class="quote-row"><span>• ${baseRadio.dataset.name}</span><span>$${baseRadio.value}</span></div>`;
+
+      // Addons
+      document.querySelectorAll('.addon:checked').forEach(box => {
+        html += `<div class="quote-row"><span>• ${box.dataset.name}</span><span>+$${box.value}</span></div>`;
+      });
+
+      listContainer.innerHTML = html;
+      document.getElementById('quote-modal').style.display = 'block';
+      document.getElementById('quote-modal').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    calc();
+  </script>
+</body>
+</html>
