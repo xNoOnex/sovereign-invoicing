@@ -1,0 +1,10 @@
+node_modules/
+.gradle/
+local.properties
+.idea/
+build/
+android/app/build/
+android/.gradle/
+android/app/.cxx/
+*.apk
+*.zip

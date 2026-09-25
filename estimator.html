@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App Deployment Scope & Estimate Preview</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --accent: #238636;
+      --accent-hover: #2ea043;
+      --blue: #58a6ff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: monospace, -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 16px; line-height: 1.5; }
+    .container { max-width: 650px; margin: 0 auto; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 24px; }
+    h1 { font-size: 1.25rem; color: var(--blue); margin-bottom: 8px; text-transform: uppercase; }
+    p.desc { font-size: 0.85rem; color: #8b949e; margin-bottom: 20px; }
+    .section-title { font-size: 0.9rem; color: #fff; margin: 18px 0 8px 0; border-bottom: 1px solid var(--border); padding-bottom: 4px; text-transform: uppercase; }
+    .module-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 8px; background: #0d1117; cursor: pointer; }
+    .module-item input[type="checkbox"] { margin-top: 4px; accent-color: var(--accent); }
+    .module-info { flex: 1; }
+    .module-name { font-size: 0.9rem; font-weight: bold; color: #f0f6fc; }
+    .module-desc { font-size: 0.75rem; color: #8b949e; }
+    .module-price { font-size: 0.85rem; font-weight: bold; color: var(--blue); }
+    .summary-box { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; padding: 16px; margin-top: 20px; }
+    .summary-row { display: flex; justify-content: space-between; font-size: 0.95rem; margin-bottom: 6px; }
+    .summary-row.total { font-size: 1.1rem; font-weight: bold; color: #fff; border-top: 1px dashed var(--border); padding-top: 8px; margin-top: 8px; }
+    .summary-row.deposit { color: #7ee787; font-weight: bold; }
+    button { width: 100%; margin-top: 18px; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 6px; font-size: 0.95rem; font-weight: bold; cursor: pointer; }
+    button:active { background: var(--accent-hover); }
+
+    #quote-preview { display: none; background: #fff; color: #000; padding: 30px; font-family: "Courier New", Courier, monospace; font-size: 12px; margin-top: 24px; border-radius: 4px; }
+    @media print {
+      body { background: #fff !important; padding: 0 !important; }
+      .container { display: none !important; }
+      #quote-preview { display: block !important; width: 100% !important; padding: 0 !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Deployment Cost Calculator</h1>
+    <p class="desc">Select your operational requirements to calculate exact upfront costs. No monthly subscriptions, recurring SaaS licenses, or cloud overhead.</p>
+
+    <label style="font-size: 0.8rem; color: #8b949e;">Your Business Name / Trade:</label>
+    <input type="text" id="clientBizInput" placeholder="e.g. Local Hauling & Logistics" style="width: 100%; background: #0d1117; border: 1px solid var(--border); color: #fff; padding: 8px; border-radius: 6px; margin-bottom: 14px; font-family: inherit;">
+
+    <div class="section-title">Core Software Architecture</div>
+    <label class="module-item">
+      <input type="checkbox" id="mod-core" checked disabled data-price="800" data-name="Standalone Offline-First Engine">
+      <div class="module-info">
+        <div class="module-name">Core Offline Engine (Base)</div>
+        <div class="module-desc">Zero-dependency PWA, local device database, perpetual licensing.</div>
+      </div>
+      <div class="module-price">$800</div>
+    </label>
+
+    <div class="section-title">Operational Feature Modules</div>
+    <label class="module-item">
+      <input type="checkbox" class="addon" data-price="350" data-name="Crew Timecards & Shift Log" checked onchange="calculate()">
+      <div class="module-info">
+        <div class="module-name">Field Timecard & Crew Ledger</div>
+        <div class="module-desc">Start/stop shift tracking, lunch deductions, and crew payout calculation.</div>
+      </div>
+      <div class="module-price">+$350</div>
+    </label>
+
+    <label class="module-item">
+      <input type="checkbox" class="addon" data-price="350" data-name="Sign-On-Glass Digital Invoicing & BOL" checked onchange="calculate()">
+      <div class="module-info">
+        <div class="module-name">Sign-on-Glass BOL / Invoicing</div>
+        <div class="module-desc">Touchscreen client signatures, instant thermal/standard PDF export.</div>
+      </div>
+      <div class="module-price">+$350</div>
+    </label>
+
+    <label class="module-item">
+      <input type="checkbox" class="addon" data-price="300" data-name="Asset & Equipment Inventory Tracker" onchange="calculate()">
+      <div class="module-info">
+        <div class="module-name">Tool & Asset Inventory Ledger</div>
+        <div class="module-desc">Barcode/QR lookup, field audit manifests, and maintenance logging.</div>
+      </div>
+      <div class="module-price">+$300</div>
+    </label>
+
+    <label class="module-item">
+      <input type="checkbox" class="addon" data-price="250" data-name="Custom Fleet Rate & Mileage Matrix" onchange="calculate()">
+      <div class="module-info">
+        <div class="module-name">Dynamic Rates & Fuel Matrix</div>
+        <div class="module-desc">Automated tier calculations for truck sizes, stair fees, and mileage.</div>
+      </div>
+      <div class="module-price">+$250</div>
+    </label>
+
+    <div class="summary-box">
+      <div class="summary-row">
+        <span>Delivery Timeline:</span>
+        <span id="turnaround">5 Business Days</span>
+      </div>
+      <div class="summary-row total">
+        <span>Total Deployment Fee:</span>
+        <span id="displayTotal">$1,500.00</span>
+      </div>
+      <div class="summary-row deposit">
+        <span>50% Deposit to Begin:</span>
+        <span id="displayDeposit">$750.00</span>
+      </div>
+    </div>
+
+    <button onclick="renderQuote()">Generate Formal Scope Preview</button>
+  </div>
+
+  <div id="quote-preview">
+    <pre id="quoteOutput"></pre>
+    <div style="margin-top: 20px;">
+      <button onclick="window.print()" style="background:#000; color:#fff; border:none; padding:10px 16px; cursor:pointer;">Print or Save as PDF</button>
+      <button onclick="document.getElementById('quote-preview').style.display='none'" style="background:#ccc; color:#000; border:none; padding:10px 16px; margin-left:8px; cursor:pointer;">Close Preview</button>
+    </div>
+  </div>
+
+  <script>
+    function calculate() {
+      let total = 800; // Base core engine
+      const addons = document.querySelectorAll('.addon:checked');
+      addons.forEach(box => {
+        total += parseFloat(box.dataset.price);
+      });
+
+      const deposit = total * 0.5;
+      document.getElementById('displayTotal').textContent = `$${total.toFixed(2)}`;
+      document.getElementById('displayDeposit').textContent = `$${deposit.toFixed(2)}`;
+      return { total, deposit };
+    }
+
+    function renderQuote() {
+      const { total, deposit } = calculate();
+      const client = document.getElementById('clientBizInput').value.trim() || 'Prospective Fleet Client';
+      const dateStr = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+      let scopeList = "1. Core Offline-First Architecture (Zero recurring fees, local PWA deployment)\n";
+      let idx = 2;
+      document.querySelectorAll('.addon:checked').forEach(box => {
+        scopeList += `${idx}. ${box.dataset.name}\n`;
+        idx++;
+      });
+      scopeList += `${idx}. Local CSV/JSON data backup & direct device ownership.`;
+
+      const quote = `================================================================================
+                       FORMAL SCOPE & DEPLOYMENT ESTIMATE
+================================================================================
+ISSUED BY:                               PREPARED FOR:
+Quintan Middle                           ${client}
+Independent Software Engineer            Tucson, AZ
+Tucson, AZ | (520) 634-9490
+quintanmiddle@gmail.com
+
+DATE: ${dateStr}
+
+--------------------------------------------------------------------------------
+SELECTED MODULES & DELIVERABLES:
+--------------------------------------------------------------------------------
+${scopeList}
+
+--------------------------------------------------------------------------------
+FIXED FLAT-RATE INVESTMENT:
+--------------------------------------------------------------------------------
+Total Deployment Fee:                    $${total.toFixed(2)}
+Required Start Deposit (50%):            $${deposit.toFixed(2)}
+Final Balance Due at Launch:             $${(total - deposit).toFixed(2)}
+
+TERMS & DEPLOYMENT:
+- Delivery standard: 5 business days from 50% deposit clearance.
+- Architecture: 100% offline-capable, runs on mobile/desktop without cloud costs.
+- Acceptance: Cash App or Verified Company Check.
+================================================================================`;
+
+      document.getElementById('quoteOutput').textContent = quote;
+      document.getElementById('quote-preview').style.display = 'block';
+      document.getElementById('quote-preview').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    calculate();
+  </script>
+</body>
+</html>

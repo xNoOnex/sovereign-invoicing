@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sovereign Contract & Invoice Engine</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --accent: #238636;
+      --accent-hover: #2ea043;
+      --blue: #58a6ff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: monospace, -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 16px; }
+
+    .form-container {
+      max-width: 680px;
+      margin: 0 auto 32px auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    h2 { font-size: 1.1rem; margin-bottom: 16px; color: var(--blue); text-transform: uppercase; letter-spacing: 1px; }
+    label { display: block; font-size: 0.8rem; margin: 10px 0 4px 0; color: #8b949e; }
+    input, textarea, select {
+      width: 100%;
+      background: #0d1117;
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 10px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.85rem;
+    }
+    textarea { resize: vertical; height: 120px; }
+    .row { display: flex; gap: 12px; }
+    .col { flex: 1; }
+
+    .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+    button {
+      flex: 1;
+      padding: 12px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button.secondary { background: #21262d; border: 1px solid var(--border); color: #c9d1d9; }
+    button:active { opacity: 0.8; }
+
+    #document-preview {
+      display: none;
+      background: #fff;
+      color: #000;
+      padding: 30px;
+      max-width: 800px;
+      margin: 0 auto;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 12px;
+      line-height: 1.4;
+      white-space: pre-wrap;
+    }
+
+    @media print {
+      body { background: #fff !important; padding: 0 !important; }
+      .form-container { display: none !important; }
+      #document-preview {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>Contract & Invoice Dispatcher</h2>
+    
+    <div class="row">
+      <div class="col">
+        <label>Invoice / Agreement #</label>
+        <input type="text" id="invoiceNum" value="CE-2026-001">
+      </div>
+      <div class="col">
+        <label>Document Date</label>
+        <input type="text" id="docDate">
+      </div>
+    </div>
+
+    <label>Client Business Name</label>
+    <input type="text" id="clientBiz" placeholder="e.g. AAA Soto's Moving">
+
+    <div class="row">
+      <div class="col">
+        <label>Contact Name & Title</label>
+        <input type="text" id="clientContact" placeholder="e.g. Yvette Soto, Owner">
+      </div>
+      <div class="col">
+        <label>Client Phone / Email</label>
+        <input type="text" id="clientPhone" placeholder="(520) 275-9893">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label>Cash App $cashtag</label>
+        <input type="text" id="cashTag" value="$QuintanMiddle">
+      </div>
+      <div class="col">
+        <label>Status</label>
+        <select id="docStatus">
+          <option value="Deposit Due (50%)">Deposit Due (50%)</option>
+          <option value="Paid in Full">Paid in Full</option>
+          <option value="Final Balance Due">Final Balance Due</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label>Total Fee ($)</label>
+        <input type="number" id="totalFee" value="1500" oninput="updateDeposit()">
+      </div>
+      <div class="col">
+        <label>Deposit Required ($)</label>
+        <input type="number" id="depositFee" value="750">
+      </div>
+    </div>
+
+    <label>Custom Deliverables / Scope Statement</label>
+    <textarea id="scopeText">1. Standalone deployment of Chronos Engine (offline-first mobile PWA).
+2. Local crew timecard logging & off-grid timestamp ledger.
+3. Sign-on-glass Bill of Lading (BOL) and digital invoice generation.
+4. Local data export (CSV/JSON/PDF) with zero cloud dependencies.
+5. Configuration of fleet branding, crew rates, and service matrices.
+6. Zero recurring software licenses, hosting fees, or monthly overhead.</textarea>
+
+    <div class="btn-group">
+      <button type="button" class="secondary" onclick="saveToStorage()">Save Draft</button>
+      <button type="button" onclick="generateAndPrint()">Print / Save PDF</button>
+    </div>
+  </div>
+
+  <div id="document-preview"></div>
+
+  <script>
+    // Initialize date automatically
+    document.addEventListener('DOMContentLoaded', () => {
+      const now = new Date();
+      document.getElementById('docDate').value = now.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      });
+      loadDraft();
+    });
+
+    function updateDeposit() {
+      const total = parseFloat(document.getElementById('totalFee').value) || 0;
+      document.getElementById('depositFee').value = (total * 0.5).toFixed(0);
+    }
+
+    function saveToStorage() {
+      const payload = {
+        invoiceNum: document.getElementById('invoiceNum').value,
+        docDate: document.getElementById('docDate').value,
+        clientBiz: document.getElementById('clientBiz').value,
+        clientContact: document.getElementById('clientContact').value,
+        clientPhone: document.getElementById('clientPhone').value,
+        cashTag: document.getElementById('cashTag').value,
+        totalFee: document.getElementById('totalFee').value,
+        depositFee: document.getElementById('depositFee').value,
+        scopeText: document.getElementById('scopeText').value,
+        docStatus: document.getElementById('docStatus').value
+      };
+      localStorage.setItem('sovereign_contract_draft', JSON.stringify(payload));
+      alert('Draft saved locally.');
+    }
+
+    function loadDraft() {
+      const raw = localStorage.getItem('sovereign_contract_draft');
+      if (!raw) return;
+      try {
+        const d = JSON.parse(raw);
+        if (d.invoiceNum) document.getElementById('invoiceNum').value = d.invoiceNum;
+        if (d.clientBiz) document.getElementById('clientBiz').value = d.clientBiz;
+        if (d.clientContact) document.getElementById('clientContact').value = d.clientContact;
+        if (d.clientPhone) document.getElementById('clientPhone').value = d.clientPhone;
+        if (d.cashTag) document.getElementById('cashTag').value = d.cashTag;
+        if (d.totalFee) document.getElementById('totalFee').value = d.totalFee;
+        if (d.depositFee) document.getElementById('depositFee').value = d.depositFee;
+        if (d.scopeText) document.getElementById('scopeText').value = d.scopeText;
+        if (d.docStatus) document.getElementById('docStatus').value = d.docStatus;
+      } catch (e) {
+        console.warn('Could not parse local draft', e);
+      }
+    }
+
+    function generateAndPrint() {
+      const invoiceNum = document.getElementById('invoiceNum').value;
+      const docDate = document.getElementById('docDate').value;
+      const clientBiz = document.getElementById('clientBiz').value || '[Client Business Name]';
+      const clientContact = document.getElementById('clientContact').value || '[Contact Name/Title]';
+      const clientPhone = document.getElementById('clientPhone').value || '[Phone / Email]';
+      const cashTag = document.getElementById('cashTag').value || '$QuintanMiddle';
+      const status = document.getElementById('docStatus').value;
+      const total = parseFloat(document.getElementById('totalFee').value) || 1500;
+      const deposit = parseFloat(document.getElementById('depositFee').value) || 750;
+      const balance = (total - deposit).toFixed(2);
+      const scope = document.getElementById('scopeText').value;
+
+      const doc = `================================================================================
+                    SOFTWARE DEPLOYMENT & SERVICE AGREEMENT
+================================================================================
+
+DEVELOPER:                               CLIENT:
+Quintan Middle                           ${clientBiz}
+Software Engineer & Tradesman            ${clientContact}
+Tucson, AZ | (520) 634-9490              Tucson, AZ
+quintanmiddle@gmail.com                  ${clientPhone}
+
+DATE: ${docDate.padEnd(35)}INVOICE #: ${invoiceNum}
+STATUS: ${status}
+
+--------------------------------------------------------------------------------
+SCOPE OF WORK & DELIVERABLES:
+--------------------------------------------------------------------------------
+${scope}
+
+--------------------------------------------------------------------------------
+PAYMENT SCHEDULE:
+--------------------------------------------------------------------------------
+Total Flat Deployment Fee:                $${total.toFixed(2)}
+Deposit Required to Begin Build (50%):     $${deposit.toFixed(2)}
+Balance Due Upon Final Fleet Sign-off:     $${balance}
+
+Payment Rails Accepted:
+- Cash App: ${cashTag}
+- Company Check (Payable to: Quintan Middle)
+
+--------------------------------------------------------------------------------
+TERMS:
+1. Configuration commences immediately upon receipt of the 50% deposit.
+2. Final deployment occurs within 5 business days of deposit clearance.
+3. Software is delivered perpetual, offline-first, and self-hosted on client
+   hardware with zero monthly vendor lock-in or licensing fees.
+
+ACCEPTED AND AGREED:
+
+Client Signature: _______________________      Date: _______________
+
+Developer Signature: ____________________      Date: _______________
+================================================================================`;
+
+      document.getElementById('document-preview').textContent = doc;
+      window.print();
+    }
+  </script>
+</body>
+</html>
