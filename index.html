@@ -46,16 +46,24 @@
     .btn-submit { width: 100%; margin-top: 14px; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 6px; font-size: 0.9rem; font-weight: bold; cursor: pointer; }
 
     /* Quote Modal Preview */
-    #quote-modal { display: none; margin-top: 20px; background: #fff; color: #111; padding: 20px; border-radius: 6px; font-family: monospace; font-size: 11px; line-height: 1.4; border: 1px solid #ccc; word-wrap: break-word; }
+    #quote-modal { display: none; margin-top: 20px; background: #fff; color: #111; padding: 20px; border-radius: 6px; font-family: monospace; font-size: 11px; line-height: 1.4; border: 1px solid #ccc; }
     .quote-header { text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px; }
     .quote-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
     .quote-list { margin: 10px 0; border-bottom: 1px dashed #000; padding-bottom: 10px; }
     .quote-total { border-top: 1px solid #000; padding-top: 6px; font-weight: bold; }
-    .btn-print { width: 100%; margin-top: 12px; padding: 10px; background: #000; color: #fff; border: none; font-weight: bold; cursor: pointer; }
+    
+    .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+    .action-grid button { padding: 10px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-family: inherit; font-size: 11px; }
+    .btn-print { background: #000; color: #fff; grid-column: span 2; }
+    .btn-save { background: #e1e4e8; color: #24292e; }
+    .btn-sms { background: #2ea043; color: #fff; }
+    .btn-email { background: #0366d6; color: #fff; grid-column: span 2; }
+
+    #toast { display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 0.8rem; z-index: 1000; }
 
     @media print {
       body { background: #fff !important; padding: 0 !important; }
-      .container { display: none !important; }
+      .container, .action-grid, #toast { display: none !important; }
       #quote-modal { display: block !important; border: none !important; padding: 0 !important; width: 100% !important; }
     }
   </style>
@@ -68,130 +76,86 @@
 
     <div class="input-group">
       <label>Client or Business Name</label>
-      <input type="text" id="clientName" placeholder="e.g. Autonomous Logistics LLC">
+      <input type="text" id="clientName" placeholder="e.g. Autonomous Logistics LLC" oninput="calc()">
     </div>
 
     <!-- Tier 1: Platform Foundation -->
     <div class="cat-header">1. Platform Foundation</div>
     <label class="item">
-      <div class="item-left">
-        <input type="radio" name="platform" value="1000" data-name="Native Offline Android APK" checked onchange="calc()">
-        <span class="item-label">Native Offline Android APK</span>
-      </div>
-      <span class="item-price">$1,000</span>
+      <div class="item-left"><input type="radio" name="platform" id="p1" value="1000" data-name="Native Offline Android APK" checked onchange="calc()"><span class="item-label">Native Offline Android APK</span></div><span class="item-price">$1,000</span>
     </label>
     <label class="item">
-      <div class="item-left">
-        <input type="radio" name="platform" value="1500" data-name="APK + Desktop Browser Sync" onchange="calc()">
-        <span class="item-label">APK + Desktop Browser Sync</span>
-      </div>
-      <span class="item-price">$1,500</span>
+      <div class="item-left"><input type="radio" name="platform" id="p2" value="1500" data-name="APK + Desktop Browser Sync" onchange="calc()"><span class="item-label">APK + Desktop Browser Sync</span></div><span class="item-price">$1,500</span>
     </label>
 
     <!-- Tier 2: Interface & Customization -->
     <div class="cat-header">2. Interface & App Customization</div>
     <label class="item">
-      <div class="item-left">
-        <input type="checkbox" class="addon" value="250" data-name="Advanced UI Settings (Scaling/Colors/Layout)" onchange="calc()">
-        <span class="item-label">Advanced UI Settings (Scaling/Colors)</span>
-      </div>
-      <span class="item-price">+$250</span>
+      <div class="item-left"><input type="checkbox" class="addon" id="i1" value="250" data-name="Advanced UI Settings (Scaling/Colors)" onchange="calc()"><span class="item-label">Advanced UI Settings (Scaling/Colors)</span></div><span class="item-price">+$250</span>
     </label>
     <label class="item">
-      <div class="item-left">
-        <input type="checkbox" class="addon" value="200" data-name="Dynamic Video & Image Wallpaper Engine" onchange="calc()">
-        <span class="item-label">Video Wallpaper Engine</span>
-      </div>
-      <span class="item-price">+$200</span>
+      <div class="item-left"><input type="checkbox" class="addon" id="i2" value="200" data-name="Dynamic Video Wallpaper Engine" onchange="calc()"><span class="item-label">Video Wallpaper Engine</span></div><span class="item-price">+$200</span>
+    </label>
+    <label class="item">
+      <div class="item-left"><input type="checkbox" class="addon" id="i3" value="150" data-name="English/Spanish Language Toggle" onchange="calc()"><span class="item-label">English / Spanish Toggle</span></div><span class="item-price">+$150</span>
     </label>
 
     <!-- Tier 3: Data & Core Logic -->
     <div class="cat-header">3. Data Storage & Core Logic</div>
     <label class="item">
-      <div class="item-left">
-        <input type="checkbox" class="addon" value="250" data-name="Local Offline Database" checked onchange="calc()">
-        <span class="item-label">Local Offline Database</span>
-      </div>
-      <span class="item-price">+$250</span>
+      <div class="item-left"><input type="checkbox" class="addon" id="d1" value="250" data-name="Local Offline Database" checked onchange="calc()"><span class="item-label">Local Offline Database</span></div><span class="item-price">+$250</span>
     </label>
     <label class="item">
-      <div class="item-left">
-        <input type="checkbox" class="addon" value="150" data-name="Custom Storage Directory Pathing" onchange="calc()">
-        <span class="item-label">Custom File Storage Pathing</span>
-      </div>
-      <span class="item-price">+$150</span>
+      <div class="item-left"><input type="checkbox" class="addon" id="d2" value="150" data-name="Custom Storage Directory Pathing" onchange="calc()"><span class="item-label">Custom File Storage Pathing</span></div><span class="item-price">+$150</span>
     </label>
     <label class="item">
-      <div class="item-left">
-        <input type="checkbox" class="addon" value="200" data-name="PDF & CSV Document Export" checked onchange="calc()">
-        <span class="item-label">PDF & CSV Document Export</span>
-      </div>
-      <span class="item-price">+$200</span>
+      <div class="item-left"><input type="checkbox" class="addon" id="d3" value="200" data-name="PDF & CSV Document Export" checked onchange="calc()"><span class="item-label">PDF & CSV Document Export</span></div><span class="item-price">+$200</span>
     </label>
 
-    <!-- Tier 4: Security & Cryptography -->
+    <!-- Tier 4: Security & Privacy -->
     <div class="cat-header">4. Security, Access & Privacy</div>
     <label class="item">
-      <div class="item-left">
-        <input type="checkbox" class="addon" value="750" data-name="Zero-Knowledge AES-256 Encryption" onchange="calc()">
-        <span class="item-label">Zero-Knowledge AES-256 Encryption</span>
-      </div>
-      <span class="item-price highlight">+$750</span>
+      <div class="item-left"><input type="checkbox" class="addon" id="s1" value="750" data-name="Zero-Knowledge AES-256 Encryption" onchange="calc()"><span class="item-label">Zero-Knowledge AES-256 Encryption</span></div><span class="item-price highlight">+$750</span>
     </label>
     <label class="item">
-      <div class="item-left">
-        <input type="checkbox" class="addon" value="200" data-name="Passcode / Biometric App Gate" onchange="calc()">
-        <span class="item-label">Passcode / Biometric App Gate</span>
-      </div>
-      <span class="item-price">+$200</span>
+      <div class="item-left"><input type="checkbox" class="addon" id="s2" value="200" data-name="Passcode / Biometric App Gate" onchange="calc()"><span class="item-label">Passcode / Biometric App Gate</span></div><span class="item-price">+$200</span>
+    </label>
+    <label class="item">
+      <div class="item-left"><input type="checkbox" class="addon" id="s3" value="150" data-name="Offline GPS Coordinate Tagging" onchange="calc()"><span class="item-label">Offline GPS Coordinate Tagging</span></div><span class="item-price">+$150</span>
     </label>
 
-    <!-- Tier 5: Hardware & Integration -->
+    <!-- Tier 5: Hardware & Integrations -->
     <div class="cat-header">5. Hardware & Integrations</div>
     <label class="item">
-      <div class="item-left">
-        <input type="checkbox" class="addon" value="250" data-name="Touchscreen Signature Pad" onchange="calc()">
-        <span class="item-label">Touchscreen Signature Pad</span>
-      </div>
-      <span class="item-price">+$250</span>
+      <div class="item-left"><input type="checkbox" class="addon" id="h1" value="250" data-name="Touchscreen Signature Pad" onchange="calc()"><span class="item-label">Touchscreen Signature Pad</span></div><span class="item-price">+$250</span>
     </label>
     <label class="item">
-      <div class="item-left">
-        <input type="checkbox" class="addon" value="300" data-name="Camera Scanner (QR/Barcode/OCR)" onchange="calc()">
-        <span class="item-label">Camera Scanner (QR/Barcode/OCR)</span>
-      </div>
-      <span class="item-price">+$300</span>
+      <div class="item-left"><input type="checkbox" class="addon" id="h2" value="300" data-name="Camera Scanner (QR/Barcode/OCR)" onchange="calc()"><span class="item-label">Camera Scanner (QR/Barcode/OCR)</span></div><span class="item-price">+$300</span>
+    </label>
+    <label class="item">
+      <div class="item-left"><input type="checkbox" class="addon" id="h3" value="200" data-name="Bluetooth Thermal Printer Sync" onchange="calc()"><span class="item-label">Bluetooth Thermal Printer Sync</span></div><span class="item-price">+$200</span>
     </label>
 
-    <!-- Tier 6: Ownership & Branding -->
-    <div class="cat-header">6. Branding & Deliverable Rights</div>
+    <!-- Tier 6: Ownership, Branding & Delivery -->
+    <div class="cat-header">6. Branding, Delivery & Ownership</div>
     <label class="item">
-      <div class="item-left">
-        <input type="checkbox" class="addon" value="600" data-name="White-Label License (Remove Dev Watermarks)" onchange="calc()">
-        <span class="item-label">White-Label (Remove Dev Watermarks)</span>
-      </div>
-      <span class="item-price wl">+$600</span>
+      <div class="item-left"><input type="checkbox" class="addon" id="o1" value="600" data-name="White-Label (Remove Dev Watermarks)" onchange="calc()"><span class="item-label">White-Label (Remove Dev Watermarks)</span></div><span class="item-price wl">+$600</span>
     </label>
     <label class="item">
-      <div class="item-left">
-        <input type="radio" name="rights" value="0" data-name="Compiled App Binary (.apk) Only" checked onchange="calc()">
-        <span class="item-label">Compiled Binary (.apk) Only</span>
-      </div>
-      <span class="item-price">$0</span>
+      <div class="item-left"><input type="checkbox" class="addon" id="o2" value="300" data-name="Priority 48-Hour Rush Delivery" onchange="calc()"><span class="item-label">Priority 48-Hour Rush Delivery</span></div><span class="item-price premium">+$300</span>
     </label>
     <label class="item">
-      <div class="item-left">
-        <input type="radio" name="rights" value="800" data-name="Full Source Code & GitHub Handoff" onchange="calc()">
-        <span class="item-label">Full Source Code & Git Handoff</span>
-      </div>
-      <span class="item-price premium">+$800</span>
+      <div class="item-left"><input type="radio" name="rights" id="r1" value="0" data-name="Compiled App Binary (.apk) Only" checked onchange="calc()"><span class="item-label">Compiled Binary (.apk) Only</span></div><span class="item-price">$0</span>
+    </label>
+    <label class="item">
+      <div class="item-left"><input type="radio" name="rights" id="r2" value="800" data-name="Full Source Code & Git Handoff" onchange="calc()"><span class="item-label">Full Source Code & Git Handoff</span></div><span class="item-price premium">+$800</span>
     </label>
 
     <!-- Calculations -->
     <div class="cost-card">
       <div class="cost-row">
         <span>Delivery Target:</span>
-        <span style="font-family: monospace;">7-10 Business Days</span>
+        <span id="txtTimeline" style="font-family: monospace;">7-10 Business Days</span>
       </div>
       <div class="cost-row total">
         <span>Total Deployment:</span>
@@ -211,95 +175,111 @@
         <div>Quintan Middle | Tucson, AZ | (520) 634-9490</div>
         <div>quintanmiddle@gmail.com</div>
       </div>
-      <div class="quote-row">
-        <span>CLIENT:</span>
-        <span id="qClient" style="font-weight: bold;"></span>
-      </div>
-      <div class="quote-row">
-        <span>DATE:</span>
-        <span id="qDate"></span>
-      </div>
+      <div class="quote-row"><span>CLIENT:</span><span id="qClient" style="font-weight: bold;"></span></div>
+      <div class="quote-row"><span>DATE:</span><span id="qDate"></span></div>
 
       <div class="cat-header" style="color: #000; margin-top: 10px;">Scope Breakdown:</div>
       <div class="quote-list" id="qList"></div>
 
-      <div class="quote-row quote-total">
-        <span>TOTAL INVESTMENT:</span>
-        <span id="qTotal"></span>
+      <div class="quote-row quote-total"><span>TOTAL INVESTMENT:</span><span id="qTotal"></span></div>
+      <div class="quote-row" style="color: #008000; font-weight: bold;"><span>50% DEPOSIT TO COMMENCE:</span><span id="qDeposit"></span></div>
+      
+      <div class="action-grid">
+        <button class="btn-save" onclick="saveDraft()">Save for Later</button>
+        <button class="btn-sms" onclick="sendSMS()">Text Quintan</button>
+        <button class="btn-email" onclick="sendEmail()">Email Request to Quintan</button>
+        <button class="btn-print" onclick="window.print()">Print / Download PDF</button>
       </div>
-      <div class="quote-row" style="color: #008000; font-weight: bold;">
-        <span>50% DEPOSIT TO COMMENCE:</span>
-        <span id="qDeposit"></span>
-      </div>
-      <div class="quote-row">
-        <span>BALANCE DUE ON SIGN-OFF:</span>
-        <span id="qBalance"></span>
-      </div>
-
-      <div style="margin-top: 12px; font-size: 10px; color: #444;">
-        * Includes perpetual runtime rights, zero monthly software subscriptions, and full client data ownership.
-      </div>
-      <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
     </div>
   </div>
 
+  <div id="toast">Draft Saved Locally!</div>
+
   <script>
+    const DEV_PHONE = "5206349490";
+    const DEV_EMAIL = "quintanmiddle@gmail.com";
+    let currentTotal = 0;
+    let currentDeposit = 0;
+    let currentScope = [];
+
+    // Load saved draft on startup
+    window.onload = () => {
+      const saved = localStorage.getItem('sovereign_estimator_draft');
+      if (saved) {
+        const data = JSON.parse(saved);
+        if (data.clientName) document.getElementById('clientName').value = data.clientName;
+        document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => {
+          if (data.states && data.states[el.id] !== undefined) el.checked = data.states[el.id];
+        });
+      }
+      calc();
+    };
+
     function calc() {
-      let total = 0;
+      currentTotal = 0;
+      currentScope = [];
       
       const baseRadio = document.querySelector('input[name="platform"]:checked');
-      if (baseRadio) total += parseFloat(baseRadio.value);
-
-      const rightsRadio = document.querySelector('input[name="rights"]:checked');
-      if (rightsRadio) total += parseFloat(rightsRadio.value);
+      if (baseRadio) { currentTotal += parseFloat(baseRadio.value); currentScope.push(baseRadio.dataset.name); }
 
       document.querySelectorAll('.addon:checked').forEach(box => {
-        total += parseFloat(box.value);
+        currentTotal += parseFloat(box.value); currentScope.push(box.dataset.name);
       });
 
-      const deposit = total * 0.5;
-      document.getElementById('txtTotal').textContent = `$${total.toFixed(2)}`;
-      document.getElementById('txtDeposit').textContent = `$${deposit.toFixed(2)}`;
-      return { total, deposit };
+      const rightsRadio = document.querySelector('input[name="rights"]:checked');
+      if (rightsRadio) {
+        currentTotal += parseFloat(rightsRadio.value);
+        if(parseFloat(rightsRadio.value) > 0) currentScope.push(rightsRadio.dataset.name);
+      }
+
+      currentDeposit = currentTotal * 0.5;
+      document.getElementById('txtTotal').textContent = `$${currentTotal.toFixed(2)}`;
+      document.getElementById('txtDeposit').textContent = `$${currentDeposit.toFixed(2)}`;
+      
+      const isRush = document.getElementById('o2').checked;
+      document.getElementById('txtTimeline').textContent = isRush ? "48 Hours (Rush)" : "7-10 Business Days";
     }
 
     function generateEstimate() {
-      const { total, deposit } = calc();
+      calc();
       const client = document.getElementById('clientName').value.trim() || 'Direct Client';
-      const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-
       document.getElementById('qClient').textContent = client;
-      document.getElementById('qDate').textContent = dateStr;
-      document.getElementById('qTotal').textContent = `$${total.toFixed(2)}`;
-      document.getElementById('qDeposit').textContent = `$${deposit.toFixed(2)}`;
-      document.getElementById('qBalance').textContent = `$${(total - deposit).toFixed(2)}`;
+      document.getElementById('qDate').textContent = new Date().toLocaleDateString();
+      document.getElementById('qTotal').textContent = `$${currentTotal.toFixed(2)}`;
+      document.getElementById('qDeposit').textContent = `$${currentDeposit.toFixed(2)}`;
 
-      const listContainer = document.getElementById('qList');
-      listContainer.innerHTML = '';
-
-      // Platform selection
-      const baseRadio = document.querySelector('input[name="platform"]:checked');
-      let html = `<div class="quote-row"><span>• ${baseRadio.dataset.name}</span><span>$${baseRadio.value}</span></div>`;
-
-      // Addons
-      document.querySelectorAll('.addon:checked').forEach(box => {
-        html += `<div class="quote-row"><span>• ${box.dataset.name}</span><span>+$${box.value}</span></div>`;
-      });
-
-      // Rights selection
-      const rightsRadio = document.querySelector('input[name="rights"]:checked');
-      if (rightsRadio && parseFloat(rightsRadio.value) > 0) {
-        html += `<div class="quote-row"><span>• ${rightsRadio.dataset.name}</span><span>+$${rightsRadio.value}</span></div>`;
-      } else {
-        html += `<div class="quote-row"><span>• Compiled App Binary (.apk) Only</span><span>Included</span></div>`;
+      let html = "";
+      currentScope.forEach(item => { html += `<div class="quote-row"><span>• ${item}</span></div>`; });
+      if(!document.querySelector('input[name="rights"]:checked') || parseFloat(document.querySelector('input[name="rights"]:checked').value) === 0) {
+        html += `<div class="quote-row"><span>• Compiled App Binary (.apk) Only</span></div>`;
       }
-
-      listContainer.innerHTML = html;
+      document.getElementById('qList').innerHTML = html;
       document.getElementById('quote-modal').style.display = 'block';
       document.getElementById('quote-modal').scrollIntoView({ behavior: 'smooth' });
     }
 
-    calc();
+    function saveDraft() {
+      const states = {};
+      document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => { states[el.id] = el.checked; });
+      localStorage.setItem('sovereign_estimator_draft', JSON.stringify({
+        clientName: document.getElementById('clientName').value,
+        states: states
+      }));
+      const toast = document.getElementById('toast');
+      toast.style.display = 'block';
+      setTimeout(() => toast.style.display = 'none', 3000);
+    }
+
+    function buildMessageText() {
+      const client = document.getElementById('clientName').value.trim() || 'New Client';
+      let text = `App Estimate Request: ${client}\n\nScope:\n`;
+      currentScope.forEach(i => text += `- ${i}\n`);
+      text += `\nTotal: $${currentTotal.toFixed(2)}\nDeposit: $${currentDeposit.toFixed(2)}\n\nLet's build it.`;
+      return encodeURIComponent(text);
+    }
+
+    function sendSMS() { window.location.href = `sms:${DEV_PHONE}?body=${buildMessageText()}`; }
+    function sendEmail() { window.location.href = `mailto:${DEV_EMAIL}?subject=App Build Request: ${document.getElementById('clientName').value || 'New Client'}&body=${buildMessageText()}`; }
   </script>
 </body>
 </html>
