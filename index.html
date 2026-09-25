@@ -15,6 +15,7 @@
       --purple: #bc8cff;
       --orange: #d29922;
       --white: #ffffff;
+      --red: #f85149;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; background: var(--bg); color: var(--text); padding: 14px; }
@@ -35,6 +36,7 @@
     .item-price { font-size: 0.82rem; font-weight: bold; color: var(--blue); font-family: monospace; }
     .item-price.highlight { color: var(--purple); }
     .item-price.premium { color: var(--orange); }
+    .item-price.wl { color: var(--red); }
 
     .cost-card { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; padding: 14px; margin-top: 18px; }
     .cost-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; }
@@ -73,76 +75,86 @@
     <div class="cat-header">1. Platform Foundation</div>
     <label class="item">
       <div class="item-left">
-        <input type="radio" name="platform" value="1000" data-name="Standalone Offline Android APK" checked onchange="calc()">
+        <input type="radio" name="platform" value="1000" data-name="Native Offline Android APK" checked onchange="calc()">
         <span class="item-label">Native Offline Android APK</span>
       </div>
       <span class="item-price">$1,000</span>
     </label>
     <label class="item">
       <div class="item-left">
-        <input type="radio" name="platform" value="1500" data-name="Cross-Platform Suite (APK + Desktop PWA)" onchange="calc()">
+        <input type="radio" name="platform" value="1500" data-name="APK + Desktop Browser Sync" onchange="calc()">
         <span class="item-label">APK + Desktop Browser Sync</span>
       </div>
       <span class="item-price">$1,500</span>
     </label>
 
-    <!-- Tier 2: Data & Core Logic -->
-    <div class="cat-header">2. Data Storage & Core Logic</div>
+    <!-- Tier 2: Interface & Customization -->
+    <div class="cat-header">2. Interface & App Customization</div>
     <label class="item">
       <div class="item-left">
-        <input type="checkbox" class="addon" value="250" data-name="Local Device Persistence (IndexedDB)" checked onchange="calc()">
+        <input type="checkbox" class="addon" value="250" data-name="Advanced UI Settings (Scaling/Colors/Layout)" onchange="calc()">
+        <span class="item-label">Advanced UI Settings (Scaling/Colors)</span>
+      </div>
+      <span class="item-price">+$250</span>
+    </label>
+    <label class="item">
+      <div class="item-left">
+        <input type="checkbox" class="addon" value="200" data-name="Dynamic Video & Image Wallpaper Engine" onchange="calc()">
+        <span class="item-label">Video Wallpaper Engine</span>
+      </div>
+      <span class="item-price">+$200</span>
+    </label>
+
+    <!-- Tier 3: Data & Core Logic -->
+    <div class="cat-header">3. Data Storage & Core Logic</div>
+    <label class="item">
+      <div class="item-left">
+        <input type="checkbox" class="addon" value="250" data-name="Local Offline Database" checked onchange="calc()">
         <span class="item-label">Local Offline Database</span>
       </div>
       <span class="item-price">+$250</span>
     </label>
     <label class="item">
       <div class="item-left">
-        <input type="checkbox" class="addon" value="200" data-name="PDF & CSV Document Generator" checked onchange="calc()">
+        <input type="checkbox" class="addon" value="150" data-name="Custom Storage Directory Pathing" onchange="calc()">
+        <span class="item-label">Custom File Storage Pathing</span>
+      </div>
+      <span class="item-price">+$150</span>
+    </label>
+    <label class="item">
+      <div class="item-left">
+        <input type="checkbox" class="addon" value="200" data-name="PDF & CSV Document Export" checked onchange="calc()">
         <span class="item-label">PDF & CSV Document Export</span>
       </div>
       <span class="item-price">+$200</span>
     </label>
-    <label class="item">
-      <div class="item-left">
-        <input type="checkbox" class="addon" value="300" data-name="Advanced Math / Calculation Logic" onchange="calc()">
-        <span class="item-label">Custom Calculation Engine</span>
-      </div>
-      <span class="item-price">+$300</span>
-    </label>
-    <label class="item">
-      <div class="item-left">
-        <input type="checkbox" class="addon" value="450" data-name="Local AI / LLM Prompt Integration" onchange="calc()">
-        <span class="item-label">AI / Local LLM Integration</span>
-      </div>
-      <span class="item-price highlight">+$450</span>
-    </label>
-    <label class="item">
-      <div class="item-left">
-        <input type="checkbox" class="addon" value="250" data-name="Visual Analytics & Chart Dashboard" onchange="calc()">
-        <span class="item-label">Analytics & Chart Dashboard</span>
-      </div>
-      <span class="item-price">+$250</span>
-    </label>
 
-    <!-- Tier 3: Security & Cryptography -->
-    <div class="cat-header">3. Security, Access & Privacy</div>
+    <!-- Tier 4: Security & Cryptography -->
+    <div class="cat-header">4. Security, Access & Privacy</div>
     <label class="item">
       <div class="item-left">
-        <input type="checkbox" class="addon" value="750" data-name="Zero-Knowledge Client-Side AES-256" onchange="calc()">
+        <input type="checkbox" class="addon" value="750" data-name="Zero-Knowledge AES-256 Encryption" onchange="calc()">
         <span class="item-label">Zero-Knowledge AES-256 Encryption</span>
       </div>
       <span class="item-price highlight">+$750</span>
     </label>
     <label class="item">
       <div class="item-left">
-        <input type="checkbox" class="addon" value="200" data-name="Local PIN / Biometric App Gate" onchange="calc()">
-        <span class="item-label">Passcode / Biometric Gate</span>
+        <input type="checkbox" class="addon" value="200" data-name="Passcode / Biometric App Gate" onchange="calc()">
+        <span class="item-label">Passcode / Biometric App Gate</span>
       </div>
       <span class="item-price">+$200</span>
     </label>
 
-    <!-- Tier 4: Hardware & Interfaces -->
-    <div class="cat-header">4. Hardware & Interfaces</div>
+    <!-- Tier 5: Hardware & Integration -->
+    <div class="cat-header">5. Hardware & Integrations</div>
+    <label class="item">
+      <div class="item-left">
+        <input type="checkbox" class="addon" value="250" data-name="Touchscreen Signature Pad" onchange="calc()">
+        <span class="item-label">Touchscreen Signature Pad</span>
+      </div>
+      <span class="item-price">+$250</span>
+    </label>
     <label class="item">
       <div class="item-left">
         <input type="checkbox" class="addon" value="300" data-name="Camera Scanner (QR/Barcode/OCR)" onchange="calc()">
@@ -150,30 +162,16 @@
       </div>
       <span class="item-price">+$300</span>
     </label>
-    <label class="item">
-      <div class="item-left">
-        <input type="checkbox" class="addon" value="250" data-name="Sign-On-Glass Signature Pad" onchange="calc()">
-        <span class="item-label">Touchscreen Signature Pad</span>
-      </div>
-      <span class="item-price">+$250</span>
-    </label>
-    <label class="item">
-      <div class="item-left">
-        <input type="checkbox" class="addon" value="250" data-name="SMS / Email Dispatch Integration" onchange="calc()">
-        <span class="item-label">Automated SMS/Email Dispatch</span>
-      </div>
-      <span class="item-price">+$250</span>
-    </label>
-    <label class="item">
-      <div class="item-left">
-        <input type="checkbox" class="addon" value="500" data-name="P2P Mesh / Bluetooth Sync Network" onchange="calc()">
-        <span class="item-label">P2P / Bluetooth Device Sync</span>
-      </div>
-      <span class="item-price highlight">+$500</span>
-    </label>
 
-    <!-- Tier 5: Ownership -->
-    <div class="cat-header">5. Deliverable Rights</div>
+    <!-- Tier 6: Ownership & Branding -->
+    <div class="cat-header">6. Branding & Deliverable Rights</div>
+    <label class="item">
+      <div class="item-left">
+        <input type="checkbox" class="addon" value="600" data-name="White-Label License (Remove Dev Watermarks)" onchange="calc()">
+        <span class="item-label">White-Label (Remove Dev Watermarks)</span>
+      </div>
+      <span class="item-price wl">+$600</span>
+    </label>
     <label class="item">
       <div class="item-left">
         <input type="radio" name="rights" value="0" data-name="Compiled App Binary (.apk) Only" checked onchange="calc()">
@@ -183,8 +181,8 @@
     </label>
     <label class="item">
       <div class="item-left">
-        <input type="radio" name="rights" value="800" data-name="Full Source Code Repository & CI/CD Pipeline Handoff" onchange="calc()">
-        <span class="item-label">Full Source Code & GitHub Handoff</span>
+        <input type="radio" name="rights" value="800" data-name="Full Source Code & GitHub Handoff" onchange="calc()">
+        <span class="item-label">Full Source Code & Git Handoff</span>
       </div>
       <span class="item-price premium">+$800</span>
     </label>
