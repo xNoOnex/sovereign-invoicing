@@ -1,0 +1,43 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js v22
+      uses: actions/setup-node@v3
+      with:
+        node-version: '22'
+
+    - name: Setup Java JDK v21
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+
+    - name: Install NPM Dependencies
+      run: npm install
+
+    - name: Sync Capacitor Android
+      run: npx cap sync android
+
+    - name: Build Android APK
+      run: |
+        cd android
+        chmod +x gradlew
+        ./gradlew assembleDebug
+
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: Sovereign-Invoicing-APK
+        path: android/app/build/outputs/apk/debug/app-debug.apk

@@ -1,0 +1,26 @@
+{
+  "name": "sovereign-invoicing",
+  "version": "1.0.0",
+  "description": "An offline-first, client-side utility suite for calculating software deployment scopes and generating binding fleet service agreements, bills of lading, and deployment invoices.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xNoOnex/sovereign-invoicing.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/xNoOnex/sovereign-invoicing/issues"
+  },
+  "homepage": "https://github.com/xNoOnex/sovereign-invoicing#readme",
+  "dependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/cli": "^8.5.2",
+    "@capacitor/core": "^8.5.2"
+  }
+}
