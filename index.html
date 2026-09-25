@@ -13,6 +13,7 @@
       --accent: #238636;
       --blue: #58a6ff;
       --purple: #bc8cff;
+      --orange: #d29922;
       --white: #ffffff;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -33,6 +34,7 @@
     .item-label { font-size: 0.82rem; font-weight: 500; color: #e6edf3; }
     .item-price { font-size: 0.82rem; font-weight: bold; color: var(--blue); font-family: monospace; }
     .item-price.highlight { color: var(--purple); }
+    .item-price.premium { color: var(--orange); }
 
     .cost-card { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; padding: 14px; margin-top: 18px; }
     .cost-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; }
@@ -59,109 +61,147 @@
 <body>
 
   <div class="container">
-    <h1>Project Scope Estimator</h1>
-    <p class="sub">Select modular requirements to estimate upfront development and deployment fees. Perpetual ownership, zero recurring subscriptions.</p>
+    <h1>Deployment Estimator</h1>
+    <p class="sub">Configure your offline-first software requirements. No monthly SaaS subscriptions.</p>
 
     <div class="input-group">
       <label>Client or Business Name</label>
-      <input type="text" id="clientName" placeholder="e.g. Self / Autonomous Logistics LLC">
+      <input type="text" id="clientName" placeholder="e.g. Autonomous Logistics LLC">
     </div>
 
     <!-- Tier 1: Platform Foundation -->
-    <div class="cat-header">1. Platform Deployment</div>
+    <div class="cat-header">1. Platform Foundation</div>
     <label class="item">
       <div class="item-left">
-        <input type="radio" name="platform" value="650" data-name="Standalone Single-Page Web Tool (Self-Hosted)" checked onchange="calc()">
-        <span class="item-label">Single-Page Web Application</span>
-      </div>
-      <span class="item-price">$650</span>
-    </label>
-    <label class="item">
-      <div class="item-left">
-        <input type="radio" name="platform" value="1000" data-name="Cross-Platform PWA + Compiled Android APK" onchange="calc()">
-        <span class="item-label">PWA + Native Android APK</span>
+        <input type="radio" name="platform" value="1000" data-name="Standalone Offline Android APK" checked onchange="calc()">
+        <span class="item-label">Native Offline Android APK</span>
       </div>
       <span class="item-price">$1,000</span>
     </label>
+    <label class="item">
+      <div class="item-left">
+        <input type="radio" name="platform" value="1500" data-name="Cross-Platform Suite (APK + Desktop PWA)" onchange="calc()">
+        <span class="item-label">APK + Desktop Browser Sync</span>
+      </div>
+      <span class="item-price">$1,500</span>
+    </label>
 
-    <!-- Tier 2: Storage & Engine -->
+    <!-- Tier 2: Data & Core Logic -->
     <div class="cat-header">2. Data Storage & Core Logic</div>
     <label class="item">
       <div class="item-left">
-        <input type="checkbox" class="addon" value="250" data-name="Local Device Persistence (IndexedDB / LocalStorage)" checked onchange="calc()">
-        <span class="item-label">Local Device Database (Offline)</span>
+        <input type="checkbox" class="addon" value="250" data-name="Local Device Persistence (IndexedDB)" checked onchange="calc()">
+        <span class="item-label">Local Offline Database</span>
       </div>
       <span class="item-price">+$250</span>
     </label>
     <label class="item">
       <div class="item-left">
-        <input type="checkbox" class="addon" value="200" data-name="Export Engine (Direct PDF & CSV Reports)" checked onchange="calc()">
-        <span class="item-label">PDF & CSV Document Generator</span>
+        <input type="checkbox" class="addon" value="200" data-name="PDF & CSV Document Generator" checked onchange="calc()">
+        <span class="item-label">PDF & CSV Document Export</span>
       </div>
       <span class="item-price">+$200</span>
     </label>
     <label class="item">
       <div class="item-left">
-        <input type="checkbox" class="addon" value="300" data-name="Complex Math / Formula / Rule Engine" onchange="calc()">
-        <span class="item-label">Advanced Math / Calculation Logic</span>
+        <input type="checkbox" class="addon" value="300" data-name="Advanced Math / Calculation Logic" onchange="calc()">
+        <span class="item-label">Custom Calculation Engine</span>
       </div>
       <span class="item-price">+$300</span>
+    </label>
+    <label class="item">
+      <div class="item-left">
+        <input type="checkbox" class="addon" value="450" data-name="Local AI / LLM Prompt Integration" onchange="calc()">
+        <span class="item-label">AI / Local LLM Integration</span>
+      </div>
+      <span class="item-price highlight">+$450</span>
+    </label>
+    <label class="item">
+      <div class="item-left">
+        <input type="checkbox" class="addon" value="250" data-name="Visual Analytics & Chart Dashboard" onchange="calc()">
+        <span class="item-label">Analytics & Chart Dashboard</span>
+      </div>
+      <span class="item-price">+$250</span>
     </label>
 
     <!-- Tier 3: Security & Cryptography -->
     <div class="cat-header">3. Security, Access & Privacy</div>
     <label class="item">
       <div class="item-left">
-        <input type="checkbox" class="addon" value="400" data-name="Zero-Knowledge Client-Side AES-256 Encryption" onchange="calc()">
+        <input type="checkbox" class="addon" value="750" data-name="Zero-Knowledge Client-Side AES-256" onchange="calc()">
         <span class="item-label">Zero-Knowledge AES-256 Encryption</span>
       </div>
-      <span class="item-price highlight">+$400</span>
+      <span class="item-price highlight">+$750</span>
     </label>
     <label class="item">
       <div class="item-left">
-        <input type="checkbox" class="addon" value="200" data-name="Local PIN / Biometric App Security Gate" onchange="calc()">
+        <input type="checkbox" class="addon" value="200" data-name="Local PIN / Biometric App Gate" onchange="calc()">
         <span class="item-label">Passcode / Biometric Gate</span>
       </div>
       <span class="item-price">+$200</span>
     </label>
 
-    <!-- Tier 4: Hardware & Interactive Modules -->
-    <div class="cat-header">4. Hardware & Interface Features</div>
+    <!-- Tier 4: Hardware & Interfaces -->
+    <div class="cat-header">4. Hardware & Interfaces</div>
     <label class="item">
       <div class="item-left">
-        <input type="checkbox" class="addon" value="250" data-name="Touchscreen Sign-on-Glass / Canvas Tool" onchange="calc()">
-        <span class="item-label">Sign-On-Glass Signature Pad</span>
-      </div>
-      <span class="item-price">+$250</span>
-    </label>
-    <label class="item">
-      <div class="item-left">
-        <input type="checkbox" class="addon" value="300" data-name="Camera Integration / QR & Barcode Scanner" onchange="calc()">
+        <input type="checkbox" class="addon" value="300" data-name="Camera Scanner (QR/Barcode/OCR)" onchange="calc()">
         <span class="item-label">Camera Scanner (QR/Barcode/OCR)</span>
       </div>
       <span class="item-price">+$300</span>
     </label>
     <label class="item">
       <div class="item-left">
-        <input type="checkbox" class="addon" value="250" data-name="Audio/Media Manipulation or Timer Matrix" onchange="calc()">
-        <span class="item-label">Media Tools / Shift Timers</span>
+        <input type="checkbox" class="addon" value="250" data-name="Sign-On-Glass Signature Pad" onchange="calc()">
+        <span class="item-label">Touchscreen Signature Pad</span>
       </div>
       <span class="item-price">+$250</span>
+    </label>
+    <label class="item">
+      <div class="item-left">
+        <input type="checkbox" class="addon" value="250" data-name="SMS / Email Dispatch Integration" onchange="calc()">
+        <span class="item-label">Automated SMS/Email Dispatch</span>
+      </div>
+      <span class="item-price">+$250</span>
+    </label>
+    <label class="item">
+      <div class="item-left">
+        <input type="checkbox" class="addon" value="500" data-name="P2P Mesh / Bluetooth Sync Network" onchange="calc()">
+        <span class="item-label">P2P / Bluetooth Device Sync</span>
+      </div>
+      <span class="item-price highlight">+$500</span>
+    </label>
+
+    <!-- Tier 5: Ownership -->
+    <div class="cat-header">5. Deliverable Rights</div>
+    <label class="item">
+      <div class="item-left">
+        <input type="radio" name="rights" value="0" data-name="Compiled App Binary (.apk) Only" checked onchange="calc()">
+        <span class="item-label">Compiled Binary (.apk) Only</span>
+      </div>
+      <span class="item-price">$0</span>
+    </label>
+    <label class="item">
+      <div class="item-left">
+        <input type="radio" name="rights" value="800" data-name="Full Source Code Repository & CI/CD Pipeline Handoff" onchange="calc()">
+        <span class="item-label">Full Source Code & GitHub Handoff</span>
+      </div>
+      <span class="item-price premium">+$800</span>
     </label>
 
     <!-- Calculations -->
     <div class="cost-card">
       <div class="cost-row">
         <span>Delivery Target:</span>
-        <span style="font-family: monospace;">5-7 Business Days</span>
+        <span style="font-family: monospace;">7-10 Business Days</span>
       </div>
       <div class="cost-row total">
         <span>Total Deployment:</span>
-        <span id="txtTotal">$1,100.00</span>
+        <span id="txtTotal">$1,450.00</span>
       </div>
       <div class="cost-row deposit">
         <span>50% Start Deposit:</span>
-        <span id="txtDeposit">$550.00</span>
+        <span id="txtDeposit">$725.00</span>
       </div>
     </div>
 
@@ -208,8 +248,12 @@
   <script>
     function calc() {
       let total = 0;
+      
       const baseRadio = document.querySelector('input[name="platform"]:checked');
       if (baseRadio) total += parseFloat(baseRadio.value);
+
+      const rightsRadio = document.querySelector('input[name="rights"]:checked');
+      if (rightsRadio) total += parseFloat(rightsRadio.value);
 
       document.querySelectorAll('.addon:checked').forEach(box => {
         total += parseFloat(box.value);
@@ -243,6 +287,14 @@
       document.querySelectorAll('.addon:checked').forEach(box => {
         html += `<div class="quote-row"><span>• ${box.dataset.name}</span><span>+$${box.value}</span></div>`;
       });
+
+      // Rights selection
+      const rightsRadio = document.querySelector('input[name="rights"]:checked');
+      if (rightsRadio && parseFloat(rightsRadio.value) > 0) {
+        html += `<div class="quote-row"><span>• ${rightsRadio.dataset.name}</span><span>+$${rightsRadio.value}</span></div>`;
+      } else {
+        html += `<div class="quote-row"><span>• Compiled App Binary (.apk) Only</span><span>Included</span></div>`;
+      }
 
       listContainer.innerHTML = html;
       document.getElementById('quote-modal').style.display = 'block';
