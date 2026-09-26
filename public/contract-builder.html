@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contract & Invoice Dispatcher</title>
+  <style>
+    /* --- SCREEN / DARK MODE UI --- */
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --accent: #238636;
+      --blue: #58a6ff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: monospace; background: var(--bg); color: var(--text); padding: 14px; }
+    .container { max-width: 600px; margin: 0 auto; }
+    
+    h1 { font-size: 1.3rem; color: var(--blue); text-transform: uppercase; margin-bottom: 20px; line-height: 1.2; }
+    
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .full-width { grid-column: span 2; }
+    
+    label { display: block; font-size: 0.8rem; color: #8b949e; margin-bottom: 4px; }
+    input, select, textarea { 
+      width: 100%; 
+      background: var(--bg); 
+      border: 1px solid var(--border); 
+      color: #fff; 
+      padding: 12px; 
+      border-radius: 6px; 
+      font-family: monospace; 
+      font-size: 1rem; 
+    }
+    textarea { height: 120px; resize: vertical; }
+    input:focus, select:focus, textarea:focus { outline: 1px solid var(--blue); border-color: var(--blue); }
+
+    .btn-row { display: flex; gap: 10px; margin-top: 24px; margin-bottom: 40px; }
+    button { flex: 1; padding: 16px; border: none; border-radius: 6px; font-weight: bold; font-size: 1.1rem; cursor: pointer; font-family: inherit; }
+    .btn-save { background: var(--card); color: #fff; border: 1px solid var(--border); }
+    .btn-print { background: var(--accent); color: #fff; }
+    
+    #toast { display: none; text-align: center; color: #7ee787; margin-top: 10px; font-weight: bold; }
+
+    /* --- PAPER / PRINT MODE --- */
+    @media print {
+      /* 1. Reset background and text colors for white paper */
+      body, .container { background: #ffffff !important; color: #000000 !important; padding: 0 !important; margin: 0 !important; width: 100% !important; max-width: none !important; }
+      
+      /* 2. Hide app UI elements and buttons */
+      .btn-row, #toast, h1 { display: none !important; }
+      
+      /* 3. Format grid to flow naturally on paper */
+      .grid { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px; }
+      .grid > div { flex: 1 1 45%; }
+      .full-width { flex: 1 1 100% !important; }
+      
+      /* 4. Strip borders from inputs and format text */
+      input, select, textarea { 
+        background: transparent !important; 
+        border: none !important; 
+        color: #000000 !important; 
+        font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important; 
+        font-size: 12pt !important; 
+        padding: 4px 0 !important; 
+        -webkit-appearance: none; 
+      }
+      textarea { height: auto !important; overflow: visible !important; white-space: pre-wrap; }
+      
+      /* 5. Format labels into clean document headers */
+      label { 
+        color: #555555 !important; 
+        font-size: 9pt !important; 
+        border-bottom: 1px solid #cccccc; 
+        padding-bottom: 2px; 
+        margin-bottom: 4px; 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px;
+      }
+      
+      /* 6. Inject the formal document header */
+      body::before { 
+        content: "SOFTWARE DEPLOYMENT AGREEMENT & INVOICE"; 
+        display: block; 
+        text-align: center; 
+        font-size: 16pt; 
+        font-weight: bold; 
+        font-family: "Segoe UI", sans-serif;
+        margin-bottom: 30px; 
+        padding-bottom: 10px; 
+        border-bottom: 2px solid #000000; 
+      }
+      
+      /* 7. Inject physical signature lines */
+      body::after { 
+        content: "CLIENT SIGNATURE: _______________________________________ DATE: ______________\A\A DEVELOPER SIGNATURE: ____________________________________ DATE: ______________"; 
+        white-space: pre-wrap; 
+        display: block; 
+        margin-top: 60px; 
+        font-size: 11pt; 
+        line-height: 3; 
+        font-family: "Segoe UI", sans-serif;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Contract & Invoice<br>Dispatcher</h1>
+
+    <div class="grid">
+      <div>
+        <label>Invoice / Agreement #</label>
+        <input type="text" id="invNum" placeholder="CE-2026-001">
+      </div>
+      <div>
+        <label>Document Date</label>
+        <input type="text" id="docDate">
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="full-width">
+        <label>Client Business Name</label>
+        <input type="text" id="clientName" placeholder="e.g. AAA Soto Moving">
+      </div>
+      <div>
+        <label>Contact Name & Title</label>
+        <input type="text" id="contactName" placeholder="e.g. Yvette Soto">
+      </div>
+      <div>
+        <label>Client Phone / Email</label>
+        <input type="text" id="contactInfo" placeholder="520-555-0199">
+      </div>
+    </div>
+
+    <div class="grid">
+      <div>
+        <label>Cash App $cashtag</label>
+        <input type="text" id="cashTag" value="$QuintanMiddle">
+      </div>
+      <div>
+        <label>Status</label>
+        <select id="status">
+          <option>Deposit Due</option>
+          <option>Paid in Full</option>
+          <option>Pending Delivery</option>
+        </select>
+      </div>
+      <div>
+        <label>Total Fee ($)</label>
+        <input type="number" id="totalFee" placeholder="1500">
+      </div>
+      <div>
+        <label>Deposit Required ($)</label>
+        <input type="number" id="deposit" placeholder="750">
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="full-width">
+        <label>Custom Deliverables / Scope Statement</label>
+        <textarea id="scope">1. Standalone Native Android Application (.apk)
+2. Offline-First Database Architecture
+3. Sign-on-Glass Bill of Lading (BOL) Module
+4. Automated PDF / CSV Export Engine
+5. Configuration of local branding, crew rates, and service matrices.
+6. Zero recurring software licenses, hosting fees, or monthly overhead.</textarea>
+      </div>
+    </div>
+
+    <div id="toast">Draft Saved Locally!</div>
+
+    <div class="btn-row">
+      <button class="btn-save" onclick="saveDraft()">Save Draft</button>
+      <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
+    </div>
+  </div>
+
+  <script>
+    // Auto-fill today's date if empty
+    window.onload = () => {
+      const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      document.getElementById('docDate').value = today;
+      
+      // Load saved draft from local Termux/Browser storage
+      const saved = localStorage.getItem('invoice_draft');
+      if (saved) {
+        const data = JSON.parse(saved);
+        ['invNum', 'docDate', 'clientName', 'contactName', 'contactInfo', 'cashTag', 'status', 'totalFee', 'deposit', 'scope'].forEach(id => {
+          if (data[id]) document.getElementById(id).value = data[id];
+        });
+      }
+    };
+
+    function saveDraft() {
+      const data = {};
+      ['invNum', 'docDate', 'clientName', 'contactName', 'contactInfo', 'cashTag', 'status', 'totalFee', 'deposit', 'scope'].forEach(id => {
+        data[id] = document.getElementById(id).value;
+      });
+      localStorage.setItem('invoice_draft', JSON.stringify(data));
+      
+      const toast = document.getElementById('toast');
+      toast.style.display = 'block';
+      setTimeout(() => toast.style.display = 'none', 3000);
+    }
+  </script>
+</body>
+</html>
