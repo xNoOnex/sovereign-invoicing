@@ -77,8 +77,8 @@
     <p class="sub">Configure your custom software requirements. No monthly SaaS subscriptions. Perpetual ownership.</p>
 
     <div class="input-group">
-      <label>Client or Business Name</label>
-      <input type="text" id="clientName" placeholder="e.g. John Doe / Logistics LLC" oninput="calc()">
+      <label>Client / Callsign / Handle</label>
+      <input type="text" id="clientName" placeholder="e.g. Logistics LLC / Anonymous User" oninput="calc()">
     </div>
 
     <!-- Tier 1: Platform Foundation -->
@@ -112,9 +112,6 @@
     <label class="item">
       <div class="item-left"><input type="checkbox" class="addon" id="i2" value="200" data-name="Dynamic Video Wallpaper Engine" onchange="calc()"><div class="item-text"><div class="item-label">Video Wallpaper Engine</div><div class="item-desc">Embed branded, looping video backgrounds natively into the app's home screen.</div></div></div><span class="item-price">+$200</span>
     </label>
-    <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="i3" value="150" data-name="Multi-Language Toggle" onchange="calc()"><div class="item-text"><div class="item-label">Multi-Language Toggle</div><div class="item-desc">Instantly flip the interface language to support bilingual teams or global users.</div></div></div><span class="item-price">+$150</span>
-    </label>
 
     <!-- Tier 3: Logic, Data & AI -->
     <div class="cat-header">3. Logic, Data Storage & AI</div>
@@ -125,13 +122,13 @@
       <div class="item-left"><input type="checkbox" class="addon" id="d2" value="200" data-name="PDF & CSV Document Export" checked onchange="calc()"><div class="item-text"><div class="item-label">PDF & CSV Document Export</div><div class="item-desc">Generate printable reports, timesheets, and ledger spreadsheets instantly.</div></div></div><span class="item-price">+$200</span>
     </label>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="d3" value="150" data-name="Custom File Storage Pathing" onchange="calc()"><div class="item-text"><div class="item-label">Custom Storage Pathing</div><div class="item-desc">Total control over which exact folders the app uses to save files on your hardware.</div></div></div><span class="item-price">+$150</span>
+      <div class="item-left"><input type="checkbox" class="addon" id="d3" value="150" data-name="Custom File Storage Pathing" onchange="calc()"><div class="item-text"><div class="item-label">Custom Storage Pathing</div><div class="item-desc">Total control over exact folders. <em style="color:#d29922;">Note: Requires De-Googled AOSP ROM (GrapheneOS/CalyxOS).</em></div></div></div><span class="item-price">+$150</span>
     </label>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="d4" value="450" data-name="Advanced Math / Calculation Engine" onchange="calc()"><div class="item-text"><div class="item-label">Advanced Math / Formula Engine</div><div class="item-desc">Complex custom calculation logic for pricing tiers, engineering formulas, or payroll.</div></div></div><span class="item-price">+$450</span>
+      <div class="item-left"><input type="checkbox" class="addon" id="d6" value="200" data-name="Data Backup / Encrypted JSON Export" onchange="calc()"><div class="item-text"><div class="item-label">Encrypted JSON Import-Export</div><div class="item-desc">Crucial for users rotating devices or flashing ROMs who need zero-cloud migration.</div></div></div><span class="item-price">+$200</span>
     </label>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="d5" value="1200" data-name="Local AI / LLM Integration" onchange="calc()"><div class="item-text"><div class="item-label">Local AI / LLM Integration</div><div class="item-desc">Integrate on-device artificial intelligence for text processing, chatbots, or automated data sorting.</div></div></div><span class="item-price highlight">+$1,200</span>
+      <div class="item-left"><input type="checkbox" class="addon" id="d5" value="1200" data-name="Local AI / LLM Integration" onchange="calc()"><div class="item-text"><div class="item-label">Local AI / LLM Integration</div><div class="item-desc">Integrate on-device artificial intelligence for text processing or automated data sorting.</div></div></div><span class="item-price highlight">+$1,200</span>
     </label>
 
     <!-- Tier 4: Security & Privacy -->
@@ -140,40 +137,25 @@
       <div class="item-left"><input type="checkbox" class="addon" id="s1" value="1000" data-name="Zero-Knowledge AES-256 Encryption" onchange="calc()"><div class="item-text"><div class="item-label">Zero-Knowledge AES-256</div><div class="item-desc">Military-grade encrypted data vault. Nobody can access it without the master key.</div></div></div><span class="item-price highlight">+$1,000</span>
     </label>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="s2" value="200" data-name="Passcode / Biometric App Gate" onchange="calc()"><div class="item-text"><div class="item-label">Passcode / Biometric Gate</div><div class="item-desc">Lock the application behind a fingerprint scan or custom device PIN.</div></div></div><span class="item-price">+$200</span>
-    </label>
-    <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="s3" value="250" data-name="Offline GPS Coordinate Tagging" onchange="calc()"><div class="item-text"><div class="item-label">Offline GPS Tagging</div><div class="item-desc">Stamp exact latitude/longitude coordinates on records without needing cloud maps.</div></div></div><span class="item-price">+$250</span>
+      <div class="item-left"><input type="checkbox" class="addon" id="s4" value="350" data-name="Bespoke PGP / Key Management" onchange="calc()"><div class="item-text"><div class="item-label">Bespoke PGP / Key Management</div><div class="item-desc">Dedicated key import/export and signing for personal verification workflows.</div></div></div><span class="item-price">+$350</span>
     </label>
 
     <!-- Tier 5: Hardware & Universal Integrations -->
     <div class="cat-header">5. Hardware & Universal Integrations</div>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="h1" value="600" data-name="E-Commerce / Payment Gateway" onchange="calc()"><div class="item-text"><div class="item-label">Payment Gateway Integration</div><div class="item-desc">Connect Stripe, Square, or Crypto rails to accept payments directly in the app.</div></div></div><span class="item-price">+$600</span>
-    </label>
-    <label class="item">
       <div class="item-left"><input type="checkbox" class="addon" id="h2" value="250" data-name="Touchscreen Signature Pad" onchange="calc()"><div class="item-text"><div class="item-label">Touchscreen Signature Pad</div><div class="item-desc">Sign-on-glass canvas for client approvals, waivers, and delivery sign-offs.</div></div></div><span class="item-price">+$250</span>
-    </label>
-    <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="h3" value="300" data-name="Camera Scanner (QR/Barcode/OCR)" onchange="calc()"><div class="item-text"><div class="item-label">Camera Scanner (QR/Barcode/OCR)</div><div class="item-desc">Scan inventory tags, driver's licenses, or read physical text via the camera.</div></div></div><span class="item-price">+$300</span>
-    </label>
-    <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="h4" value="400" data-name="Automated SMS / Email Dispatch" onchange="calc()"><div class="item-text"><div class="item-label">Automated SMS / Email Dispatch</div><div class="item-desc">Automatically fire off emails or text messages to clients or staff based on app triggers.</div></div></div><span class="item-price">+$400</span>
     </label>
     <label class="item">
       <div class="item-left"><input type="checkbox" class="addon" id="h5" value="1200" data-name="P2P Mesh / Bluetooth Sync" onchange="calc()"><div class="item-text"><div class="item-label">P2P Mesh / Bluetooth Sync</div><div class="item-desc">Allow devices to sync data with each other locally without going through the internet.</div></div></div><span class="item-price highlight">+$1,200</span>
     </label>
     <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="h6" value="750" data-name="IoT / Hardware Sensor Integration" onchange="calc()"><div class="item-text"><div class="item-label">IoT / Hardware Sensor Sync</div><div class="item-desc">Connect the app to external hardware (scales, gauges, thermal printers, trackers).</div></div></div><span class="item-price">+$750</span>
+      <div class="item-left"><input type="checkbox" class="addon" id="h7" value="350" data-name="Hardware Token / USB-OTG Support" onchange="calc()"><div class="item-text"><div class="item-label">Hardware Token / USB-OTG Support</div><div class="item-desc">Direct interaction with external storage sticks, YubiKeys, or air-gapped drives.</div></div></div><span class="item-price">+$350</span>
     </label>
 
     <!-- Tier 6: Ownership, Branding & Delivery -->
     <div class="cat-header">6. Branding, Delivery & Ownership</div>
     <label class="item">
       <div class="item-left"><input type="checkbox" class="addon" id="o1" value="1500" data-name="White-Label (Remove Dev Watermarks)" onchange="calc()"><div class="item-text"><div class="item-label">White-Label Buyout</div><div class="item-desc">Strips all external branding so the app looks 100% built internally by your company.</div></div></div><span class="item-price wl">+$1,500</span>
-    </label>
-    <label class="item">
-      <div class="item-left"><input type="checkbox" class="addon" id="o2" value="800" data-name="Priority 48-Hour Rush Delivery" onchange="calc()"><div class="item-text"><div class="item-label">Priority 48-Hour Delivery</div><div class="item-desc">Jump to the front of the development queue for immediate deployment.</div></div></div><span class="item-price premium">+$800</span>
     </label>
     <label class="item">
       <div class="item-left"><input type="radio" name="rights" id="r1" value="0" data-name="Compiled App Binary (.apk) Only" checked onchange="calc()"><div class="item-text"><div class="item-label">Compiled Binary (.apk) Only</div><div class="item-desc">Standard installation file ready to load onto your devices.</div></div></div><span class="item-price">$0</span>
@@ -265,9 +247,6 @@
       currentDeposit = currentTotal * 0.5;
       document.getElementById('txtTotal').textContent = `$${currentTotal.toFixed(2)}`;
       document.getElementById('txtDeposit').textContent = `$${currentDeposit.toFixed(2)}`;
-      
-      const isRush = document.getElementById('o2').checked;
-      document.getElementById('txtTimeline').textContent = isRush ? "48 Hours (Rush)" : "7-10 Business Days";
     }
 
     function generateEstimate() {
