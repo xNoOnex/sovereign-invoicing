@@ -6,950 +6,246 @@
   <title>Universal Deployment Estimator | Quintan Middle</title>
   <style>
     :root {
-      --bg: #0d1117;
-      --card: #161b22;
-      --card-active: #1c2129;
-      --border: #30363d;
-      --border-active: #58a6ff;
-      --text: #c9d1d9;
-      --text-muted: #8b949e;
-      --accent: #238636;
-      --accent-hover: #2ea043;
-      --blue: #58a6ff;
-      --purple: #bc8cff;
-      --amber: #d29922;
-      --white: #ffffff;
+      --bg: #0d1117; --card: #161b22; --card-active: #1c2129;
+      --border: #30363d; --border-active: #58a6ff;
+      --text: #c9d1d9; --text-muted: #8b949e;
+      --accent: #238636; --accent-hover: #2ea043;
+      --blue: #58a6ff; --purple: #bc8cff; --amber: #d29922; --white: #ffffff;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
-      background: var(--bg);
-      color: var(--text);
-      padding: 14px;
-      padding-bottom: 90px;
-    }
-    .container {
-      max-width: 620px;
-      margin: 0 auto;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 18px;
-    }
-    h1 {
-      font-size: 1.18rem;
-      color: var(--blue);
-      margin-bottom: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    p.sub {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-      line-height: 1.4;
-    }
-
-    /* Preset Quick Selection */
-    .presets-wrap {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-    .btn-preset {
-      background: #21262d;
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 6px 10px;
-      font-size: 0.72rem;
-      font-family: monospace;
-      cursor: pointer;
-      transition: all 0.15s ease-in-out;
-    }
-    .btn-preset:hover {
-      background: #30363d;
-      border-color: var(--text-muted);
-      color: #fff;
-    }
-    .btn-preset.reset {
-      color: #f85149;
-      border-color: rgba(248,81,73,0.3);
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, monospace; background: var(--bg); color: var(--text); padding: 14px; padding-bottom: 90px; }
+    .container { max-width: 620px; margin: 0 auto; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 18px; }
+    h1 { font-size: 1.18rem; color: var(--blue); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    p.sub { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4; }
+    
+    .presets-wrap { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+    .btn-preset { background: #21262d; color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 6px 10px; font-size: 0.72rem; font-family: monospace; cursor: pointer; }
+    .btn-preset:hover { background: #30363d; color: #fff; }
+    .btn-preset.reset { color: #f85149; border-color: rgba(248,81,73,0.3); }
 
     .input-group { margin-bottom: 14px; }
-    .input-group label {
-      display: block;
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-      text-transform: uppercase;
-      font-family: monospace;
-      letter-spacing: 0.5px;
-    }
-    input[type="text"] {
-      width: 100%;
-      background: #0d1117;
-      border: 1px solid var(--border);
-      color: #fff;
-      padding: 8px 10px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-    }
-    input[type="text"]:focus {
-      outline: none;
-      border-color: var(--blue);
-    }
-
-    .cat-header {
-      font-size: 0.75rem;
-      font-weight: bold;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin: 20px 0 8px 0;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 4px;
-    }
-
-    /* Item Card & Selection Styling */
-    .item {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      padding: 10px;
-      background: #0d1117;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      margin-bottom: 6px;
-      cursor: pointer;
-      transition: border-color 0.15s, background-color 0.15s;
-    }
-    .item:hover {
-      border-color: #484f58;
-    }
-    .item:has(input:checked) {
-      border-color: var(--border-active);
-      background-color: var(--card-active);
-    }
-    .item-left {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      flex: 1;
-    }
-    .item-left input {
-      accent-color: var(--accent);
-      width: 16px;
-      height: 16px;
-      margin-top: 2px;
-      cursor: pointer;
-    }
+    .input-group label { display: block; font-size: 0.72rem; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; font-family: monospace; }
+    input[type="text"] { width: 100%; background: #0d1117; border: 1px solid var(--border); color: #fff; padding: 8px 10px; border-radius: 6px; font-size: 0.85rem; }
+    
+    .cat-header { font-size: 0.75rem; font-weight: bold; color: var(--text-muted); text-transform: uppercase; margin: 20px 0 8px 0; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+    .item { display: flex; align-items: flex-start; justify-content: space-between; padding: 10px; background: #0d1117; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 6px; cursor: pointer; }
+    .item:has(input:checked) { border-color: var(--border-active); background-color: var(--card-active); }
+    .item-left { display: flex; align-items: flex-start; gap: 10px; flex: 1; }
+    .item-left input { accent-color: var(--accent); width: 16px; height: 16px; margin-top: 2px; }
     .item-content { display: flex; flex-direction: column; }
-    .item-label {
-      font-size: 0.82rem;
-      font-weight: 500;
-      color: #e6edf3;
-    }
-    .item-desc {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      margin-top: 2px;
-      line-height: 1.35;
-    }
-    .item-desc.spec {
-      color: var(--amber);
-    }
-    .item-price {
-      font-size: 0.82rem;
-      font-weight: bold;
-      color: var(--blue);
-      font-family: monospace;
-      white-space: nowrap;
-      margin-left: 10px;
-    }
-    .item-price.highlight { color: var(--purple); }
-    .item-price.amber { color: var(--amber); }
+    .item-label { font-size: 0.82rem; font-weight: 500; color: #e6edf3; }
+    .item-desc { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+    .item-price { font-size: 0.82rem; font-weight: bold; color: var(--blue); font-family: monospace; margin-left: 10px; }
+    .item-price.highlight { color: var(--purple); } .item-price.amber { color: var(--amber); }
 
-    /* Static Total Panel */
-    .cost-card {
-      background: #0d1117;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 14px;
-      margin-top: 18px;
-    }
-    .cost-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.85rem;
-      margin-bottom: 6px;
-    }
-    .cost-row.total {
-      font-size: 1.05rem;
-      font-weight: bold;
-      color: var(--white);
-      border-top: 1px dashed var(--border);
-      padding-top: 8px;
-      margin-top: 8px;
-      font-family: monospace;
-    }
-    .cost-row.deposit {
-      color: #7ee787;
-      font-weight: bold;
-      font-family: monospace;
-    }
-    .btn-submit {
-      width: 100%;
-      margin-top: 14px;
-      padding: 13px;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      font-size: 0.92rem;
-      font-weight: bold;
-      cursor: pointer;
-      font-family: monospace;
-      letter-spacing: 0.5px;
-    }
-    .btn-submit:hover { background: var(--accent-hover); }
-
-    /* Floating Bottom Mobile Sticky Bar */
-    .sticky-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(13, 17, 23, 0.96);
-      backdrop-filter: blur(8px);
-      border-top: 1px solid var(--border);
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      z-index: 100;
-    }
-    .sticky-wrap {
-      max-width: 620px;
-      margin: 0 auto;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+    .cost-card { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; padding: 14px; margin-top: 18px; }
+    .cost-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; }
+    .cost-row.total { font-size: 1.05rem; font-weight: bold; color: var(--white); border-top: 1px dashed var(--border); padding-top: 8px; margin-top: 8px; font-family: monospace; }
+    .cost-row.deposit { color: #7ee787; font-weight: bold; font-family: monospace; }
+    
+    .btn-submit { width: 100%; margin-top: 14px; padding: 13px; background: var(--accent); color: #fff; border: none; border-radius: 6px; font-size: 0.92rem; font-weight: bold; cursor: pointer; font-family: monospace; }
+    .sticky-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(13, 17, 23, 0.96); border-top: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; z-index: 100; }
+    .sticky-wrap { max-width: 620px; margin: 0 auto; width: 100%; display: flex; justify-content: space-between; }
     .sticky-info { display: flex; flex-direction: column; }
-    .sticky-total {
-      font-size: 1.05rem;
-      font-weight: bold;
-      color: var(--white);
-      font-family: monospace;
-    }
-    .sticky-deposit {
-      font-size: 0.72rem;
-      color: #7ee787;
-      font-family: monospace;
-    }
-    .btn-sticky-jump {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      padding: 8px 14px;
-      font-size: 0.8rem;
-      font-weight: bold;
-      font-family: monospace;
-      cursor: pointer;
-    }
+    .sticky-total { font-size: 1.05rem; font-weight: bold; color: var(--white); font-family: monospace; }
+    .sticky-deposit { font-size: 0.72rem; color: #7ee787; font-family: monospace; }
+    .btn-sticky-jump { background: var(--accent); color: #fff; border: none; border-radius: 4px; padding: 8px 14px; font-weight: bold; font-family: monospace; cursor: pointer; }
 
-    /* Premium Thermal Receipt Modal */
-    #quote-modal {
-      display: none;
-      margin-top: 32px;
-      background: #fcfcfc;
-      color: #111;
-      padding: 28px 22px;
-      font-family: "Courier New", Courier, monospace;
-      font-size: 11.5px;
-      line-height: 1.5;
-      border: 1px solid #d0d7de;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.4);
-      position: relative;
-    }
-    #quote-modal::before {
-      content: "";
-      position: absolute;
-      top: -4px; left: 0; right: 0; height: 4px;
-      background: linear-gradient(135deg, transparent 50%, #fcfcfc 50%),
-                  linear-gradient(-135deg, transparent 50%, #fcfcfc 50%);
-      background-size: 8px 100%;
-    }
-    .quote-header {
-      text-align: center;
-      border-bottom: 2px dashed #333;
-      padding-bottom: 14px;
-      margin-bottom: 14px;
-    }
-    .quote-header h2 {
-      font-size: 14.5px;
-      margin-bottom: 6px;
-      letter-spacing: 0.5px;
-      color: #000;
-    }
-    .quote-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 6px;
-    }
-    .qr-label {
-      flex: 1;
-      padding-right: 15px;
-    }
-    .qr-val {
-      font-weight: bold;
-      white-space: nowrap;
-    }
-    .quote-list {
-      margin: 12px 0;
-      border-bottom: 2px dashed #333;
-      padding-bottom: 12px;
-    }
-    .quote-total {
-      border-top: 1px solid #333;
-      padding-top: 8px;
-      font-weight: bold;
-      font-size: 12.5px;
-    }
-    .quote-terms {
-      margin-top: 18px;
-      font-size: 10px;
-      color: #333;
-      border-top: 2px dashed #333;
-      padding-top: 12px;
-      line-height: 1.5;
-    }
-    .quote-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 20px;
-    }
-    .btn-action {
-      width: 100%;
-      padding: 12px;
-      border-radius: 4px;
-      font-size: 0.85rem;
-      font-weight: bold;
-      cursor: pointer;
-      text-align: center;
-      text-decoration: none;
-      border: none;
-      box-sizing: border-box;
-      font-family: monospace;
-      letter-spacing: 0.5px;
-      transition: opacity 0.15s;
-    }
-    .btn-action:hover { opacity: 0.9; }
-    .btn-action.print { background: #1f2328; color: #fff; }
-    .btn-action.sms { background: #238636; color: #fff; }
-    .btn-action.email { background: #0969da; color: #fff; }
+    #quote-modal { display: none; margin-top: 32px; background: #fcfcfc; color: #111; padding: 28px 22px; font-family: "Courier New", monospace; font-size: 11.5px; line-height: 1.5; border: 1px solid #d0d7de; box-shadow: 0 12px 28px rgba(0,0,0,0.4); position: relative; }
+    #quote-modal::before { content: ""; position: absolute; top: -4px; left: 0; right: 0; height: 4px; background: linear-gradient(135deg, transparent 50%, #fcfcfc 50%), linear-gradient(-135deg, transparent 50%, #fcfcfc 50%); background-size: 8px 100%; }
+    .quote-header { text-align: center; border-bottom: 2px dashed #333; padding-bottom: 14px; margin-bottom: 14px; }
+    .quote-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .qr-label { flex: 1; padding-right: 15px; } .qr-val { font-weight: bold; white-space: nowrap; }
+    .quote-list { margin: 12px 0; border-bottom: 2px dashed #333; padding-bottom: 12px; }
+    .quote-total { border-top: 1px solid #333; padding-top: 8px; font-weight: bold; font-size: 12.5px; }
+    .quote-terms { margin-top: 18px; font-size: 10px; color: #333; border-top: 2px dashed #333; padding-top: 12px; }
+    .quote-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+    .btn-action { width: 100%; padding: 12px; border-radius: 4px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; border: none; font-family: monospace; }
+    .btn-action.print { background: #1f2328; color: #fff; } .btn-action.sms { background: #238636; color: #fff; } .btn-action.email { background: #0969da; color: #fff; }
 
     @media print {
       body { background: #fff !important; padding: 0 !important; color: #000 !important; }
       .container, .sticky-bar { display: none !important; }
-      #quote-modal {
-        display: block !important;
-        position: relative !important;
-        border: none !important;
-        padding: 10px !important;
-        width: 100% !important;
-        box-shadow: none !important;
-        margin: 0 !important;
-      }
-      #quote-modal::before { display: none !important; }
-      .quote-actions { display: none !important; }
+      #quote-modal { display: block !important; position: relative !important; border: none !important; padding: 10px !important; width: 100% !important; box-shadow: none !important; margin: 0 !important; }
+      #quote-modal::before, .quote-actions { display: none !important; }
       .quote-row { break-inside: avoid; }
     }
   </style>
 </head>
 <body>
-
 <div class="container">
   <h1>Universal Deployment Estimator</h1>
   <p class="sub">Configure offline-first software requirements. Flat-rate architecture, zero monthly SaaS seat licensing, perpetual deployment rights.</p>
-
-  <!-- Presets -->
   <div class="presets-wrap">
-    <button class="btn-preset" onclick="applyPreset('field')">Preset: Field Crew & Logistics</button>
-    <button class="btn-preset" onclick="applyPreset('privacy')">Preset: Sovereign Security Vault</button>
-    <button class="btn-preset reset" onclick="applyPreset('reset')">Reset to Default</button>
+    <button class="btn-preset" onclick="applyPreset('field')">Preset: Field Crew</button>
+    <button class="btn-preset" onclick="applyPreset('privacy')">Preset: Security Vault</button>
+    <button class="btn-preset reset" onclick="applyPreset('reset')">Reset</button>
   </div>
-
   <div class="input-group">
     <label>Client Organization / Callsign</label>
-    <input type="text" id="clientName" placeholder="e.g. Desert Logistics LLC / Direct Operator">
+    <input type="text" id="clientName" placeholder="e.g. Desert Logistics LLC">
   </div>
 
-  <!-- 1. Platform Foundation -->
   <div class="cat-header">1. Platform Foundation</div>
-  <label class="item">
-    <div class="item-left">
-      <input type="radio" id="plat_web" name="platform" value="650" data-name="Single-Page Web Tool (Self-Hosted)" data-days="5" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Single-Page Web Utility</span>
-        <span class="item-desc">Self-hosted local or static tool for standalone browser workflows.</span>
-      </div>
-    </div>
-    <span class="item-price">$650</span>
-  </label>
-  <label class="item">
-    <div class="item-left">
-      <input type="radio" id="plat_apk" name="platform" value="1000" data-name="Native Android App (.apk)" data-days="7" checked onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Native Android Application (.apk)</span>
-        <span class="item-desc">Hardware-optimized APK package built directly for Android field devices.</span>
-      </div>
-    </div>
-    <span class="item-price">$1,000</span>
-  </label>
-  <label class="item">
-    <div class="item-left">
-      <input type="radio" id="plat_cross" name="platform" value="1500" data-name="Cross-Platform Suite (APK + Web/Desktop)" data-days="10" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Cross-Platform Suite (APK + Web)</span>
-        <span class="item-desc">Field mobile application with companion local desktop or web dashboard.</span>
-      </div>
-    </div>
-    <span class="item-price">$1,500</span>
-  </label>
+  <label class="item"><div class="item-left"><input type="radio" name="platform" value="650" data-name="Single-Page Web Tool" data-days="5" onchange="calc()"><div class="item-content"><span class="item-label">Single-Page Web Utility</span></div></div><span class="item-price">$650</span></label>
+  <label class="item"><div class="item-left"><input type="radio" name="platform" value="1000" data-name="Native Android App (.apk)" data-days="7" checked onchange="calc()"><div class="item-content"><span class="item-label">Native Android App (.apk)</span></div></div><span class="item-price">$1,000</span></label>
+  <label class="item"><div class="item-left"><input type="radio" name="platform" value="1500" data-name="Cross-Platform Suite" data-days="10" onchange="calc()"><div class="item-content"><span class="item-label">Cross-Platform Suite</span></div></div><span class="item-price">$1,500</span></label>
 
-  <!-- 2. Screen Capacity & Interface -->
-  <div class="cat-header">2. Workflow Volume & Interface</div>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="mod_base" class="addon" value="0" data-name="Standard Core Workflows (Up to 3 Screens Included)" data-days="0" checked disabled>
-      <div class="item-content">
-        <span class="item-label">Standard Core Workflows Baseline</span>
-        <span class="item-desc">Includes up to 3 core operational screens (Data Entry, Records Ledger, Configuration).</span>
-      </div>
-    </div>
-    <span class="item-price">Included</span>
-  </label>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="mod_extra" class="addon" value="200" data-name="Additional Operational Screen / Workflow Module" data-days="2" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">+1 Operational Screen / Module</span>
-        <span class="item-desc">Adds a dedicated custom workflow (e.g. Job Timer, Fleet Roster, Crew Dispatch).</span>
-      </div>
-    </div>
-    <span class="item-price">+$200</span>
-  </label>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="mod_ui" class="addon" value="250" data-name="Advanced High-Contrast UI & Theme Scaling" data-days="1" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Tactical High-Contrast UI / Scaling</span>
-        <span class="item-desc">Direct sunlight visibility modes, OLED dark schemes, and scalable elements.</span>
-      </div>
-    </div>
-    <span class="item-price">+$250</span>
-  </label>
+  <div class="cat-header">2. Workflow Volume</div>
+  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="0" data-name="Standard Core Workflows" checked disabled><div class="item-content"><span class="item-label">Standard Core Workflows</span></div></div><span class="item-price">Included</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="200" data-name="Additional Operational Module" data-days="2" onchange="calc()"><div class="item-content"><span class="item-label">+1 Operational Module</span></div></div><span class="item-price">+$200</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="250" data-name="Tactical High-Contrast UI" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">High-Contrast UI & Scaling</span></div></div><span class="item-price">+$250</span></label>
 
-  <!-- 3. Offline Engine & Data -->
-  <div class="cat-header">3. Offline Storage & Calculation Engine</div>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="mod_db" class="addon" value="250" data-name="Local Device Persistence (IndexedDB/SQLite)" data-days="1" checked onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Local Offline Database</span>
-        <span class="item-desc">Zero-cloud local storage. Retains operational records directly on flash memory.</span>
-      </div>
-    </div>
-    <span class="item-price">+$250</span>
-  </label>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="mod_export" class="addon" value="200" data-name="PDF & CSV Document Generator" data-days="1" checked onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">PDF & CSV Document Generator</span>
-        <span class="item-desc">Produce field-ready PDF work orders, timesheets, and raw CSV ledgers natively.</span>
-      </div>
-    </div>
-    <span class="item-price">+$200</span>
-  </label>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="mod_math" class="addon" value="500" data-name="Bespoke Math & Dynamic Pricing Rule Engine" data-days="2" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Dynamic Math & Rule Engine</span>
-        <span class="item-desc">Embedded operational logic: weight/cubic footage formulas, tier margins, overtime.</span>
-      </div>
-    </div>
-    <span class="item-price">+$500</span>
-  </label>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="mod_backup" class="addon" value="200" data-name="Encrypted JSON Zero-Cloud Backup Engine" data-days="1" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Encrypted JSON Local Backup</span>
-        <span class="item-desc">Import/export full app databases for device migration without network exposure.</span>
-      </div>
-    </div>
-    <span class="item-price">+$200</span>
-  </label>
-  <!-- 4. Security, Cryptography & Hardware Tokens -->
-  <div class="cat-header">4. Security, Cryptography & Access Control</div>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="mod_aes" class="addon" value="850" data-name="Client-Side Zero-Knowledge AES-256 Vault" data-days="3" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Zero-Knowledge AES-256 Vault</span>
-        <span class="item-desc">Hardware-isolated client encryption. Data inaccessible without the master passphrase.</span>
-      </div>
-    </div>
-    <span class="item-price highlight">+$850</span>
-  </label>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="mod_auth" class="addon" value="200" data-name="Local Passcode & Biometric Security Gate" data-days="1" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Passcode / Biometric Gate</span>
-        <span class="item-desc">On-device fingerprint or PIN lock with custom timeout inactivity triggers.</span>
-      </div>
-    </div>
-    <span class="item-price">+$200</span>
-  </label>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="mod_token" class="addon" value="650" data-name="Hardware Token / USB-OTG Direct Interface" data-days="2" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Hardware Token / USB-OTG Support</span>
-        <span class="item-desc">Hardware validation against YubiKeys, USB flash media, or air-gapped storage.</span>
-      </div>
-    </div>
-    <span class="item-price">+$650</span>
-  </label>
+  <div class="cat-header">3. Offline Storage Engine</div>
+  <label class="item"><div class="item-left"><input type="checkbox" id="mod_db" class="addon" value="250" data-name="Local Device Persistence" data-days="1" checked onchange="calc()"><div class="item-content"><span class="item-label">Local Offline Database</span></div></div><span class="item-price">+$250</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" id="mod_export" class="addon" value="200" data-name="PDF & CSV Document Generator" data-days="1" checked onchange="calc()"><div class="item-content"><span class="item-label">PDF & CSV Document Generator</span></div></div><span class="item-price">+$200</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="500" data-name="Bespoke Math & Rule Engine" data-days="2" onchange="calc()"><div class="item-content"><span class="item-label">Dynamic Math & Rule Engine</span></div></div><span class="item-price">+$500</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" id="mod_backup" class="addon" value="200" data-name="Encrypted JSON Local Backup" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">Encrypted JSON Local Backup</span></div></div><span class="item-price">+$200</span></label>
+  <div class="cat-header">4. Security & Cryptography</div>
+  <label class="item"><div class="item-left"><input type="checkbox" id="mod_aes" class="addon" value="850" data-name="Zero-Knowledge AES-256 Vault" data-days="3" onchange="calc()"><div class="item-content"><span class="item-label">Zero-Knowledge AES-256 Vault</span></div></div><span class="item-price highlight">+$850</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" id="mod_auth" class="addon" value="200" data-name="Passcode / Biometric Gate" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">Passcode / Biometric Gate</span></div></div><span class="item-price">+$200</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" id="mod_token" class="addon" value="650" data-name="Hardware Token / USB-OTG" data-days="2" onchange="calc()"><div class="item-content"><span class="item-label">Hardware Token / USB-OTG</span></div></div><span class="item-price">+$650</span></label>
 
-  <!-- 5. Field Hardware & Edge Processing -->
-  <div class="cat-header">5. Field Hardware & Edge Processing</div>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="mod_sign" class="addon" value="250" data-name="Sign-On-Glass Canvas Signature Pad" data-days="1" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Sign-On-Glass Signature Pad</span>
-        <span class="item-desc">Touchscreen signature capture embedded into generated PDF documentation.</span>
-      </div>
-    </div>
-    <span class="item-price">+$250</span>
-  </label>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="mod_cam" class="addon" value="300" data-name="Optical Camera Barcode/QR Scanner" data-days="2" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Optical Barcode / QR Scanner</span>
-        <span class="item-desc">Integrated camera scanner for assets, equipment serials, and cargo tags.</span>
-      </div>
-    </div>
-    <span class="item-price">+$300</span>
-  </label>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="mod_mesh" class="addon" value="1200" data-name="Off-Grid P2P Mesh / Bluetooth Sync" data-days="5" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">P2P Mesh / Bluetooth Sync</span>
-        <span class="item-desc">Direct phone-to-phone data sync across nearby crew units without internet.</span>
-      </div>
-    </div>
-    <span class="item-price highlight">+$1,200</span>
-  </label>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="mod_ai" class="addon" value="1200" data-name="Embedded On-Device AI / LLM Engine" data-days="5" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Local On-Device AI / LLM</span>
-        <span class="item-desc">Offline language model integration for field audio transcripts or automated sorting.</span>
-        <span class="item-desc spec">Hardware Note: Requires modern devices with 6GB+ RAM.</span>
-      </div>
-    </div>
-    <span class="item-price highlight">+$1,200</span>
-  </label>
+  <div class="cat-header">5. Field Hardware Processing</div>
+  <label class="item"><div class="item-left"><input type="checkbox" id="mod_sign" class="addon" value="250" data-name="Sign-On-Glass Signature Pad" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">Sign-On-Glass Signature Pad</span></div></div><span class="item-price">+$250</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" id="mod_cam" class="addon" value="300" data-name="Optical Barcode / QR Scanner" data-days="2" onchange="calc()"><div class="item-content"><span class="item-label">Optical Barcode / QR Scanner</span></div></div><span class="item-price">+$300</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="1200" data-name="P2P Mesh / Bluetooth Sync" data-days="5" onchange="calc()"><div class="item-content"><span class="item-label">P2P Mesh / Bluetooth Sync</span></div></div><span class="item-price highlight">+$1,200</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="1200" data-name="Local On-Device AI / LLM" data-days="5" onchange="calc()"><div class="item-content"><span class="item-label">Local On-Device AI / LLM</span></div></div><span class="item-price highlight">+$1,200</span></label>
 
-  <!-- 6. Deployment, Data Migration & Training -->
-  <div class="cat-header">6. Ingestion, Provisioning & SOP Training</div>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="mod_ingest" class="addon" value="200" data-name="Spreadsheet Migration & Ingestion (Up to 500 Records)" data-days="1" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Legacy CSV Data Migration</span>
-        <span class="item-desc">Schema mapping and database pre-loading for up to 500 rows / single sheet.</span>
-      </div>
-    </div>
-    <span class="item-price">+$200</span>
-  </label>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="mod_hub" class="addon" value="150" data-name="Private Authenticated QR Distribution Gateway" data-days="1" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Private QR Distribution Gateway</span>
-        <span class="item-desc">Self-hosted authenticated gateway to instantly push APK updates to company devices.</span>
-      </div>
-    </div>
-    <span class="item-price">+$150</span>
-  </label>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="mod_prov" class="addon" value="150" data-name="Turnkey Device Setup & Hardware Flashing (+ Hardware Cost)" data-days="2" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Turnkey Device Provisioning</span>
-        <span class="item-desc">Dedicated tablet or phone pre-configured, tested, and shipped locked and ready to run.</span>
-      </div>
-    </div>
-    <span class="item-price">+$150</span>
-  </label>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="mod_sop" class="addon" value="200" data-name="Laminated Field SOP Cards & 60-Min Crew Training" data-days="1" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Laminated SOP Cards & Crew Training</span>
-        <span class="item-desc">Physical glovebox quick-reference cards plus a 60-minute crew onboarding session.</span>
-      </div>
-    </div>
-    <span class="item-price">+$200</span>
-  </label>
-  <!-- 7. IP & Delivery Handoff -->
+  <div class="cat-header">6. Ingestion & Onboarding</div>
+  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="200" data-name="Legacy CSV Data Migration" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">Legacy CSV Data Migration</span></div></div><span class="item-price">+$200</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="150" data-name="Private QR Distribution Hub" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">Private QR Distribution Gateway</span></div></div><span class="item-price">+$150</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="150" data-name="Turnkey Device Provisioning" data-days="2" onchange="calc()"><div class="item-content"><span class="item-label">Turnkey Device Provisioning</span></div></div><span class="item-price">+$150</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" id="mod_sop" class="addon" value="200" data-name="Laminated SOPs & Crew Training" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">Laminated SOPs & Crew Training</span></div></div><span class="item-price">+$200</span></label>
+
   <div class="cat-header">7. Ownership & Code Handoff</div>
-  <label class="item">
-    <div class="item-left">
-      <input type="radio" id="own_bin" name="ownership" value="0" data-name="Standard Runtime License (No Source Code)" data-days="0" checked onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Standard Runtime License</span>
-        <span class="item-desc">Drop-in production installer file ready for perpetual internal use. (No raw code).</span>
-      </div>
-    </div>
-    <span class="item-price">$0</span>
-  </label>
-  <label class="item">
-    <div class="item-left">
-      <input type="radio" id="own_white" name="ownership" value="1500" data-name="White-Label Rebranding Buyout" data-days="2" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">White-Label Buyout</span>
-        <span class="item-desc">Removes all external developer credits; branded 100% as an internal proprietary asset.</span>
-      </div>
-    </div>
-    <span class="item-price amber">+$1,500</span>
-  </label>
-  <label class="item">
-    <div class="item-left">
-      <input type="radio" id="own_src" name="ownership" value="3500" data-name="Full Source Code Repository & IP Transfer" data-days="3" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Full Source Code & IP Handoff</span>
-        <span class="item-desc">Complete transfer of raw Git repos, compilation guides, and full IP ownership.</span>
-      </div>
-    </div>
-    <span class="item-price amber">+$3,500</span>
-  </label>
+  <label class="item"><div class="item-left"><input type="radio" id="own_bin" name="ownership" value="0" data-name="Standard Runtime License" checked onchange="calc()"><div class="item-content"><span class="item-label">Standard Runtime License</span></div></div><span class="item-price">$0</span></label>
+  <label class="item"><div class="item-left"><input type="radio" name="ownership" value="1500" data-name="White-Label Buyout" data-days="2" onchange="calc()"><div class="item-content"><span class="item-label">White-Label Buyout</span></div></div><span class="item-price amber">+$1,500</span></label>
+  <label class="item"><div class="item-left"><input type="radio" name="ownership" value="3500" data-name="Full Source Code Transfer" data-days="3" onchange="calc()"><div class="item-content"><span class="item-label">Full Source Code & IP Handoff</span></div></div><span class="item-price amber">+$3,500</span></label>
 
-  <!-- 8. Maintenance Retainer & Turnaround -->
-  <div class="cat-header">8. Code Rot Defense & Priority Turnaround</div>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="ret_monthly" class="addon" value="150" data-type="retainer-mo" data-name="Monthly Maintenance Retainer" data-days="0" onchange="toggleRetainer('mo')">
-      <div class="item-content">
-        <span class="item-label">Monthly Maintenance Retainer</span>
-        <span class="item-desc">Priority bug turnaround, target API updates. Billed securely via Stripe.</span>
-      </div>
-    </div>
-    <span class="item-price">+$150/mo</span>
-  </label>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="ret_yearly" class="addon" value="1500" data-type="retainer-yr" data-name="Annual Maintenance Retainer" data-days="0" onchange="toggleRetainer('yr')">
-      <div class="item-content">
-        <span class="item-label">Annual Retainer (12 Months Prepaid)</span>
-        <span class="item-desc">Continuous patching and guaranteed priority bench hours. Billed on final invoice.</span>
-      </div>
-    </div>
-    <span class="item-price">+$1,500/yr</span>
-  </label>
-  <label class="item">
-    <div class="item-left">
-      <input type="checkbox" id="mod_rush" class="addon" value="400" data-type="rush" data-name="Expedited Rush Production (3-5 Day Priority Build)" data-days="0" onchange="calc()">
-      <div class="item-content">
-        <span class="item-label">Expedited Rush Production</span>
-        <span class="item-desc">Front-of-queue scheduling targeting drop-in deployment in 3 to 5 business days.</span>
-      </div>
-    </div>
-    <span class="item-price highlight">+$400</span>
-  </label>
+  <div class="cat-header">8. Code Rot Defense</div>
+  <label class="item"><div class="item-left"><input type="checkbox" id="ret_monthly" class="addon" value="150" data-type="retainer-mo" data-name="Monthly Maintenance Retainer" onchange="toggleRetainer('mo')"><div class="item-content"><span class="item-label">Monthly Maintenance Retainer</span></div></div><span class="item-price">+$150/mo</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" id="ret_yearly" class="addon" value="1500" data-type="retainer-yr" data-name="Annual Maintenance Retainer" onchange="toggleRepainer('yr')"><div class="item-content"><span class="item-label">Annual Retainer (12 Mo Prepaid)</span></div></div><span class="item-price">+$1,500/yr</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="400" data-type="rush" data-name="Expedited Rush Production" onchange="calc()"><div class="item-content"><span class="item-label">Expedited Rush Production</span></div></div><span class="item-price highlight">+$400</span></label>
 
-  <!-- Static Card -->
   <div class="cost-card">
-    <div class="cost-row">
-      <span>Turnaround Target:</span>
-      <span id="txtDelivery" style="font-family: monospace; font-weight: bold; color: var(--blue);">7-10 Business Days</span>
-    </div>
-    <div class="cost-row total">
-      <span>Upfront Deployment Total:</span>
-      <span id="txtTotal">$1,450.00</span>
-    </div>
-    <div class="cost-row deposit">
-      <span>50% Start Deposit:</span>
-      <span id="txtDeposit">$725.00</span>
-    </div>
-    <div class="cost-row" id="rowRetainerDisplay" style="display: none; font-size: 0.8rem; color: var(--purple); font-family: monospace; margin-top: 4px;">
-      <span>Recurring Retainer:</span>
-      <span id="txtRetainerValue">$0.00</span>
-    </div>
+    <div class="cost-row"><span>Turnaround Target:</span><span id="txtDelivery" style="font-family: monospace; font-weight: bold; color: var(--blue);"></span></div>
+    <div class="cost-row total"><span>Total Deployment:</span><span id="txtTotal"></span></div>
+    <div class="cost-row deposit"><span>50% Deposit:</span><span id="txtDeposit"></span></div>
+    <div class="cost-row" id="rowRetainerDisplay" style="display: none; font-size: 0.8rem; color: var(--purple); font-family: monospace; margin-top: 4px;"><span>Retainer:</span><span id="txtRetainerValue"></span></div>
   </div>
+  <button class="btn-submit" onclick="generateEstimate()">GENERATE ESTIMATE</button>
 
-  <button class="btn-submit" onclick="generateEstimate()">GENERATE FORMAL ESTIMATE</button>
-
-  <!-- Formal Estimate Receipt Modal -->
   <div id="quote-modal">
-    <div class="quote-header">
-      <h2>DEVELOPMENT & SCOPE ESTIMATE</h2>
-      <div>Quintan Middle | Independent Developer | Tucson, AZ</div>
-      <div>Direct: (520) 634-9490 | quintanmiddle@gmail.com</div>
-    </div>
-
-    <div class="quote-row">
-      <span>CLIENT:</span>
-      <span class="qr-val" id="qClient">Direct Client</span>
-    </div>
-    <div class="quote-row">
-      <span>ISSUED DATE:</span>
-      <span class="qr-val" id="qDate"></span>
-    </div>
-    <div class="quote-row">
-      <span>TARGET DELIVERY:</span>
-      <span class="qr-val" id="qTimeline"></span>
-    </div>
-
-    <div style="font-weight: bold; margin-top: 18px; margin-bottom: 4px; font-size: 12.5px;">ITEMIZED SCOPE BREAKDOWN:</div>
+    <div class="quote-header"><h2>DEVELOPMENT & SCOPE ESTIMATE</h2><div>Quintan Middle | Tucson, AZ</div><div>(520) 634-9490 | quintanmiddle@gmail.com</div></div>
+    <div class="quote-row"><span>CLIENT:</span><span class="qr-val" id="qClient"></span></div>
+    <div class="quote-row"><span>ISSUED DATE:</span><span class="qr-val" id="qDate"></span></div>
+    <div class="quote-row"><span>TARGET DELIVERY:</span><span class="qr-val" id="qTimeline"></span></div>
+    <div style="font-weight: bold; margin-top: 18px; font-size: 12.5px;">ITEMIZED SCOPE:</div>
     <div class="quote-list" id="qList"></div>
-
-    <div class="quote-row quote-total">
-      <span>UPFRONT TOTAL INVESTMENT:</span>
-      <span class="qr-val" id="qTotal"></span>
-    </div>
-    <div class="quote-row" style="color: #008000; font-weight: bold;">
-      <span>50% DEPOSIT TO COMMENCE:</span>
-      <span class="qr-val" id="qDeposit"></span>
-    </div>
-    <div class="quote-row">
-      <span>BALANCE DUE ON SIGN-OFF:</span>
-      <span class="qr-val" id="qBalance"></span>
-    </div>
-    <div class="quote-row" id="qRetainerRow" style="display: none; color: #444; margin-top: 4px;">
-      <span>OPTIONAL CODE MAINTENANCE:</span>
-      <span class="qr-val" id="qRetainer"></span>
-    </div>
-
-    <div class="quote-terms">
-      • <strong>30-Day Defect Warranty Included:</strong> Any software bug matching agreed specifications is resolved at $0 within 30 days of binary delivery.<br>
-      • <strong>Out-of-Scope Modifications:</strong> Post-commencement additions or schema redesigns are billed at our standard bench rate of $85/hr.<br>
-      • <strong>Perpetual Ownership:</strong> No vendor lock-in, recurring cloud seat fees, or artificial license expiries.
-    </div>
-
+    <div class="quote-row quote-total"><span>TOTAL INVESTMENT:</span><span class="qr-val" id="qTotal"></span></div>
+    <div class="quote-row" style="color: #008000; font-weight: bold;"><span>50% DEPOSIT:</span><span class="qr-val" id="qDeposit"></span></div>
+    <div class="quote-row" id="qRetainerRow" style="display: none;"><span>CODE MAINTENANCE:</span><span class="qr-val" id="qRetainer"></span></div>
+    <div class="quote-terms">• <strong>30-Day Warranty:</strong> Specs bugs resolved at $0.<br>• <strong>Out-of-Scope:</strong> $85/hr.<br>• <strong>Perpetual Ownership:</strong> Zero SaaS fees.</div>
     <div class="quote-actions">
-      <button class="btn-action print" onclick="window.print()">Print / Download PDF</button>
+      <button class="btn-action print" onclick="window.print()">Print / PDF</button>
       <a id="btnSms" class="btn-action sms" href="#">Text Quintan (520-634-9490)</a>
-      <a id="btnEmail" class="btn-action email" href="#">Email Request to Quintan</a>
+      <a id="btnEmail" class="btn-action email" href="#">Email Request</a>
     </div>
   </div>
 </div>
-
-<!-- Floating Bottom Sticky Bar for Mobile Handheld View -->
-<div class="sticky-bar">
-  <div class="sticky-wrap">
-    <div class="sticky-info">
-      <span class="sticky-total" id="stickyTotal">$1,450.00</span>
-      <span class="sticky-deposit" id="stickyDeposit">Deposit: $725.00</span>
-    </div>
-    <button class="btn-sticky-jump" onclick="generateEstimate()">Review Scope</button>
-  </div>
-</div>
+<div class="sticky-bar"><div class="sticky-wrap"><div class="sticky-info"><span class="sticky-total" id="stickyTotal"></span><span class="sticky-deposit" id="stickyDeposit"></span></div><button class="btn-sticky-jump" onclick="generateEstimate()">Review Scope</button></div></div>
 <script>
   function toggleRetainer(type) {
-    if (type === 'mo' && document.getElementById('ret_monthly').checked) {
-      document.getElementById('ret_yearly').checked = false;
-    } else if (type === 'yr' && document.getElementById('ret_yearly').checked) {
-      document.getElementById('ret_monthly').checked = false;
-    }
+    if (type === 'mo' && document.getElementById('ret_monthly').checked) { document.getElementById('ret_yearly').checked = false; }
+    else if (type === 'yr' && document.getElementById('ret_yearly').checked) { document.getElementById('ret_monthly').checked = false; }
     calc();
   }
-
   function applyPreset(name) {
-    document.querySelectorAll('.addon').forEach(box => {
-      if (!box.disabled) box.checked = false;
-    });
-
-    document.getElementById('plat_apk').checked = true;
-    document.getElementById('own_bin').checked = true;
-
+    document.querySelectorAll('.addon').forEach(box => { if (!box.disabled) box.checked = false; });
+    document.getElementById('plat_apk').checked = true; document.getElementById('own_bin').checked = true;
     if (name === 'field') {
-      document.getElementById('plat_apk').checked = true;
-      document.getElementById('mod_db').checked = true;
-      document.getElementById('mod_export').checked = true;
-      document.getElementById('mod_sign').checked = true;
-      document.getElementById('mod_cam').checked = true;
-      document.getElementById('mod_sop').checked = true;
+      ['mod_db', 'mod_export', 'mod_sign', 'mod_cam', 'mod_sop'].forEach(id => document.getElementById(id).checked = true);
     } else if (name === 'privacy') {
-      document.getElementById('plat_apk').checked = true;
-      document.getElementById('mod_db').checked = true;
-      document.getElementById('mod_aes').checked = true;
-      document.getElementById('mod_auth').checked = true;
-      document.getElementById('mod_token').checked = true;
-      document.getElementById('mod_backup').checked = true;
+      ['mod_db', 'mod_aes', 'mod_auth', 'mod_token', 'mod_backup'].forEach(id => document.getElementById(id).checked = true);
     } else if (name === 'reset') {
-      document.getElementById('plat_apk').checked = true;
-      document.getElementById('mod_db').checked = true;
-      document.getElementById('mod_export').checked = true;
+      ['mod_db', 'mod_export'].forEach(id => document.getElementById(id).checked = true);
     }
-
     calc();
   }
-
   function calc() {
-    let total = 0;
-    let baseDays = 7;
-    let isRush = false;
-    let activeRetainerStr = "";
-
-    const baseRadio = document.querySelector('input[name="platform"]:checked');
-    if (baseRadio) {
-      total += parseFloat(baseRadio.value);
-      baseDays = parseInt(baseRadio.dataset.days || 7);
-    }
-
-    const ownershipRadio = document.querySelector('input[name="ownership"]:checked');
-    if (ownershipRadio) {
-      total += parseFloat(ownershipRadio.value);
-      baseDays += parseInt(ownershipRadio.dataset.days || 0);
-    }
-
+    let total = 0; let baseDays = 7; let isRush = false; let activeRetStr = "";
+    const base = document.querySelector('input[name="platform"]:checked');
+    if (base) { total += parseFloat(base.value); baseDays = parseInt(base.dataset.days || 7); }
+    const own = document.querySelector('input[name="ownership"]:checked');
+    if (own) { total += parseFloat(own.value); baseDays += parseInt(own.dataset.days || 0); }
+    
     document.querySelectorAll('.addon:checked').forEach(box => {
       const val = parseFloat(box.value || 0);
-      const days = parseInt(box.dataset.days || 0);
       const type = box.dataset.type;
-
-      if (type === 'rush') {
-        isRush = true;
-        total += val;
-      } else if (type === 'retainer-mo') {
-        activeRetainerStr = "$150.00 / month";
-      } else if (type === 'retainer-yr') {
-        activeRetainerStr = "$1,500.00 / year";
-      } else {
-        total += val;
-        baseDays += days;
-      }
+      if (type === 'rush') { isRush = true; total += val; }
+      else if (type === 'retainer-mo') { activeRetStr = "$150.00 / month"; }
+      else if (type === 'retainer-yr') { activeRetStr = "$1,500.00 / year"; }
+      else { total += val; baseDays += parseInt(box.dataset.days || 0); }
     });
 
-    const deliveryStr = isRush ? "3-5 Business Days (Rush)" : `${baseDays}-${baseDays + 3} Business Days`;
-    document.getElementById('txtDelivery').textContent = deliveryStr;
-
-    const deposit = total * 0.5;
-    const formattedTotal = `$${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    const formattedDeposit = `$${deposit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-
-    document.getElementById('txtTotal').textContent = formattedTotal;
-    document.getElementById('txtDeposit').textContent = formattedDeposit;
-    document.getElementById('stickyTotal').textContent = formattedTotal;
-    document.getElementById('stickyDeposit').textContent = `Deposit: ${formattedDeposit}`;
-
-    const retainerRow = document.getElementById('rowRetainerDisplay');
-    if (activeRetainerStr) {
-      retainerRow.style.display = 'flex';
-      document.getElementById('txtRetainerValue').textContent = activeRetainerStr;
-    } else {
-      retainerRow.style.display = 'none';
-    }
-
-    return { total, deposit, deliveryStr, activeRetainerStr };
+    const dStr = isRush ? "3-5 Business Days (Rush)" : `${baseDays}-${baseDays + 3} Business Days`;
+    const dep = total * 0.5;
+    
+    document.getElementById('txtDelivery').textContent = dStr;
+    document.getElementById('txtTotal').textContent = `$${total.toFixed(2)}`;
+    document.getElementById('txtDeposit').textContent = `$${dep.toFixed(2)}`;
+    document.getElementById('stickyTotal').textContent = `$${total.toFixed(2)}`;
+    document.getElementById('stickyDeposit').textContent = `Deposit: $${dep.toFixed(2)}`;
+    
+    const retRow = document.getElementById('rowRetainerDisplay');
+    if (activeRetStr) { retRow.style.display = 'flex'; document.getElementById('txtRetainerValue').textContent = activeRetStr; } 
+    else { retRow.style.display = 'none'; }
+    
+    return { total, dep, dStr, activeRetStr };
   }
-
   function generateEstimate() {
-    const { total, deposit, deliveryStr, activeRetainerStr } = calc();
-    const clientInput = document.getElementById('clientName').value.trim();
-    const client = clientInput || 'Direct Client';
-    const dateStr = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
-
-    document.getElementById('qClient').textContent = client;
-    document.getElementById('qDate').textContent = dateStr;
-    document.getElementById('qTimeline').textContent = deliveryStr;
+    const { total, dep, dStr, activeRetStr } = calc();
+    const cName = document.getElementById('clientName').value.trim() || 'Direct Client';
+    
+    document.getElementById('qClient').textContent = cName;
+    document.getElementById('qDate').textContent = new Date().toLocaleDateString();
+    document.getElementById('qTimeline').textContent = dStr;
     document.getElementById('qTotal').textContent = `$${total.toFixed(2)}`;
-    document.getElementById('qDeposit').textContent = `$${deposit.toFixed(2)}`;
-    document.getElementById('qBalance').textContent = `$${(total - deposit).toFixed(2)}`;
+    document.getElementById('qDeposit').textContent = `$${dep.toFixed(2)}`;
+    
+    const qrRow = document.getElementById('qRetainerRow');
+    if (activeRetStr) { qrRow.style.display = 'flex'; document.getElementById('qRetainer').textContent = activeRetStr; } 
+    else { qrRow.style.display = 'none'; }
 
-    const qRetainerRow = document.getElementById('qRetainerRow');
-    if (activeRetainerStr) {
-      qRetainerRow.style.display = 'flex';
-      document.getElementById('qRetainer').textContent = activeRetainerStr;
-    } else {
-      qRetainerRow.style.display = 'none';
+    let html = ''; let txtPayload = '';
+    const base = document.querySelector('input[name="platform"]:checked');
+    if (base) {
+      html += `<div class="quote-row"><span class="qr-label">• ${base.dataset.name}</span><span class="qr-val">$${parseFloat(base.value).toFixed(2)}</span></div>`;
+      txtPayload += `- ${base.dataset.name}\n`;
     }
-
-    const listContainer = document.getElementById('qList');
-    let html = '';
-    let textPayload = '';
-
-    const baseRadio = document.querySelector('input[name="platform"]:checked');
-    if (baseRadio) {
-      html += `<div class="quote-row"><span class="qr-label">• ${baseRadio.dataset.name}</span><span class="qr-val">$${parseFloat(baseRadio.value).toFixed(2)}</span></div>`;
-      textPayload += `- ${baseRadio.dataset.name}\n`;
-    }
-
     document.querySelectorAll('.addon:checked').forEach(box => {
-      const val = parseFloat(box.value || 0);
       const type = box.dataset.type;
-
-      if (type === 'retainer-mo' || type === 'retainer-yr') {
-        return; 
-      }
-
-      let priceLabel = `+$${val.toFixed(2)}`;
-      if (val === 0) priceLabel = 'Included';
-
-      html += `<div class="quote-row"><span class="qr-label">• ${box.dataset.name}</span><span class="qr-val">${priceLabel}</span></div>`;
-      textPayload += `- ${box.dataset.name}\n`;
+      if (type === 'retainer-mo' || type === 'retainer-yr') return;
+      const v = parseFloat(box.value || 0);
+      const lbl = v === 0 ? 'Included' : `+$${v.toFixed(2)}`;
+      html += `<div class="quote-row"><span class="qr-label">• ${box.dataset.name}</span><span class="qr-val">${lbl}</span></div>`;
+      txtPayload += `- ${box.dataset.name}\n`;
     });
-
-    const ownershipRadio = document.querySelector('input[name="ownership"]:checked');
-    if (ownershipRadio) {
-      const val = parseFloat(ownershipRadio.value);
-      if (val > 0) {
-        html += `<div class="quote-row"><span class="qr-label">• ${ownershipRadio.dataset.name}</span><span class="qr-val">+$${val.toFixed(2)}</span></div>`;
-        textPayload += `- ${ownershipRadio.dataset.name}\n`;
-      }
+    const own = document.querySelector('input[name="ownership"]:checked');
+    if (own && parseFloat(own.value) > 0) {
+      html += `<div class="quote-row"><span class="qr-label">• ${own.dataset.name}</span><span class="qr-val">+$${parseFloat(own.value).toFixed(2)}</span></div>`;
+      txtPayload += `- ${own.dataset.name}\n`;
     }
+    document.getElementById('qList').innerHTML = html;
 
-    listContainer.innerHTML = html;
-
-    const smsMessage = encodeURIComponent(
-      `Hello Quintan, here is my scope estimate for ${client}:\n\n` +
-      `SCOPE:\n${textPayload}\n` +
-      `Total: $${total.toFixed(2)} (50% Deposit: $${deposit.toFixed(2)})\n` +
-      `Turnaround: ${deliveryStr}\n` +
-      (activeRetainerStr ? `Retainer: ${activeRetainerStr}\n` : '')
-    );
-      `Hello Quintan, here is my scope estimate for ${client}:\n` +
-      `Total: $${total.toFixed(2)} (50% Deposit: $${deposit.toFixed(2)})\n` +
-      `Turnaround: ${deliveryStr}\n` +
-      (activeRetainerStr ? `Retainer: ${activeRetainerStr}\n` : '') +
-      `Date: ${dateStr}`
-    );
-
-    document.getElementById('btnSms').href = `sms:5206349490?body=${smsMessage}`;
-    document.getElementById('btnEmail').href = `mailto:quintanmiddle@gmail.com?subject=${encodeURIComponent('Software Scope Estimate - ' + client)}&body=${smsMessage}`;
-
-    const modal = document.getElementById('quote-modal');
-    modal.style.display = 'block';
-    modal.scrollIntoView({ behavior: 'smooth' });
+    const msg = encodeURIComponent(`Hello Quintan, here is my estimate for ${cName}:\n\nSCOPE:\n${txtPayload}\nTotal: $${total.toFixed(2)} (Deposit: $${dep.toFixed(2)})\nTurnaround: ${dStr}\n${activeRetStr ? 'Retainer: ' + activeRetStr : ''}`);
+    document.getElementById('btnSms').href = `sms:5206349490?body=${msg}`;
+    document.getElementById('btnEmail').href = `mailto:quintanmiddle@gmail.com?subject=Software Estimate - ${cName}&body=${msg}`;
+    
+    const m = document.getElementById('quote-modal');
+    m.style.display = 'block'; m.scrollIntoView({ behavior: 'smooth' });
   }
-
   calc();
 </script>
 </body>
