@@ -263,64 +263,82 @@
       cursor: pointer;
     }
 
-    /* Monochrome Monospace Formal Receipt Modal */
+    /* Premium Thermal Receipt Modal */
     #quote-modal {
       display: none;
-      margin-top: 24px;
-      background: #ffffff;
-      color: #000000;
-      padding: 22px;
-      border-radius: 4px;
-      font-family: monospace;
-      font-size: 11px;
-      line-height: 1.45;
+      margin-top: 32px;
+      background: #fcfcfc;
+      color: #111;
+      padding: 28px 22px;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 11.5px;
+      line-height: 1.5;
       border: 1px solid #d0d7de;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.4);
+      position: relative;
+    }
+    /* Jagged thermal paper top edge */
+    #quote-modal::before {
+      content: "";
+      position: absolute;
+      top: -4px; left: 0; right: 0; height: 4px;
+      background: linear-gradient(135deg, transparent 50%, #fcfcfc 50%),
+                  linear-gradient(-135deg, transparent 50%, #fcfcfc 50%);
+      background-size: 8px 100%;
     }
     .quote-header {
       text-align: center;
-      border-bottom: 1px dashed #000;
-      padding-bottom: 12px;
-      margin-bottom: 12px;
+      border-bottom: 2px dashed #333;
+      padding-bottom: 14px;
+      margin-bottom: 14px;
     }
     .quote-header h2 {
-      font-size: 14px;
-      margin-bottom: 4px;
+      font-size: 14.5px;
+      margin-bottom: 6px;
       letter-spacing: 0.5px;
+      color: #000;
     }
     .quote-row {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+    }
+    .qr-label {
+      flex: 1;
+      padding-right: 15px;
+    }
+    .qr-val {
+      font-weight: bold;
+      white-space: nowrap;
     }
     .quote-list {
-      margin: 10px 0;
-      border-bottom: 1px dashed #000;
-      padding-bottom: 10px;
+      margin: 12px 0;
+      border-bottom: 2px dashed #333;
+      padding-bottom: 12px;
     }
     .quote-total {
-      border-top: 1px solid #000;
+      border-top: 1px solid #333;
       padding-top: 8px;
       font-weight: bold;
-      font-size: 12px;
+      font-size: 12.5px;
     }
     .quote-terms {
-      margin-top: 14px;
-      font-size: 9.5px;
-      color: #222;
-      border-top: 1px dashed #000;
-      padding-top: 10px;
+      margin-top: 18px;
+      font-size: 10px;
+      color: #333;
+      border-top: 2px dashed #333;
+      padding-top: 12px;
       line-height: 1.5;
     }
     .quote-actions {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-top: 16px;
+      gap: 10px;
+      margin-top: 20px;
     }
     .btn-action {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       border-radius: 4px;
       font-size: 0.85rem;
       font-weight: bold;
@@ -330,8 +348,11 @@
       border: none;
       box-sizing: border-box;
       font-family: monospace;
+      letter-spacing: 0.5px;
+      transition: opacity 0.15s;
     }
-    .btn-action.print { background: #000; color: #fff; }
+    .btn-action:hover { opacity: 0.9; }
+    .btn-action.print { background: #1f2328; color: #fff; }
     .btn-action.sms { background: #238636; color: #fff; }
     .btn-action.email { background: #0969da; color: #fff; }
 
@@ -345,6 +366,7 @@
         width: 100% !important;
         box-shadow: none !important;
       }
+      #quote-modal::before { display: none !important; }
       .quote-actions { display: none !important; }
     }
   </style>
@@ -600,10 +622,10 @@
   <div class="cat-header">7. Ownership & Code Handoff</div>
   <label class="item">
     <div class="item-left">
-      <input type="radio" id="own_bin" name="ownership" value="0" data-name="Compiled Production Binary (.apk)" data-days="0" checked onchange="calc()">
+      <input type="radio" id="own_bin" name="ownership" value="0" data-name="Standard Runtime License (No Source Code)" data-days="0" checked onchange="calc()">
       <div class="item-content">
-        <span class="item-label">Compiled Binary (.apk) Only</span>
-        <span class="item-desc">Signed, drop-in production installer file ready for perpetual internal use.</span>
+        <span class="item-label">Standard Runtime License</span>
+        <span class="item-desc">Drop-in production installer file ready for perpetual internal use. (No raw code).</span>
       </div>
     </div>
     <span class="item-price">$0</span>
@@ -633,7 +655,7 @@
   <div class="cat-header">8. Code Rot Defense & Priority Turnaround</div>
   <label class="item">
     <div class="item-left">
-      <input type="checkbox" id="ret_monthly" class="addon" value="150" data-type="retainer-mo" data-name="Monthly Maintenance Retainer (OS Compatibility & Bug Defense)" data-days="0" onchange="toggleRetainer('mo')">
+      <input type="checkbox" id="ret_monthly" class="addon" value="150" data-type="retainer-mo" data-name="Monthly Maintenance Retainer" data-days="0" onchange="toggleRetainer('mo')">
       <div class="item-content">
         <span class="item-label">Monthly Maintenance Retainer</span>
         <span class="item-desc">Priority bug turnaround, target API updates, and Android patch compatibility.</span>
@@ -643,7 +665,7 @@
   </label>
   <label class="item">
     <div class="item-left">
-      <input type="checkbox" id="ret_yearly" class="addon" value="1500" data-type="retainer-yr" data-name="Annual Maintenance Retainer (Pre-Paid 12-Month Coverage)" data-days="0" onchange="toggleRetainer('yr')">
+      <input type="checkbox" id="ret_yearly" class="addon" value="1500" data-type="retainer-yr" data-name="Annual Maintenance Retainer" data-days="0" onchange="toggleRetainer('yr')">
       <div class="item-content">
         <span class="item-label">Annual Retainer (12 Months Prepaid)</span>
         <span class="item-desc">Continuous library patching, security updates, and guaranteed priority bench hours.</span>
@@ -684,7 +706,7 @@
 
   <button class="btn-submit" onclick="generateEstimate()">GENERATE FORMAL ESTIMATE</button>
 
-  <!-- Formal Estimate Receipt -->
+  <!-- Formal Estimate Receipt Modal -->
   <div id="quote-modal">
     <div class="quote-header">
       <h2>DEVELOPMENT & SCOPE ESTIMATE</h2>
@@ -694,35 +716,35 @@
 
     <div class="quote-row">
       <span>CLIENT:</span>
-      <span id="qClient" style="font-weight: bold;">Direct Client</span>
+      <span class="qr-val" id="qClient">Direct Client</span>
     </div>
     <div class="quote-row">
       <span>ISSUED DATE:</span>
-      <span id="qDate"></span>
+      <span class="qr-val" id="qDate"></span>
     </div>
     <div class="quote-row">
       <span>TARGET DELIVERY:</span>
-      <span id="qTimeline" style="font-weight: bold;"></span>
+      <span class="qr-val" id="qTimeline"></span>
     </div>
 
-    <div class="cat-header" style="color: #000; margin-top: 10px;">Itemized Scope Breakdown:</div>
+    <div style="font-weight: bold; margin-top: 18px; margin-bottom: 4px; font-size: 12.5px;">ITEMIZED SCOPE BREAKDOWN:</div>
     <div class="quote-list" id="qList"></div>
 
     <div class="quote-row quote-total">
       <span>UPFRONT TOTAL INVESTMENT:</span>
-      <span id="qTotal"></span>
+      <span class="qr-val" id="qTotal"></span>
     </div>
     <div class="quote-row" style="color: #008000; font-weight: bold;">
       <span>50% DEPOSIT TO COMMENCE:</span>
-      <span id="qDeposit"></span>
+      <span class="qr-val" id="qDeposit"></span>
     </div>
     <div class="quote-row">
       <span>BALANCE DUE ON SIGN-OFF:</span>
-      <span id="qBalance"></span>
+      <span class="qr-val" id="qBalance"></span>
     </div>
-    <div class="quote-row" id="qRetainerRow" style="display: none; color: #555; margin-top: 4px;">
+    <div class="quote-row" id="qRetainerRow" style="display: none; color: #444; margin-top: 4px;">
       <span>OPTIONAL CODE MAINTENANCE:</span>
-      <span id="qRetainer" style="font-weight: bold;"></span>
+      <span class="qr-val" id="qRetainer"></span>
     </div>
 
     <div class="quote-terms">
@@ -876,29 +898,31 @@
 
     const baseRadio = document.querySelector('input[name="platform"]:checked');
     if (baseRadio) {
-      html += `<div class="quote-row"><span>• ${baseRadio.dataset.name}</span><span>$${parseFloat(baseRadio.value).toFixed(2)}</span></div>`;
+      html += `<div class="quote-row"><span class="qr-label">• ${baseRadio.dataset.name}</span><span class="qr-val">$${parseFloat(baseRadio.value).toFixed(2)}</span></div>`;
     }
 
     document.querySelectorAll('.addon:checked').forEach(box => {
       const val = parseFloat(box.value || 0);
       const type = box.dataset.type;
-      let priceLabel = `+$${val.toFixed(2)}`;
 
-      if (type === 'retainer-mo') {
-        priceLabel = '+$150.00/mo';
-      } else if (type === 'retainer-yr') {
-        priceLabel = '+$1,500.00/yr';
-      } else if (val === 0) {
-        priceLabel = 'Included';
+      // Skip retainer from the itemized list, as it is highlighted in the totals block
+      if (type === 'retainer-mo' || type === 'retainer-yr') {
+        return; 
       }
 
-      html += `<div class="quote-row"><span>• ${box.dataset.name}</span><span>${priceLabel}</span></div>`;
+      let priceLabel = `+$${val.toFixed(2)}`;
+      if (val === 0) priceLabel = 'Included';
+
+      html += `<div class="quote-row"><span class="qr-label">• ${box.dataset.name}</span><span class="qr-val">${priceLabel}</span></div>`;
     });
 
     const ownershipRadio = document.querySelector('input[name="ownership"]:checked');
     if (ownershipRadio) {
       const val = parseFloat(ownershipRadio.value);
-      html += `<div class="quote-row"><span>• ${ownershipRadio.dataset.name}</span><span>${val > 0 ? '+$' + val.toFixed(2) : '$0.00'}</span></div>`;
+      // Only print IP buyouts if they cost money, otherwise omit to prevent redundancy
+      if (val > 0) {
+        html += `<div class="quote-row"><span class="qr-label">• ${ownershipRadio.dataset.name}</span><span class="qr-val">+$${val.toFixed(2)}</span></div>`;
+      }
     }
 
     listContainer.innerHTML = html;
