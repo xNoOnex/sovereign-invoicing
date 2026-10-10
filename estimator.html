@@ -761,7 +761,6 @@
   }
 
   function applyPreset(name) {
-    // Uncheck all optional addons
     document.querySelectorAll('.addon').forEach(box => {
       if (!box.disabled) box.checked = false;
     });
@@ -798,21 +797,18 @@
     let isRush = false;
     let activeRetainerStr = "";
 
-    // Platform Selection
     const baseRadio = document.querySelector('input[name="platform"]:checked');
     if (baseRadio) {
       total += parseFloat(baseRadio.value);
       baseDays = parseInt(baseRadio.dataset.days || 7);
     }
 
-    // Ownership Selection
     const ownershipRadio = document.querySelector('input[name="ownership"]:checked');
     if (ownershipRadio) {
       total += parseFloat(ownershipRadio.value);
       baseDays += parseInt(ownershipRadio.dataset.days || 0);
     }
 
-    // Addons
     document.querySelectorAll('.addon:checked').forEach(box => {
       const val = parseFloat(box.value || 0);
       const days = parseInt(box.dataset.days || 0);
@@ -878,13 +874,11 @@
     const listContainer = document.getElementById('qList');
     let html = '';
 
-    // Platform
     const baseRadio = document.querySelector('input[name="platform"]:checked');
     if (baseRadio) {
       html += `<div class="quote-row"><span>• ${baseRadio.dataset.name}</span><span>$${parseFloat(baseRadio.value).toFixed(2)}</span></div>`;
     }
 
-    // Addons
     document.querySelectorAll('.addon:checked').forEach(box => {
       const val = parseFloat(box.value || 0);
       const type = box.dataset.type;
@@ -901,7 +895,6 @@
       html += `<div class="quote-row"><span>• ${box.dataset.name}</span><span>${priceLabel}</span></div>`;
     });
 
-    // Ownership
     const ownershipRadio = document.querySelector('input[name="ownership"]:checked');
     if (ownershipRadio) {
       const val = parseFloat(ownershipRadio.value);
@@ -910,7 +903,6 @@
 
     listContainer.innerHTML = html;
 
-    // Contact Link Dispatchers
     const smsMessage = encodeURIComponent(
       `Hello Quintan, here is my scope estimate for ${client}:\n` +
       `Total: $${total.toFixed(2)} (50% Deposit: $${deposit.toFixed(2)})\n` +
