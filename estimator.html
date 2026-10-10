@@ -277,7 +277,6 @@
       box-shadow: 0 12px 28px rgba(0,0,0,0.4);
       position: relative;
     }
-    /* Jagged thermal paper top edge */
     #quote-modal::before {
       content: "";
       position: absolute;
@@ -357,17 +356,20 @@
     .btn-action.email { background: #0969da; color: #fff; }
 
     @media print {
-      body { background: #fff !important; padding: 0 !important; }
+      body { background: #fff !important; padding: 0 !important; color: #000 !important; }
       .container, .sticky-bar { display: none !important; }
       #quote-modal {
         display: block !important;
+        position: relative !important;
         border: none !important;
-        padding: 0 !important;
+        padding: 10px !important;
         width: 100% !important;
         box-shadow: none !important;
+        margin: 0 !important;
       }
       #quote-modal::before { display: none !important; }
       .quote-actions { display: none !important; }
+      .quote-row { break-inside: avoid; }
     }
   </style>
 </head>
@@ -479,13 +481,13 @@
   </label>
   <label class="item">
     <div class="item-left">
-      <input type="checkbox" id="mod_math" class="addon" value="300" data-name="Bespoke Math & Dynamic Pricing Rule Engine" data-days="2" onchange="calc()">
+      <input type="checkbox" id="mod_math" class="addon" value="500" data-name="Bespoke Math & Dynamic Pricing Rule Engine" data-days="2" onchange="calc()">
       <div class="item-content">
         <span class="item-label">Dynamic Math & Rule Engine</span>
         <span class="item-desc">Embedded operational logic: weight/cubic footage formulas, tier margins, overtime.</span>
       </div>
     </div>
-    <span class="item-price">+$300</span>
+    <span class="item-price">+$500</span>
   </label>
   <label class="item">
     <div class="item-left">
@@ -497,18 +499,17 @@
     </div>
     <span class="item-price">+$200</span>
   </label>
-
   <!-- 4. Security, Cryptography & Hardware Tokens -->
   <div class="cat-header">4. Security, Cryptography & Access Control</div>
   <label class="item">
     <div class="item-left">
-      <input type="checkbox" id="mod_aes" class="addon" value="400" data-name="Client-Side Zero-Knowledge AES-256 Vault" data-days="2" onchange="calc()">
+      <input type="checkbox" id="mod_aes" class="addon" value="850" data-name="Client-Side Zero-Knowledge AES-256 Vault" data-days="3" onchange="calc()">
       <div class="item-content">
         <span class="item-label">Zero-Knowledge AES-256 Vault</span>
         <span class="item-desc">Hardware-isolated client encryption. Data inaccessible without the master passphrase.</span>
       </div>
     </div>
-    <span class="item-price highlight">+$400</span>
+    <span class="item-price highlight">+$850</span>
   </label>
   <label class="item">
     <div class="item-left">
@@ -522,13 +523,13 @@
   </label>
   <label class="item">
     <div class="item-left">
-      <input type="checkbox" id="mod_token" class="addon" value="350" data-name="Hardware Token / USB-OTG Direct Interface" data-days="2" onchange="calc()">
+      <input type="checkbox" id="mod_token" class="addon" value="650" data-name="Hardware Token / USB-OTG Direct Interface" data-days="2" onchange="calc()">
       <div class="item-content">
         <span class="item-label">Hardware Token / USB-OTG Support</span>
         <span class="item-desc">Hardware validation against YubiKeys, USB flash media, or air-gapped storage.</span>
       </div>
     </div>
-    <span class="item-price">+$350</span>
+    <span class="item-price">+$650</span>
   </label>
 
   <!-- 5. Field Hardware & Edge Processing -->
@@ -617,7 +618,6 @@
     </div>
     <span class="item-price">+$200</span>
   </label>
-
   <!-- 7. IP & Delivery Handoff -->
   <div class="cat-header">7. Ownership & Code Handoff</div>
   <label class="item">
@@ -658,7 +658,7 @@
       <input type="checkbox" id="ret_monthly" class="addon" value="150" data-type="retainer-mo" data-name="Monthly Maintenance Retainer" data-days="0" onchange="toggleRetainer('mo')">
       <div class="item-content">
         <span class="item-label">Monthly Maintenance Retainer</span>
-        <span class="item-desc">Priority bug turnaround, target API updates, and Android patch compatibility.</span>
+        <span class="item-desc">Priority bug turnaround, target API updates. Billed securely via Stripe.</span>
       </div>
     </div>
     <span class="item-price">+$150/mo</span>
@@ -668,7 +668,7 @@
       <input type="checkbox" id="ret_yearly" class="addon" value="1500" data-type="retainer-yr" data-name="Annual Maintenance Retainer" data-days="0" onchange="toggleRetainer('yr')">
       <div class="item-content">
         <span class="item-label">Annual Retainer (12 Months Prepaid)</span>
-        <span class="item-desc">Continuous library patching, security updates, and guaranteed priority bench hours.</span>
+        <span class="item-desc">Continuous patching and guaranteed priority bench hours. Billed on final invoice.</span>
       </div>
     </div>
     <span class="item-price">+$1,500/yr</span>
@@ -771,7 +771,6 @@
     <button class="btn-sticky-jump" onclick="generateEstimate()">Review Scope</button>
   </div>
 </div>
-
 <script>
   function toggleRetainer(type) {
     if (type === 'mo' && document.getElementById('ret_monthly').checked) {
@@ -895,17 +894,18 @@
 
     const listContainer = document.getElementById('qList');
     let html = '';
+    let textPayload = '';
 
     const baseRadio = document.querySelector('input[name="platform"]:checked');
     if (baseRadio) {
       html += `<div class="quote-row"><span class="qr-label">• ${baseRadio.dataset.name}</span><span class="qr-val">$${parseFloat(baseRadio.value).toFixed(2)}</span></div>`;
+      textPayload += `- ${baseRadio.dataset.name}\n`;
     }
 
     document.querySelectorAll('.addon:checked').forEach(box => {
       const val = parseFloat(box.value || 0);
       const type = box.dataset.type;
 
-      // Skip retainer from the itemized list, as it is highlighted in the totals block
       if (type === 'retainer-mo' || type === 'retainer-yr') {
         return; 
       }
@@ -914,20 +914,27 @@
       if (val === 0) priceLabel = 'Included';
 
       html += `<div class="quote-row"><span class="qr-label">• ${box.dataset.name}</span><span class="qr-val">${priceLabel}</span></div>`;
+      textPayload += `- ${box.dataset.name}\n`;
     });
 
     const ownershipRadio = document.querySelector('input[name="ownership"]:checked');
     if (ownershipRadio) {
       const val = parseFloat(ownershipRadio.value);
-      // Only print IP buyouts if they cost money, otherwise omit to prevent redundancy
       if (val > 0) {
         html += `<div class="quote-row"><span class="qr-label">• ${ownershipRadio.dataset.name}</span><span class="qr-val">+$${val.toFixed(2)}</span></div>`;
+        textPayload += `- ${ownershipRadio.dataset.name}\n`;
       }
     }
 
     listContainer.innerHTML = html;
 
     const smsMessage = encodeURIComponent(
+      `Hello Quintan, here is my scope estimate for ${client}:\n\n` +
+      `SCOPE:\n${textPayload}\n` +
+      `Total: $${total.toFixed(2)} (50% Deposit: $${deposit.toFixed(2)})\n` +
+      `Turnaround: ${deliveryStr}\n` +
+      (activeRetainerStr ? `Retainer: ${activeRetainerStr}\n` : '')
+    );
       `Hello Quintan, here is my scope estimate for ${client}:\n` +
       `Total: $${total.toFixed(2)} (50% Deposit: $${deposit.toFixed(2)})\n` +
       `Turnaround: ${deliveryStr}\n` +
