@@ -25,20 +25,32 @@
 
     .input-group { margin-bottom: 14px; }
     .input-group label { display: block; font-size: 0.72rem; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; font-family: monospace; }
-    input[type="text"] { width: 100%; background: #0d1117; border: 1px solid var(--border); color: #fff; padding: 8px 10px; border-radius: 6px; font-size: 0.85rem; }
+    input[type="text"], input[type="number"] { background: #0d1117; border: 1px solid var(--border); color: #fff; border-radius: 6px; padding: 8px 10px; font-size: 0.85rem; }
+    input[type="text"] { width: 100%; }
+    input[type="number"] { width: 48px; background: #21262d; text-align: center; font-family: monospace; padding: 6px; }
+    input[type="text"]:focus, input[type="number"]:focus { outline: none; border-color: var(--blue); }
     
     .cat-header { font-size: 0.75rem; font-weight: bold; color: var(--text-muted); text-transform: uppercase; margin: 20px 0 8px 0; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
-    .item { display: flex; align-items: flex-start; justify-content: space-between; padding: 10px; background: #0d1117; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 6px; cursor: pointer; transition: border-color 0.15s, background-color 0.15s; }
+    .item { display: flex; align-items: flex-start; justify-content: space-between; padding: 10px; background: #0d1117; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 6px; cursor: pointer; transition: all 0.15s; }
     .item:has(input[type="checkbox"]:checked), .item:has(input[type="radio"]:checked) { border-color: var(--border-active); background-color: var(--card-active); }
     .item-left { display: flex; align-items: flex-start; gap: 10px; flex: 1; }
     .item-left input[type="checkbox"], .item-left input[type="radio"] { accent-color: var(--accent); width: 16px; height: 16px; margin-top: 2px; }
     
-    /* Numeric Input styling for modules */
-    input[type="number"] { width: 48px; background: #21262d; border: 1px solid var(--border); color: #fff; border-radius: 4px; padding: 6px; text-align: center; font-family: monospace; font-size: 0.9rem; }
-    input[type="number"]:focus { outline: none; border-color: var(--blue); }
-
     .item-content { display: flex; flex-direction: column; }
-    .item-label { font-size: 0.82rem; font-weight: 500; color: #e6edf3; }
+    .item-label { font-size: 0.82rem; font-weight: 500; color: #e6edf3; display: flex; align-items: center; flex-wrap: wrap; }
+    
+    /* Info Icon & Info Modal Styles */
+    .info-icon { display: inline-flex; justify-content: center; align-items: center; width: 15px; height: 15px; border-radius: 50%; background: #30363d; color: #c9d1d9; font-size: 10px; font-weight: bold; font-family: monospace; margin-left: 6px; cursor: pointer; border: 1px solid #484f58; transition: all 0.2s; }
+    .info-icon:hover { background: var(--blue); border-color: var(--blue); color: #fff; }
+    
+    #info-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 14px; backdrop-filter: blur(4px); }
+    #info-box { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; max-width: 400px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.8); position: relative; }
+    #info-title { color: var(--blue); font-size: 1.05rem; margin-bottom: 12px; border-bottom: 1px dashed #30363d; padding-bottom: 8px; }
+    .info-sec { margin-bottom: 10px; font-size: 0.82rem; line-height: 1.4; color: #e6edf3; }
+    .info-sec.limit { color: var(--amber); background: rgba(210,153,34,0.1); padding: 8px; border-radius: 4px; border-left: 2px solid var(--amber); }
+    .btn-close-info { width: 100%; margin-top: 14px; padding: 10px; background: #21262d; border: 1px solid #30363d; color: #fff; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .btn-close-info:hover { background: #30363d; }
+
     .item-desc { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
     .item-price { font-size: 0.82rem; font-weight: bold; color: var(--blue); font-family: monospace; margin-left: 10px; }
     .item-price.highlight { color: var(--purple); } .item-price.amber { color: var(--amber); }
@@ -70,7 +82,7 @@
 
     @media print {
       body { background: #fff !important; padding: 0 !important; color: #000 !important; }
-      .container, .sticky-bar { display: none !important; }
+      .container, .sticky-bar, #info-overlay { display: none !important; }
       #quote-modal { display: block !important; position: relative !important; border: none !important; padding: 10px !important; width: 100% !important; max-width: none !important; box-shadow: none !important; margin: 0 !important; }
       #quote-modal::before, .quote-actions { display: none !important; }
       .quote-row { break-inside: avoid; }
@@ -78,6 +90,15 @@
   </style>
 </head>
 <body>
+<div id="info-overlay" onclick="closeInfo()">
+  <div id="info-box" onclick="event.stopPropagation()">
+    <h3 id="info-title">Title</h3>
+    <div class="info-sec"><strong style="color:#58a6ff;">Business Value:</strong> <span id="info-desc"></span></div>
+    <div class="info-sec limit"><strong>Constraints:</strong> <span id="info-limit"></span></div>
+    <button class="btn-close-info" onclick="closeInfo()">Dismiss</button>
+  </div>
+</div>
+
 <div class="container">
   <h1>Universal Deployment Estimator</h1>
   <p class="sub">Configure offline-first software requirements. Flat-rate architecture, zero monthly SaaS seat licensing, perpetual deployment rights.</p>
@@ -92,58 +113,46 @@
   </div>
 
   <div class="cat-header">1. Platform Foundation</div>
-  <label class="item"><div class="item-left"><input type="radio" id="plat_web" name="platform" value="650" data-name="Single-Page Web Tool" data-days="5" onchange="calc()"><div class="item-content"><span class="item-label">Single-Page Web Utility</span></div></div><span class="item-price">$650</span></label>
-  <label class="item"><div class="item-left"><input type="radio" id="plat_apk" name="platform" value="1000" data-name="Native Android App (.apk)" data-days="7" checked onchange="calc()"><div class="item-content"><span class="item-label">Native Android App (.apk)</span></div></div><span class="item-price">$1,000</span></label>
-  <label class="item"><div class="item-left"><input type="radio" id="plat_cross" name="platform" value="1500" data-name="Cross-Platform Suite" data-days="10" onchange="calc()"><div class="item-content"><span class="item-label">Cross-Platform Suite</span></div></div><span class="item-price">$1,500</span></label>
+  <label class="item"><div class="item-left"><input type="radio" id="plat_web" name="platform" value="650" data-name="Single-Page Web Tool" data-days="5" onchange="calc()"><div class="item-content"><span class="item-label">Single-Page Web Utility <span class="info-icon" onclick="showInfo('plat_web', event)">i</span></span></div></div><span class="item-price">$650</span></label>
+  <label class="item"><div class="item-left"><input type="radio" id="plat_apk" name="platform" value="1000" data-name="Native Android App (.apk)" data-days="7" checked onchange="calc()"><div class="item-content"><span class="item-label">Native Android App (.apk) <span class="info-icon" onclick="showInfo('plat_apk', event)">i</span></span></div></div><span class="item-price">$1,000</span></label>
+  <label class="item"><div class="item-left"><input type="radio" id="plat_cross" name="platform" value="1500" data-name="Cross-Platform Suite" data-days="10" onchange="calc()"><div class="item-content"><span class="item-label">Cross-Platform Suite <span class="info-icon" onclick="showInfo('plat_cross', event)">i</span></span></div></div><span class="item-price">$1,500</span></label>
 
   <div class="cat-header">2. Workflow Volume</div>
-  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="0" data-name="Standard Core Workflows" checked disabled><div class="item-content"><span class="item-label">Standard Core Workflows</span></div></div><span class="item-price">Included</span></label>
-  
-  <!-- Replaced checkbox with numeric counter -->
-  <div class="item" id="item_extra_mod">
-    <div class="item-left" style="align-items: center;">
-      <input type="number" id="mod_extra" value="0" min="0" max="20" onchange="calc()" onkeyup="calc()">
-      <div class="item-content">
-        <span class="item-label">Extra Operational Modules</span>
-        <span class="item-desc">Custom workflow views (e.g. Job Timer, Fleet Roster). $200 ea.</span>
-      </div>
-    </div>
-    <span class="item-price" id="mod_extra_display">+$0</span>
-  </div>
-
-  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="250" data-name="Tactical High-Contrast UI" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">High-Contrast UI & Scaling</span></div></div><span class="item-price">+$250</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="0" data-name="Standard Core Workflows" checked disabled><div class="item-content"><span class="item-label">Standard Core Workflows <span class="info-icon" onclick="showInfo('mod_base', event)">i</span></span></div></div><span class="item-price">Included</span></label>
+  <div class="item" id="item_extra_mod"><div class="item-left" style="align-items: center;"><input type="number" id="mod_extra" value="0" min="0" max="20" onchange="calc()" onkeyup="calc()"><div class="item-content"><span class="item-label">Extra Operational Modules <span class="info-icon" onclick="showInfo('mod_extra', event)">i</span></span><span class="item-desc">Custom workflow views. $200 ea.</span></div></div><span class="item-price" id="mod_extra_display">+$0</span></div>
+  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="250" data-name="Tactical High-Contrast UI" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">High-Contrast UI & Scaling <span class="info-icon" onclick="showInfo('mod_ui', event)">i</span></span></div></div><span class="item-price">+$250</span></label>
 
   <div class="cat-header">3. Offline Storage Engine</div>
-  <label class="item"><div class="item-left"><input type="checkbox" id="mod_db" class="addon" value="250" data-name="Local Device Persistence" data-days="1" checked onchange="calc()"><div class="item-content"><span class="item-label">Local Offline Database</span></div></div><span class="item-price">+$250</span></label>
-  <label class="item"><div class="item-left"><input type="checkbox" id="mod_export" class="addon" value="200" data-name="PDF & CSV Document Generator" data-days="1" checked onchange="calc()"><div class="item-content"><span class="item-label">PDF & CSV Document Generator</span></div></div><span class="item-price">+$200</span></label>
-  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="500" data-name="Bespoke Math & Rule Engine" data-days="2" onchange="calc()"><div class="item-content"><span class="item-label">Dynamic Math & Rule Engine</span></div></div><span class="item-price">+$500</span></label>
-  <label class="item"><div class="item-left"><input type="checkbox" id="mod_backup" class="addon" value="200" data-name="Encrypted JSON Local Backup" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">Encrypted JSON Local Backup</span></div></div><span class="item-price">+$200</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" id="mod_db" class="addon" value="250" data-name="Local Device Persistence" data-days="1" checked onchange="calc()"><div class="item-content"><span class="item-label">Local Offline Database <span class="info-icon" onclick="showInfo('mod_db', event)">i</span></span></div></div><span class="item-price">+$250</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" id="mod_export" class="addon" value="200" data-name="PDF & CSV Document Generator" data-days="1" checked onchange="calc()"><div class="item-content"><span class="item-label">PDF & CSV Document Generator <span class="info-icon" onclick="showInfo('mod_export', event)">i</span></span></div></div><span class="item-price">+$200</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="500" data-name="Bespoke Math & Rule Engine" data-days="2" onchange="calc()"><div class="item-content"><span class="item-label">Dynamic Math & Rule Engine <span class="info-icon" onclick="showInfo('mod_math', event)">i</span></span></div></div><span class="item-price">+$500</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" id="mod_backup" class="addon" value="200" data-name="Encrypted JSON Local Backup" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">Encrypted JSON Local Backup <span class="info-icon" onclick="showInfo('mod_backup', event)">i</span></span></div></div><span class="item-price">+$200</span></label>
   <div class="cat-header">4. Security & Cryptography</div>
-  <label class="item"><div class="item-left"><input type="checkbox" id="mod_aes" class="addon" value="850" data-name="Zero-Knowledge AES-256 Vault" data-days="3" onchange="calc()"><div class="item-content"><span class="item-label">Zero-Knowledge AES-256 Vault</span></div></div><span class="item-price highlight">+$850</span></label>
-  <label class="item"><div class="item-left"><input type="checkbox" id="mod_auth" class="addon" value="200" data-name="Passcode / Biometric Gate" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">Passcode / Biometric Gate</span></div></div><span class="item-price">+$200</span></label>
-  <label class="item"><div class="item-left"><input type="checkbox" id="mod_token" class="addon" value="650" data-name="Hardware Token / USB-OTG" data-days="2" onchange="calc()"><div class="item-content"><span class="item-label">Hardware Token / USB-OTG</span></div></div><span class="item-price">+$650</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" id="mod_aes" class="addon" value="850" data-name="Zero-Knowledge AES-256 Vault" data-days="3" onchange="calc()"><div class="item-content"><span class="item-label">Zero-Knowledge AES-256 Vault <span class="info-icon" onclick="showInfo('mod_aes', event)">i</span></span></div></div><span class="item-price highlight">+$850</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" id="mod_auth" class="addon" value="200" data-name="Passcode / Biometric Gate" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">Passcode / Biometric Gate <span class="info-icon" onclick="showInfo('mod_auth', event)">i</span></span></div></div><span class="item-price">+$200</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" id="mod_token" class="addon" value="650" data-name="Hardware Token / USB-OTG" data-days="2" onchange="calc()"><div class="item-content"><span class="item-label">Hardware Token / USB-OTG <span class="info-icon" onclick="showInfo('mod_token', event)">i</span></span></div></div><span class="item-price">+$650</span></label>
 
   <div class="cat-header">5. Field Hardware Processing</div>
-  <label class="item"><div class="item-left"><input type="checkbox" id="mod_sign" class="addon" value="250" data-name="Sign-On-Glass Signature Pad" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">Sign-On-Glass Signature Pad</span></div></div><span class="item-price">+$250</span></label>
-  <label class="item"><div class="item-left"><input type="checkbox" id="mod_cam" class="addon" value="300" data-name="Optical Barcode / QR Scanner" data-days="2" onchange="calc()"><div class="item-content"><span class="item-label">Optical Barcode / QR Scanner</span></div></div><span class="item-price">+$300</span></label>
-  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="1200" data-name="P2P Mesh / Bluetooth Sync" data-days="5" onchange="calc()"><div class="item-content"><span class="item-label">P2P Mesh / Bluetooth Sync</span></div></div><span class="item-price highlight">+$1,200</span></label>
-  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="1200" data-name="Local On-Device AI / LLM" data-days="5" onchange="calc()"><div class="item-content"><span class="item-label">Local On-Device AI / LLM</span></div></div><span class="item-price highlight">+$1,200</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" id="mod_sign" class="addon" value="250" data-name="Sign-On-Glass Signature Pad" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">Sign-On-Glass Signature Pad <span class="info-icon" onclick="showInfo('mod_sign', event)">i</span></span></div></div><span class="item-price">+$250</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" id="mod_cam" class="addon" value="300" data-name="Optical Barcode / QR Scanner" data-days="2" onchange="calc()"><div class="item-content"><span class="item-label">Optical Barcode / QR Scanner <span class="info-icon" onclick="showInfo('mod_cam', event)">i</span></span></div></div><span class="item-price">+$300</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="1200" data-name="P2P Mesh / Bluetooth Sync" data-days="5" onchange="calc()"><div class="item-content"><span class="item-label">P2P Mesh / Bluetooth Sync <span class="info-icon" onclick="showInfo('mod_mesh', event)">i</span></span></div></div><span class="item-price highlight">+$1,200</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="1200" data-name="Local On-Device AI / LLM" data-days="5" onchange="calc()"><div class="item-content"><span class="item-label">Local On-Device AI / LLM <span class="info-icon" onclick="showInfo('mod_ai', event)">i</span></span></div></div><span class="item-price highlight">+$1,200</span></label>
 
   <div class="cat-header">6. Ingestion & Onboarding</div>
-  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="200" data-name="Legacy CSV Data Migration" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">Legacy CSV Data Migration</span></div></div><span class="item-price">+$200</span></label>
-  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="150" data-name="Private QR Distribution Hub" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">Private QR Distribution Gateway</span></div></div><span class="item-price">+$150</span></label>
-  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="150" data-name="Turnkey Device Provisioning" data-days="2" onchange="calc()"><div class="item-content"><span class="item-label">Turnkey Device Provisioning</span></div></div><span class="item-price">+$150</span></label>
-  <label class="item"><div class="item-left"><input type="checkbox" id="mod_sop" class="addon" value="200" data-name="Laminated SOPs & Crew Training" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">Laminated SOPs & Crew Training</span></div></div><span class="item-price">+$200</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="200" data-name="Legacy CSV Data Migration" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">Legacy CSV Data Migration <span class="info-icon" onclick="showInfo('mod_ingest', event)">i</span></span></div></div><span class="item-price">+$200</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="150" data-name="Private QR Distribution Hub" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">Private QR Distribution Gateway <span class="info-icon" onclick="showInfo('mod_hub', event)">i</span></span></div></div><span class="item-price">+$150</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="150" data-name="Turnkey Device Provisioning" data-days="2" onchange="calc()"><div class="item-content"><span class="item-label">Turnkey Device Provisioning <span class="info-icon" onclick="showInfo('mod_prov', event)">i</span></span></div></div><span class="item-price">+$150</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" id="mod_sop" class="addon" value="200" data-name="Laminated SOPs & Crew Training" data-days="1" onchange="calc()"><div class="item-content"><span class="item-label">Laminated SOPs & Crew Training <span class="info-icon" onclick="showInfo('mod_sop', event)">i</span></span></div></div><span class="item-price">+$200</span></label>
 
   <div class="cat-header">7. Ownership & Code Handoff</div>
-  <label class="item"><div class="item-left"><input type="radio" id="own_bin" name="ownership" value="0" data-name="Standard Runtime License" checked onchange="calc()"><div class="item-content"><span class="item-label">Standard Runtime License</span></div></div><span class="item-price">$0</span></label>
-  <label class="item"><div class="item-left"><input type="radio" id="own_white" name="ownership" value="1500" data-name="White-Label Buyout" data-days="2" onchange="calc()"><div class="item-content"><span class="item-label">White-Label Buyout</span></div></div><span class="item-price amber">+$1,500</span></label>
-  <label class="item"><div class="item-left"><input type="radio" id="own_src" name="ownership" value="3500" data-name="Full Source Code Transfer" data-days="3" onchange="calc()"><div class="item-content"><span class="item-label">Full Source Code & IP Handoff</span></div></div><span class="item-price amber">+$3,500</span></label>
+  <label class="item"><div class="item-left"><input type="radio" id="own_bin" name="ownership" value="0" data-name="Standard Runtime License" checked onchange="calc()"><div class="item-content"><span class="item-label">Standard Runtime License <span class="info-icon" onclick="showInfo('own_bin', event)">i</span></span></div></div><span class="item-price">$0</span></label>
+  <label class="item"><div class="item-left"><input type="radio" name="ownership" value="1500" data-name="White-Label Buyout" data-days="2" onchange="calc()"><div class="item-content"><span class="item-label">White-Label Buyout <span class="info-icon" onclick="showInfo('own_white', event)">i</span></span></div></div><span class="item-price amber">+$1,500</span></label>
+  <label class="item"><div class="item-left"><input type="radio" name="ownership" value="3500" data-name="Full Source Code Transfer" data-days="3" onchange="calc()"><div class="item-content"><span class="item-label">Full Source Code & IP Handoff <span class="info-icon" onclick="showInfo('own_src', event)">i</span></span></div></div><span class="item-price amber">+$3,500</span></label>
 
   <div class="cat-header">8. Code Rot Defense</div>
-  <label class="item"><div class="item-left"><input type="checkbox" id="ret_monthly" class="addon" value="150" data-type="retainer-mo" data-name="Monthly Maintenance Retainer" onchange="toggleRetainer('mo')"><div class="item-content"><span class="item-label">Monthly Maintenance Retainer</span></div></div><span class="item-price">+$150/mo</span></label>
-  <label class="item"><div class="item-left"><input type="checkbox" id="ret_yearly" class="addon" value="1500" data-type="retainer-yr" data-name="Annual Maintenance Retainer" onchange="toggleRetainer('yr')"><div class="item-content"><span class="item-label">Annual Retainer (12 Mo Prepaid)</span></div></div><span class="item-price">+$1,500/yr</span></label>
-  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="400" data-type="rush" data-name="Expedited Rush Production" onchange="calc()"><div class="item-content"><span class="item-label">Expedited Rush Production</span></div></div><span class="item-price highlight">+$400</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" id="ret_monthly" class="addon" value="150" data-type="retainer-mo" data-name="Monthly Maintenance Retainer" onchange="toggleRetainer('mo')"><div class="item-content"><span class="item-label">Monthly Maintenance Retainer <span class="info-icon" onclick="showInfo('ret_monthly', event)">i</span></span></div></div><span class="item-price">+$150/mo</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" id="ret_yearly" class="addon" value="1500" data-type="retainer-yr" data-name="Annual Maintenance Retainer" onchange="toggleRetainer('yr')"><div class="item-content"><span class="item-label">Annual Retainer <span class="info-icon" onclick="showInfo('ret_yearly', event)">i</span></span></div></div><span class="item-price">+$1,500/yr</span></label>
+  <label class="item"><div class="item-left"><input type="checkbox" class="addon" value="400" data-type="rush" data-name="Expedited Rush Production" onchange="calc()"><div class="item-content"><span class="item-label">Expedited Rush Production <span class="info-icon" onclick="showInfo('mod_rush', event)">i</span></span></div></div><span class="item-price highlight">+$400</span></label>
 
   <div class="cost-card">
     <div class="cost-row"><span>Turnaround Target:</span><span id="txtDelivery" style="font-family: monospace; font-weight: bold; color: var(--blue);"></span></div>
@@ -154,9 +163,8 @@
   <button class="btn-submit" onclick="generateEstimate()">GENERATE ESTIMATE</button>
 </div>
 
-<!-- MODAL -->
 <div id="quote-modal">
-  <div class="quote-header"><h2>DEVELOPMENT & SCOPE ESTIMATE</h2><div>Quintan Middle | Tucson, AZ</div><div>(520) 634-9490 | quintanmiddle@gmail.com</div></div>
+  <div class="quote-header"><h2>DEVELOPMENT & SCOPE ESTIMATE</h2><div>Quintan Middle | Tucson, AZ</div><div>(520) 634-9490 | quintanmiddle@proton.me</div></div>
   <div class="quote-row"><span>CLIENT:</span><span class="qr-val" id="qClient"></span></div>
   <div class="quote-row"><span>ISSUED DATE:</span><span class="qr-val" id="qDate"></span></div>
   <div class="quote-row"><span>TARGET DELIVERY:</span><span class="qr-val" id="qTimeline"></span></div>
@@ -174,6 +182,48 @@
 </div>
 <div class="sticky-bar"><div class="sticky-wrap"><div class="sticky-info"><span class="sticky-total" id="stickyTotal"></span><span class="sticky-deposit" id="stickyDeposit"></span></div><button class="btn-sticky-jump" onclick="generateEstimate()">Review Scope</button></div></div>
 <script>
+  const infoData = {
+    'plat_web': { t: 'Single-Page Web Utility', d: 'Runs securely in any standard web browser without needing app store approval.', l: 'Browser sandbox prevents deep hardware access or persistent background syncing.' },
+    'plat_apk': { t: 'Native Android App (.apk)', d: 'A standalone application compiled directly for Android hardware for maximum performance.', l: 'Android OS only. Requires manual sideloading or internal MDM distribution.' },
+    'plat_cross': { t: 'Cross-Platform Suite', d: 'Includes a mobile app for the field crew, plus a synchronized web dashboard for dispatch/admin.', l: 'Requires backend synchronization logic, extending deployment time.' },
+    'mod_base': { t: 'Standard Core Workflows', d: 'Includes up to 3 primary screens (e.g. Data Entry, Records Ledger, and App Settings).', l: 'Layouts are fixed to standard operational logic.' },
+    'mod_extra': { t: 'Extra Operational Modules', d: 'Add dedicated, custom workflow screens tailored to your exact process (e.g. Job Timer, Dispatch Roster).', l: 'Each custom module increases development hours and QA testing time.' },
+    'mod_ui': { t: 'Tactical High-Contrast UI', d: 'Optimized for harsh desert sunlight with OLED dark schemes and scalable typography.', l: 'Focuses purely on readability over flashy, consumer-style graphics.' },
+    'mod_db': { t: 'Local Offline Database', d: 'Your records write directly to the device\'s flash memory. Works flawlessly with zero cell towers.', l: 'Data is hardware-bound. If the phone physically breaks without a backup, data is lost.' },
+    'mod_export': { t: 'PDF & CSV Document Generator', d: 'Generates professional, printable invoices and raw spreadsheet ledgers directly on the phone.', l: 'Requires your exact document templates and column layouts upfront.' },
+    'mod_math': { t: 'Dynamic Math Engine', d: 'Automates complex pricing like weight-by-distance formulas, tier margins, or overtime calculations.', l: 'Requires rigorous testing. Rate cards must be finalized before build.' },
+    'mod_backup': { t: 'Encrypted JSON Backup', d: 'Allows you to manually export your entire database to a secure file for archiving or moving to a new phone.', l: 'Relies on the user remembering to press the backup button periodically.' },
+    'mod_aes': { t: 'Zero-Knowledge AES-256 Vault', d: 'Military-grade client encryption. Data is completely unreadable without your master passphrase.', l: 'If you forget the passphrase, data is permanently bricked. I cannot recover it for you.' },
+    'mod_auth': { t: 'Passcode / Biometric Gate', d: 'Enforces an inactivity timeout that locks the app behind a PIN or fingerprint scan.', l: 'Requires the Android device to have a secure lock screen properly configured.' },
+    'mod_token': { t: 'Hardware Token / USB-OTG', d: 'Locks app access or database backups to a physical USB-C flash drive or NFC YubiKey.', l: 'Device must have compatible physical ports. Fails on highly locked-down corporate phones.' },
+    'mod_sign': { t: 'Sign-On-Glass Signature Pad', d: 'Captures digital signatures on the screen and seamlessly embeds them into your generated PDFs.', l: 'Best experienced on tablets or modern phones; signing on very small screens can be clunky.' },
+    'mod_cam': { t: 'Optical Scanner', d: 'Leverages the camera to instantly read barcodes or QR tags for rapid asset check-ins.', l: 'Scanning speed depends entirely on the phone\'s camera quality and warehouse lighting.' },
+    'mod_mesh': { t: 'P2P Mesh / Bluetooth Sync', d: 'Allows crew members to sync manifests device-to-device without routing through the internet.', l: 'Limited to ~30ft range. Best used for small 2-5 person crews working in close proximity.' },
+    'mod_ai': { t: 'Local On-Device AI / LLM', d: 'Runs a language model strictly on the phone\'s processor for offline text parsing or categorization.', l: 'Severely drains battery. Requires modern mid-to-high tier devices with at least 6GB of RAM.' },
+    'mod_ingest': { t: 'Legacy CSV Data Migration', d: 'We will clean, parse, and pre-load your existing customer or inventory list directly into the app.', l: 'Strictly limited to 500 rows on a single, uniform spreadsheet to prevent scope creep.' },
+    'mod_hub': { t: 'Private QR Distribution Hub', d: 'A simple self-hosted landing page with a QR code so your crew can easily download app updates.', l: 'Requires you to have a basic domain or intranet to host the page.' },
+    'mod_prov': { t: 'Turnkey Device Provisioning', d: 'We handle the hardware setup. The device arrives pre-flashed, locked down, and ready to hand to a driver.', l: 'Hardware cost (the phone/tablet itself) is billed separately at market rate.' },
+    'mod_sop': { t: 'Laminated SOPs & Training', d: 'Includes indestructible quick-reference cards for the truck glovebox and a live training session.', l: 'Live walkthroughs are limited to the Tucson area or remote video calls.' },
+    'own_bin': { t: 'Standard Runtime License', d: 'You receive the final, compiled app ready to install on unlimited company devices forever.', l: 'You do not receive the raw source code. You cannot modify the app yourself.' },
+    'own_white': { t: 'White-Label Buyout', d: 'Removes all "Engineered by Quintan Middle" footers so it looks 100% like your proprietary internal software.', l: 'Purely cosmetic. You still do not own the underlying raw source code.' },
+    'own_src': { t: 'Full Source Code & IP Handoff', d: 'Complete transfer of raw Git repositories and compilation guides. You own the intellectual property.', l: 'Highest upfront cost. Recommended only if you plan to hire in-house developers later.' },
+    'ret_monthly': { t: 'Monthly Maintenance Retainer', d: 'Guaranteed priority bug fixes and updates to keep the app compliant with new Android OS versions.', l: 'Billed securely as a recurring monthly subscription via Stripe.' },
+    'ret_yearly': { t: 'Annual Retainer (12 Mo Prepaid)', d: 'Comprehensive year-long code rot defense and guaranteed priority bench hours at a bulk discount.', l: 'Billed in full alongside your final deployment invoice.' },
+    'mod_rush': { t: 'Expedited Rush Production', d: 'Puts your project at the very front of the queue, targeting a drop-in deployment within 3 to 5 days.', l: 'Applies a premium surcharge for emergency development hours.' }
+  };
+
+  function showInfo(key, e) {
+    e.preventDefault(); e.stopPropagation();
+    const data = infoData[key];
+    if(data) {
+      document.getElementById('info-title').textContent = data.t;
+      document.getElementById('info-desc').textContent = data.d;
+      document.getElementById('info-limit').textContent = data.l;
+      document.getElementById('info-overlay').style.display = 'flex';
+    }
+  }
+  function closeInfo() { document.getElementById('info-overlay').style.display = 'none'; }
+
   function toggleRetainer(type) {
     if (type === 'mo' && document.getElementById('ret_monthly').checked) { document.getElementById('ret_yearly').checked = false; }
     else if (type === 'yr' && document.getElementById('ret_yearly').checked) { document.getElementById('ret_monthly').checked = false; }
@@ -182,19 +232,14 @@
   
   function applyPreset(name) {
     document.querySelectorAll('.addon').forEach(box => { if (!box.disabled) box.checked = false; });
-    document.getElementById('mod_extra').value = 0; // Reset counter
-    
+    document.getElementById('mod_extra').value = 0;
     if (document.getElementById('plat_apk')) document.getElementById('plat_apk').checked = true;
     if (document.getElementById('own_bin')) document.getElementById('own_bin').checked = true;
     
     const check = (id) => { const el = document.getElementById(id); if (el) el.checked = true; };
-    if (name === 'field') {
-      ['mod_db', 'mod_export', 'mod_sign', 'mod_cam', 'mod_sop'].forEach(check);
-    } else if (name === 'privacy') {
-      ['mod_db', 'mod_aes', 'mod_auth', 'mod_token', 'mod_backup'].forEach(check);
-    } else if (name === 'reset') {
-      ['mod_db', 'mod_export'].forEach(check);
-    }
+    if (name === 'field') { ['mod_db', 'mod_export', 'mod_sign', 'mod_cam', 'mod_sop'].forEach(check); } 
+    else if (name === 'privacy') { ['mod_db', 'mod_aes', 'mod_auth', 'mod_token', 'mod_backup'].forEach(check); } 
+    else if (name === 'reset') { ['mod_db', 'mod_export'].forEach(check); }
     calc();
   }
 
@@ -206,26 +251,14 @@
     const own = document.querySelector('input[name="ownership"]:checked');
     if (own) { total += parseFloat(own.value); baseDays += parseInt(own.dataset.days || 0); }
     
-    // Process numeric extra modules
     const extraCount = parseInt(document.getElementById('mod_extra').value) || 0;
-    const extraCost = extraCount * 200;
-    const extraDays = extraCount * 2;
-    total += extraCost;
-    baseDays += extraDays;
+    total += (extraCount * 200); baseDays += (extraCount * 2);
 
-    // Visual styling for number input row
     const extraItem = document.getElementById('item_extra_mod');
     const extraDisp = document.getElementById('mod_extra_display');
-    if (extraCount > 0) {
-      extraItem.style.borderColor = 'var(--border-active)';
-      extraItem.style.backgroundColor = 'var(--card-active)';
-      extraDisp.classList.add('highlight');
-    } else {
-      extraItem.style.borderColor = '';
-      extraItem.style.backgroundColor = '';
-      extraDisp.classList.remove('highlight');
-    }
-    extraDisp.textContent = `+$${extraCost}`;
+    if (extraCount > 0) { extraItem.style.borderColor = 'var(--border-active)'; extraItem.style.backgroundColor = 'var(--card-active)'; extraDisp.classList.add('highlight'); } 
+    else { extraItem.style.borderColor = ''; extraItem.style.backgroundColor = ''; extraDisp.classList.remove('highlight'); }
+    extraDisp.textContent = `+$${extraCount * 200}`;
 
     document.querySelectorAll('.addon:checked').forEach(box => {
       const val = parseFloat(box.value || 0);
@@ -249,11 +282,11 @@
     if (activeRetStr) { retRow.style.display = 'flex'; document.getElementById('txtRetainerValue').textContent = activeRetStr; } 
     else { retRow.style.display = 'none'; }
     
-    return { total, dep, dStr, activeRetStr, extraCount, extraCost };
+    return { total, dep, dStr, activeRetStr, extraCount };
   }
 
   function generateEstimate() {
-    const { total, dep, dStr, activeRetStr, extraCount, extraCost } = calc();
+    const { total, dep, dStr, activeRetStr, extraCount } = calc();
     const cName = document.getElementById('clientName').value.trim() || 'Direct Client';
     
     document.getElementById('qClient').textContent = cName;
@@ -268,36 +301,24 @@
 
     let html = ''; let txtPayload = '';
     const base = document.querySelector('input[name="platform"]:checked');
-    if (base) {
-      html += `<div class="quote-row"><span class="qr-label">• ${base.dataset.name}</span><span class="qr-val">$${parseFloat(base.value).toFixed(2)}</span></div>`;
-      txtPayload += `- ${base.dataset.name}\n`;
-    }
-
-    if (extraCount > 0) {
-      html += `<div class="quote-row"><span class="qr-label">• Additional Modules (x${extraCount})</span><span class="qr-val">+$${extraCost.toFixed(2)}</span></div>`;
-      txtPayload += `- Additional Modules (x${extraCount})\n`;
-    }
+    if (base) { html += `<div class="quote-row"><span class="qr-label">• ${base.dataset.name}</span><span class="qr-val">$${parseFloat(base.value).toFixed(2)}</span></div>`; txtPayload += `- ${base.dataset.name}\n`; }
+    if (extraCount > 0) { html += `<div class="quote-row"><span class="qr-label">• Additional Modules (x${extraCount})</span><span class="qr-val">+$${(extraCount*200).toFixed(2)}</span></div>`; txtPayload += `- Additional Modules (x${extraCount})\n`; }
 
     document.querySelectorAll('.addon:checked').forEach(box => {
       const type = box.dataset.type;
       if (type === 'retainer-mo' || type === 'retainer-yr') return;
-      const v = parseFloat(box.value || 0);
-      const lbl = v === 0 ? 'Included' : `+$${v.toFixed(2)}`;
-      html += `<div class="quote-row"><span class="qr-label">• ${box.dataset.name}</span><span class="qr-val">${lbl}</span></div>`;
-      txtPayload += `- ${box.dataset.name}\n`;
+      const v = parseFloat(box.value || 0); const lbl = v === 0 ? 'Included' : `+$${v.toFixed(2)}`;
+      html += `<div class="quote-row"><span class="qr-label">• ${box.dataset.name}</span><span class="qr-val">${lbl}</span></div>`; txtPayload += `- ${box.dataset.name}\n`;
     });
 
     const own = document.querySelector('input[name="ownership"]:checked');
-    if (own && parseFloat(own.value) > 0) {
-      html += `<div class="quote-row"><span class="qr-label">• ${own.dataset.name}</span><span class="qr-val">+$${parseFloat(own.value).toFixed(2)}</span></div>`;
-      txtPayload += `- ${own.dataset.name}\n`;
-    }
+    if (own && parseFloat(own.value) > 0) { html += `<div class="quote-row"><span class="qr-label">• ${own.dataset.name}</span><span class="qr-val">+$${parseFloat(own.value).toFixed(2)}</span></div>`; txtPayload += `- ${own.dataset.name}\n`; }
     
     document.getElementById('qList').innerHTML = html;
 
     const msg = encodeURIComponent(`Hello Quintan, here is my estimate for ${cName}:\n\nSCOPE:\n${txtPayload}\nTotal: $${total.toFixed(2)} (Deposit: $${dep.toFixed(2)})\nTurnaround: ${dStr}\n${activeRetStr ? 'Retainer: ' + activeRetStr : ''}`);
     document.getElementById('btnSms').href = `sms:5206349490?body=${msg}`;
-    document.getElementById('btnEmail').href = `mailto:quintanmiddle@gmail.com?subject=Software Estimate - ${cName}&body=${msg}`;
+    document.getElementById('btnEmail').href = `mailto:quintanmiddle@proton.me?subject=Software Estimate - ${cName}&body=${msg}`;
     
     const m = document.getElementById('quote-modal');
     m.style.display = 'block'; m.scrollIntoView({ behavior: 'smooth' });
