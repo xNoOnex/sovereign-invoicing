@@ -8,7 +8,7 @@
   <style>
     :root {
       --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9;
-      --accent: #238636; --blue: #58a6ff; --purple: #bc8cff; --amber: #d29922; --red: #f85149;
+      --accent: #238636; --blue: #58a6ff; --purple: #bc8cff; --amber: #d29922;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, monospace; background: var(--bg); color: var(--text); padding-bottom: 100px; }
@@ -16,7 +16,6 @@
     .header { padding: 20px 16px 15px 16px; border-bottom: 1px solid var(--border); background: var(--card); display: flex; align-items: center; justify-content: space-between; }
     h1 { font-size: 1.1rem; color: var(--text); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; }
     h1 span { color: var(--blue); margin-left: 8px; }
-    
     .back-btn { background: #010409; color: var(--text); border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; font-family: monospace; }
     
     .container { padding: 16px; max-width: 600px; margin: 0 auto; }
@@ -28,62 +27,62 @@
       width: 100%; background: #010409; border: 1px solid var(--border); color: #e6edf3; 
       padding: 12px; border-radius: 6px; font-family: monospace; font-size: 0.9rem; transition: all 0.2s;
     }
-    textarea { height: 140px; resize: none; line-height: 1.4; }
+    textarea { height: 160px; resize: none; line-height: 1.4; }
     input:focus, select:focus, textarea:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 1px var(--purple); background: #0d1117; }
+    input:read-only { color: #8b949e; background: #0d1117; border-color: transparent; }
+
+    /* MULTI-SELECT PRESET CARDS */
+    .preset-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .preset-card {
+      background: #010409; border: 1px solid var(--border); padding: 14px; border-radius: 6px;
+      color: #8b949e; font-family: monospace; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .preset-card::before {
+      content: ''; display: inline-block; width: 12px; height: 12px; border: 1px solid var(--border);
+      border-radius: 3px; margin-right: 12px; transition: all 0.2s;
+    }
+    .preset-card.selected { border-color: var(--purple); color: var(--text); background: rgba(188, 140, 255, 0.05); }
+    .preset-card.selected::before { background: var(--purple); border-color: var(--purple); box-shadow: 0 0 5px var(--purple); }
+
+    .hardware-module { display: none; background: rgba(210, 153, 34, 0.05); border: 1px dashed var(--amber); padding: 14px; border-radius: 6px; margin-bottom: 16px; }
+    .hardware-module.active { display: block; }
     
-    #toast { 
-      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-      background: var(--accent); color: #fff; padding: 10px 20px; border-radius: 20px;
-      font-size: 0.8rem; font-weight: bold; font-family: monospace; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 1000;
-    }
+    #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; font-family: monospace; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 1000; }
     
-    .action-bar {
-      position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border);
-      padding: 12px 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; z-index: 100; max-width: 600px; margin: 0 auto;
-    }
-    .action-btn {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      background: #010409; border: 1px solid var(--border); border-radius: 8px; padding: 10px;
-      color: var(--text); font-size: 0.7rem; font-family: monospace; text-transform: uppercase; cursor: pointer; transition: background 0.1s;
-    }
+    .action-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border); padding: 12px 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; z-index: 100; max-width: 600px; margin: 0 auto; }
+    .action-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #010409; border: 1px solid var(--border); border-radius: 8px; padding: 10px; color: var(--text); font-size: 0.7rem; font-family: monospace; text-transform: uppercase; cursor: pointer; transition: background 0.1s; }
     .action-btn:active { background: var(--border); }
     .action-btn svg { margin-bottom: 6px; }
 
-    /* DASHBOARD STYLES */
     .view { display: none; }
     .view.active { display: block; }
     .hero-btn { width: 100%; background: var(--accent); color: #fff; border: none; padding: 18px; border-radius: 8px; font-size: 1rem; font-family: monospace; font-weight: bold; text-transform: uppercase; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; gap: 10px; }
     .section-title { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 12px; margin-top: 20px;}
     
     .invoice-card { background: #010409; border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-    .invoice-card:active { background: #0d1117; }
     .inv-details h3 { font-size: 1rem; color: var(--blue); margin-bottom: 4px; }
     .inv-details p { font-size: 0.75rem; color: #8b949e; }
-    
-    .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+    .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: bold; text-transform: uppercase; }
     .badge.due { background: rgba(210, 153, 34, 0.15); color: var(--amber); border: 1px solid rgba(210, 153, 34, 0.4); }
     .badge.pending { background: rgba(88, 166, 255, 0.15); color: var(--blue); border: 1px solid rgba(88, 166, 255, 0.4); }
     .badge.paid { background: rgba(35, 134, 54, 0.15); color: var(--accent); border: 1px solid rgba(35, 134, 54, 0.4); }
-
     .app-footer { text-align: center; font-size: 0.7rem; color: #8b949e; margin-top: 40px; padding-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
     .app-footer span { color: var(--purple); font-weight: bold; }
 
-    /* PDF Template hidden off-screen */
-    #pdf-template {
-      display: none; width: 8.5in; padding: 0.6in; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      background: #ffffff; color: #000000; box-sizing: border-box;
-    }
+    /* HIDDEN PDF TEMPLATE */
+    #pdf-template { display: none; width: 8.5in; padding: 0.6in; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #ffffff; color: #000000; box-sizing: border-box; }
     .pdf-header { border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 30px; text-align: center; }
     .pdf-header h1 { color: #000; font-size: 22px; margin: 0 0 5px 0; font-family: 'Helvetica Neue', sans-serif; letter-spacing: 2px; }
     .pdf-header p { margin: 0; color: #555; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
-    .pdf-row { display: flex; justify-content: space-between; margin-bottom: 25px; }
+    .pdf-row { display: flex; justify-content: space-between; margin-bottom: 20px; }
     .pdf-col { width: 48%; }
     .pdf-label { font-size: 10px; color: #777; text-transform: uppercase; margin-bottom: 3px; font-weight: bold; }
     .pdf-val { font-size: 14px; font-weight: bold; padding-bottom: 5px; border-bottom: 1px solid #ddd; }
-    .pdf-scope-box { border: 1px solid #000; padding: 20px; margin: 30px 0; background: #fafafa; }
+    .pdf-scope-box { border: 1px solid #000; padding: 20px; margin: 25px 0; background: #fafafa; }
     .pdf-scope-title { font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
     .pdf-scope-text { white-space: pre-wrap; font-size: 12px; line-height: 1.6; }
-    .pdf-signatures { display: flex; justify-content: space-between; margin-top: 50px; }
+    .pdf-signatures { display: flex; justify-content: space-between; margin-top: 40px; }
     .pdf-sig-line { width: 45%; border-top: 1px solid #000; padding-top: 5px; font-size: 10px; text-transform: uppercase; color: #555; }
   </style>
 </head>
@@ -91,31 +90,20 @@
 
   <div id="toast">State Saved Locally</div>
 
-  <!-- DASHBOARD VIEW -->
+  <!-- DASHBOARD -->
   <div id="home-view" class="view active">
-    <div class="header" style="justify-content: center;">
-      <h1>Contract <span>Dispatcher</span></h1>
-    </div>
-    
+    <div class="header" style="justify-content: center;"><h1>Contract <span>Dispatcher</span></h1></div>
     <div class="container">
-      <button class="hero-btn" onclick="openNewInvoice()">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        Generate New Invoice
-      </button>
-
+      <button class="hero-btn" onclick="openNewInvoice()">+ Generate New Invoice</button>
       <h3 class="section-title">Active Invoices</h3>
       <div id="active-list"></div>
-
       <h3 class="section-title">Old Invoices</h3>
       <div id="old-list"></div>
-
-      <div class="app-footer">
-        Created by <span>QM Offline First</span>
-      </div>
+      <div class="app-footer">Created by <span>QM Offline First</span></div>
     </div>
   </div>
 
-  <!-- EDITOR VIEW -->
+  <!-- EDITOR -->
   <div id="editor-view" class="view">
     <div class="header">
       <h1>Invoice <span>Editor</span></h1>
@@ -127,7 +115,6 @@
         <div><label>Invoice ID</label><input type="text" id="invNum" style="color: var(--blue); font-weight: bold;" readonly></div>
         <div><label>Date</label><input type="text" id="docDate"></div>
       </div>
-
       <div class="grid">
         <div class="full-width"><label>Client Business Name</label><input type="text" id="clientName" placeholder="e.g. Desert Logistics LLC"></div>
         <div><label>Contact Name</label><input type="text" id="contactName" placeholder="e.g. Yvette Soto"></div>
@@ -135,55 +122,56 @@
       </div>
 
       <div class="grid">
-        <div><label>Total Fee ($)</label><input type="number" id="totalFee" placeholder="1500" oninput="calculateDeposit()"></div>
-        <div><label>50% Deposit ($)</label><input type="number" id="deposit" placeholder="750" style="color: #7ee787;"></div>
+        <div><label>Software Fee ($)</label><input type="number" id="swFee" placeholder="1500" oninput="calculateTotals()"></div>
         <div><label>Payment Routing</label><input type="text" id="cashTag" value="$QuintanMiddle"></div>
-        <div>
+      </div>
+
+      <div class="full-width">
+        <label>Multi-Select Scope Presets</label>
+        <div class="preset-grid">
+          <div class="preset-card" id="card-android" onclick="togglePreset('android')">Native Android App (Offline-First)</div>
+          <div class="preset-card" id="card-web" onclick="togglePreset('web')">Single-Page Web Utility</div>
+          <div class="preset-card" id="card-retainer" onclick="togglePreset('retainer')">Annual Retainer / Code Rot Defense</div>
+          <div class="preset-card" id="card-hardware" onclick="togglePreset('hardware')" style="color: var(--amber);">+ Turnkey Hardware Procurement</div>
+        </div>
+      </div>
+
+      <!-- HARDWARE PROCUREMENT BLOCK -->
+      <div id="hw-module" class="hardware-module">
+        <div class="grid" style="margin-bottom:0;">
+          <div class="full-width"><label style="color: var(--amber);">Hardware Type</label><input type="text" id="hwType" placeholder="e.g. Samsung Galaxy Tab A8" oninput="calculateTotals()"></div>
+          <div><label style="color: var(--amber);">Total Quantity</label><input type="number" id="hwQty" placeholder="15" oninput="calculateTotals()"></div>
+          <div><label style="color: var(--amber);">Total Hardware Cost ($)</label><input type="number" id="hwCost" placeholder="2500" oninput="calculateTotals()"></div>
+        </div>
+      </div>
+
+      <!-- TOTALS BLOCK -->
+      <div class="grid">
+        <div><label>Total Invoice ($)</label><input type="number" id="totalFee" readonly></div>
+        <div><label>Total Deposit Due ($)</label><input type="number" id="deposit" style="color: #7ee787;" readonly></div>
+        <div class="full-width">
           <label>Status</label>
-          <select id="status">
-            <option>Deposit Due</option>
-            <option>Pending Delivery</option>
-            <option>Paid in Full</option>
-          </select>
+          <select id="status"><option>Deposit Due</option><option>Pending Delivery</option><option>Paid in Full</option></select>
         </div>
       </div>
 
       <div class="grid">
         <div class="full-width">
-          <label>Load Scope Preset</label>
-          <select id="preset-selector" onchange="loadPreset()" style="margin-bottom: 8px; border-color: var(--purple);">
-            <option value="custom">-- Select a Preset to Auto-Fill --</option>
-            <option value="android">Native Android App (Offline-First)</option>
-            <option value="web">Single-Page Web Utility</option>
-            <option value="retainer">Annual Retainer / Code Rot Defense</option>
-          </select>
           <label>Binding Scope Statement</label>
-          <textarea id="scope" placeholder="Manually type deliverables or select a preset above..."></textarea>
+          <textarea id="scope" placeholder="Select presets above to auto-generate scope, or type custom terms here..."></textarea>
         </div>
       </div>
     </div>
 
     <div class="action-bar">
-      <button class="action-btn" onclick="saveInvoice()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7ee787" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline></svg>
-        Save Invoice
-      </button>
-      <button class="action-btn" onclick="generateAndSharePDF()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bc8cff" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line></svg>
-        Generate PDF
-      </button>
-      <button class="action-btn" onclick="sendSMS()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d29922" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-        Dispatch SMS
-      </button>
-      <button class="action-btn" onclick="sendEmail()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#58a6ff" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-        Dispatch Email
-      </button>
+      <button class="action-btn" onclick="saveInvoice()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7ee787" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline></svg>Save Invoice</button>
+      <button class="action-btn" onclick="generateAndSharePDF()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bc8cff" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line></svg>Generate PDF</button>
+      <button class="action-btn" onclick="sendSMS()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d29922" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>Dispatch SMS</button>
+      <button class="action-btn" onclick="sendEmail()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#58a6ff" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>Dispatch Email</button>
     </div>
   </div>
 
-  <!-- THE HIDDEN PDF TEMPLATE -->
+  <!-- HIDDEN PDF -->
   <div id="pdf-template">
     <div class="pdf-header">
       <h1>SOFTWARE DEPLOYMENT AGREEMENT</h1>
@@ -191,37 +179,27 @@
     </div>
     <div class="pdf-row">
       <div class="pdf-col">
-        <div class="pdf-label">Client Organization</div>
-        <div class="pdf-val" id="pdf-client"></div>
-        <div class="pdf-label" style="margin-top:10px;">Contact</div>
-        <div class="pdf-val" id="pdf-contact"></div>
+        <div class="pdf-label">Client Organization</div><div class="pdf-val" id="pdf-client"></div>
+        <div class="pdf-label" style="margin-top:10px;">Contact</div><div class="pdf-val" id="pdf-contact"></div>
       </div>
       <div class="pdf-col">
-        <div class="pdf-label">Document ID</div>
-        <div class="pdf-val" id="pdf-inv"></div>
-        <div class="pdf-label" style="margin-top:10px;">Date Generated</div>
-        <div class="pdf-val" id="pdf-date"></div>
+        <div class="pdf-label">Document ID</div><div class="pdf-val" id="pdf-inv"></div>
+        <div class="pdf-label" style="margin-top:10px;">Date Generated</div><div class="pdf-val" id="pdf-date"></div>
       </div>
     </div>
     <div class="pdf-row">
       <div class="pdf-col">
-        <div class="pdf-label">Total Deployment Fee</div>
-        <div class="pdf-val" id="pdf-fee"></div>
+        <div class="pdf-label">Software Deployment Fee</div><div class="pdf-val" id="pdf-sw"></div>
+        <div class="pdf-label" style="margin-top:10px;">Hardware Procurement Cost</div><div class="pdf-val" id="pdf-hw"></div>
       </div>
       <div class="pdf-col">
-        <div class="pdf-label">Deposit Required</div>
-        <div class="pdf-val" id="pdf-dep"></div>
+        <div class="pdf-label">Total Invoice Cost</div><div class="pdf-val" id="pdf-total"></div>
+        <div class="pdf-label" style="margin-top:10px;">Total Deposit Required</div><div class="pdf-val" id="pdf-dep"></div>
       </div>
     </div>
     <div class="pdf-row">
-      <div class="pdf-col">
-        <div class="pdf-label">Payment Routing</div>
-        <div class="pdf-val" id="pdf-tag"></div>
-      </div>
-      <div class="pdf-col">
-        <div class="pdf-label">Status</div>
-        <div class="pdf-val" id="pdf-status"></div>
-      </div>
+      <div class="pdf-col"><div class="pdf-label">Payment Routing</div><div class="pdf-val" id="pdf-tag"></div></div>
+      <div class="pdf-col"><div class="pdf-label">Status</div><div class="pdf-val" id="pdf-status"></div></div>
     </div>
     <div class="pdf-scope-box">
       <div class="pdf-scope-title">Binding Scope of Work</div>
@@ -234,167 +212,163 @@
   </div>
 
   <script>
-    const PRESETS = {
-      android: "1. Standalone Native Android Application (.apk)\n2. Offline-First Database Architecture\n3. Sign-on-Glass Bill of Lading (BOL) Module\n4. Automated PDF / CSV Export Engine\n5. Configuration of local branding and crew rates.\n6. Zero recurring software licenses, hosting fees, or monthly overhead.",
-      web: "1. Mobile-Optimized Single-Page Web Utility\n2. Deployed to dedicated subdomain (GH Pages)\n3. Ephemeral state logic (No cloud persistence)\n4. Interactive payload generation (Estimates/Quotes)\n5. Flat-rate deployment. Zero SaaS seat licensing.",
-      retainer: "1. Annual Retainer for Code Rot Defense\n2. Guaranteed OS API upgrade patching\n3. Priority bench hours for feature modifications\n4. Covers 12 months of structural maintenance."
+    const SCOPE_TEXTS = {
+      android: "NATIVE ANDROID DEPLOYMENT:\n- Standalone Offline-First Application (.apk)\n- Local Database Architecture\n- Zero recurring software licenses, hosting fees, or monthly overhead.\n\n",
+      web: "WEB UTILITY DEPLOYMENT:\n- Mobile-Optimized Single-Page Web Utility\n- Deployed to dedicated subdomain (GH Pages)\n- Ephemeral state logic (No cloud persistence)\n- Flat-rate deployment. Zero SaaS seat licensing.\n\n",
+      retainer: "ANNUAL RETAINER:\n- Year-long Code Rot Defense & API upgrade patching\n- Priority bench hours for feature modifications\n\n"
     };
 
     let db = JSON.parse(localStorage.getItem('qm_invoices')) || [];
+    let activePresets = [];
 
-    window.onload = () => {
-      renderDashboard();
-    };
+    window.onload = () => renderDashboard();
 
     function generateAutoID() {
       const d = new Date();
       return `QM-${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}-${Math.floor(Math.random() * 90 + 10)}`;
     }
 
-    function switchView(viewName) {
+    function switchView(view) {
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      document.getElementById(viewName).classList.add('active');
+      document.getElementById(view).classList.add('active');
     }
-
-    function goHome() {
-      renderDashboard();
-      switchView('home-view');
-    }
+    function goHome() { renderDashboard(); switchView('home-view'); }
 
     function renderDashboard() {
-      const activeList = document.getElementById('active-list');
-      const oldList = document.getElementById('old-list');
-      activeList.innerHTML = ''; oldList.innerHTML = '';
-      
+      const aList = document.getElementById('active-list');
+      const oList = document.getElementById('old-list');
+      aList.innerHTML = ''; oList.innerHTML = '';
       if(db.length === 0) {
-        activeList.innerHTML = '<p style="color:#8b949e; font-size:0.8rem;">No active invoices.</p>';
-        oldList.innerHTML = '<p style="color:#8b949e; font-size:0.8rem;">No history.</p>';
-        return;
+        aList.innerHTML = '<p style="color:#8b949e; font-size:0.8rem;">No active invoices.</p>';
+        oList.innerHTML = '<p style="color:#8b949e; font-size:0.8rem;">No history.</p>'; return;
       }
-
       db.forEach(inv => {
         let badgeClass = inv.status === 'Paid in Full' ? 'paid' : (inv.status === 'Pending Delivery' ? 'pending' : 'due');
-        const card = `
-          <div class="invoice-card" onclick="openInvoice('${inv.invNum}')">
-            <div class="inv-details">
-              <h3>${inv.invNum}</h3>
-              <p>${inv.clientName || 'Unknown Client'} &bull; $${inv.totalFee || 0}</p>
-            </div>
-            <div class="badge ${badgeClass}">${inv.status}</div>
-          </div>
-        `;
-        if(inv.status === 'Paid in Full') {
-          oldList.insertAdjacentHTML('beforeend', card);
-        } else {
-          activeList.insertAdjacentHTML('beforeend', card);
-        }
+        const card = `<div class="invoice-card" onclick="openInvoice('${inv.invNum}')"><div class="inv-details"><h3>${inv.invNum}</h3><p>${inv.clientName || 'Unknown'} &bull; $${inv.totalFee || 0}</p></div><div class="badge ${badgeClass}">${inv.status}</div></div>`;
+        (inv.status === 'Paid in Full' ? oList : aList).insertAdjacentHTML('beforeend', card);
       });
     }
 
+    function resetUI() {
+      activePresets = [];
+      document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('selected'));
+      document.getElementById('hw-module').classList.remove('active');
+    }
+
     function openNewInvoice() {
-      const formFields = ['invNum', 'docDate', 'clientName', 'contactName', 'contactInfo', 'cashTag', 'status', 'totalFee', 'deposit', 'scope'];
-      formFields.forEach(id => document.getElementById(id).value = '');
-      
+      resetUI();
+      ['invNum','docDate','clientName','contactName','contactInfo','cashTag','status','swFee','hwType','hwQty','hwCost','totalFee','deposit','scope'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('docDate').value = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
       document.getElementById('invNum').value = generateAutoID();
       document.getElementById('cashTag').value = '$QuintanMiddle';
       document.getElementById('status').value = 'Deposit Due';
-      document.getElementById('preset-selector').value = 'custom';
-      
       switchView('editor-view');
     }
 
     function openInvoice(id) {
+      resetUI();
       const inv = db.find(i => i.invNum === id);
       if(inv) {
-        Object.keys(inv).forEach(key => {
-          if(document.getElementById(key)) document.getElementById(key).value = inv[key];
-        });
-        document.getElementById('preset-selector').value = 'custom';
+        Object.keys(inv).forEach(key => { if(document.getElementById(key)) document.getElementById(key).value = inv[key]; });
+        if(inv.presets) {
+          inv.presets.forEach(p => {
+            activePresets.push(p);
+            document.getElementById('card-'+p).classList.add('selected');
+            if(p === 'hardware') document.getElementById('hw-module').classList.add('active');
+          });
+        }
+        calculateTotals();
         switchView('editor-view');
       }
     }
 
-    function loadPreset() {
-      const selection = document.getElementById('preset-selector').value;
-      if (PRESETS[selection]) {
-        document.getElementById('scope').value = PRESETS[selection];
+    function togglePreset(id) {
+      const idx = activePresets.indexOf(id);
+      if(idx > -1) {
+        activePresets.splice(idx, 1);
+        document.getElementById('card-'+id).classList.remove('selected');
+      } else {
+        activePresets.push(id);
+        document.getElementById('card-'+id).classList.add('selected');
       }
+      
+      document.getElementById('hw-module').classList.toggle('active', activePresets.includes('hardware'));
+      calculateTotals();
     }
 
-    function calculateDeposit() {
-      const fee = parseFloat(document.getElementById('totalFee').value) || 0;
-      document.getElementById('deposit').value = (fee * 0.5).toFixed(2);
+    function calculateTotals() {
+      const sw = parseFloat(document.getElementById('swFee').value) || 0;
+      const hw = parseFloat(document.getElementById('hwCost').value) || 0;
+      const isHw = activePresets.includes('hardware');
+      const actualHw = isHw ? hw : 0;
+
+      const total = sw + actualHw;
+      const dep = (sw * 0.5) + actualHw; // Software is 50%, Hardware is 100% upfront
+
+      document.getElementById('totalFee').value = total.toFixed(2);
+      document.getElementById('deposit').value = dep.toFixed(2);
+
+      generateScopeText();
+    }
+
+    function generateScopeText() {
+      let text = "";
+      if (activePresets.includes('android')) text += SCOPE_TEXTS.android;
+      if (activePresets.includes('web')) text += SCOPE_TEXTS.web;
+      if (activePresets.includes('retainer')) text += SCOPE_TEXTS.retainer;
+      if (activePresets.includes('hardware')) {
+        const type = document.getElementById('hwType').value || '[DEVICE TYPE]';
+        const qty = document.getElementById('hwQty').value || '[QTY]';
+        text += `HARDWARE PROCUREMENT:\n- Procure, flash, and provision ${qty}x ${type}.\n- Hardware is billed at exact retail cost and requires 100% upfront payment prior to order placement.\n\n`;
+      }
+      document.getElementById('scope').value = text.trim();
     }
 
     function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.innerText = msg;
-      toast.style.opacity = '1';
-      setTimeout(() => toast.style.opacity = '0', 2500);
+      const t = document.getElementById('toast'); t.innerText = msg; t.style.opacity = '1';
+      setTimeout(() => t.style.opacity = '0', 2500);
     }
 
     function saveInvoice() {
-      const data = {};
-      ['invNum', 'docDate', 'clientName', 'contactName', 'contactInfo', 'cashTag', 'status', 'totalFee', 'deposit', 'scope'].forEach(id => {
-        data[id] = document.getElementById(id).value;
-      });
-      
-      const existingIndex = db.findIndex(i => i.invNum === data.invNum);
-      if(existingIndex >= 0) {
-        db[existingIndex] = data;
-      } else {
-        db.push(data);
-      }
-      
+      const data = { presets: [...activePresets] };
+      ['invNum','docDate','clientName','contactName','contactInfo','cashTag','status','swFee','hwType','hwQty','hwCost','totalFee','deposit','scope'].forEach(id => data[id] = document.getElementById(id).value);
+      const idx = db.findIndex(i => i.invNum === data.invNum);
+      if(idx >= 0) db[idx] = data; else db.push(data);
       localStorage.setItem('qm_invoices', JSON.stringify(db));
-      showToast("Invoice Saved & Synced Locally");
+      showToast("Invoice Saved & Synced");
     }
 
-    // PDF and Dispatch logic remains exactly the same
     async function generateAndSharePDF() {
-      showToast("Rendering PDF Engine...");
-      
+      showToast("Rendering PDF...");
       document.getElementById('pdf-client').innerText = document.getElementById('clientName').value || 'N/A';
       document.getElementById('pdf-contact').innerText = document.getElementById('contactName').value || 'N/A';
       document.getElementById('pdf-inv').innerText = document.getElementById('invNum').value;
       document.getElementById('pdf-date').innerText = document.getElementById('docDate').value;
-      document.getElementById('pdf-fee').innerText = "$" + (document.getElementById('totalFee').value || '0');
+      document.getElementById('pdf-sw').innerText = "$" + (document.getElementById('swFee').value || '0');
+      document.getElementById('pdf-hw').innerText = "$" + (activePresets.includes('hardware') ? document.getElementById('hwCost').value || '0' : '0');
+      document.getElementById('pdf-total').innerText = "$" + (document.getElementById('totalFee').value || '0');
       document.getElementById('pdf-dep').innerText = "$" + (document.getElementById('deposit').value || '0');
       document.getElementById('pdf-tag').innerText = document.getElementById('cashTag').value;
       document.getElementById('pdf-status').innerText = document.getElementById('status').value;
       document.getElementById('pdf-scope').innerText = document.getElementById('scope').value;
 
-      const element = document.getElementById('pdf-template');
-      element.style.display = 'block';
-
+      const el = document.getElementById('pdf-template');
+      el.style.display = 'block';
       const filename = `${document.getElementById('invNum').value}.pdf`;
       const opt = { margin: 0, filename: filename, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } };
 
       try {
-        const pdfBlob = await html2pdf().set(opt).from(element).output('blob');
-        element.style.display = 'none';
-        
+        const pdfBlob = await html2pdf().set(opt).from(el).output('blob');
+        el.style.display = 'none';
         const file = new File([pdfBlob], filename, { type: 'application/pdf' });
-
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({ files: [file], title: filename, text: 'Please review and sign the attached deployment agreement.' });
-          showToast("PDF Exported successfully.");
-        } else {
-          html2pdf().set(opt).from(element).save();
-          showToast("PDF Download Triggered.");
-        }
-      } catch (err) {
-        element.style.display = 'none';
-        console.error(err);
-        showToast("PDF Generation Failed");
-      }
+          await navigator.share({ files: [file], title: filename, text: 'Review attached deployment agreement.' });
+        } else html2pdf().set(opt).from(el).save();
+        showToast("PDF Exported");
+      } catch (err) { el.style.display = 'none'; showToast("PDF Generation Failed"); }
     }
 
-    function buildTextPayload() {
-      return `Invoice: ${document.getElementById('invNum').value}\nTotal: $${document.getElementById('totalFee').value}\nDeposit: $${document.getElementById('deposit').value}\nCashApp: ${document.getElementById('cashTag').value}`;
-    }
-
+    function buildTextPayload() { return `Invoice: ${document.getElementById('invNum').value}\nSoftware: $${document.getElementById('swFee').value}\nHardware: $${activePresets.includes('hardware') ? document.getElementById('hwCost').value : '0'}\nTotal Deposit Due: $${document.getElementById('deposit').value}\nCashApp: ${document.getElementById('cashTag').value}`; }
     function sendSMS() { window.location.href = `sms:${document.getElementById('contactInfo').value}?body=${encodeURIComponent(buildTextPayload())}`; }
     function sendEmail() { window.location.href = `mailto:${document.getElementById('contactInfo').value}?subject=Deployment Agreement&body=${encodeURIComponent(buildTextPayload())}`; }
   </script>
