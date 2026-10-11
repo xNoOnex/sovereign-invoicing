@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Contract & Invoice Dispatcher</title>
+  <script src="html2pdf.min.js"></script>
   <style>
     :root {
       --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9;
@@ -45,6 +46,24 @@
     }
     .action-btn:active { background: var(--border); }
     .action-btn svg { margin-bottom: 6px; }
+
+    /* Hidden Corporate PDF Template */
+    #pdf-template {
+      display: none; width: 8.5in; padding: 0.6in; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background: #ffffff; color: #000000; box-sizing: border-box;
+    }
+    .pdf-header { border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 30px; text-align: center; }
+    .pdf-header h1 { color: #000; font-size: 22px; margin: 0 0 5px 0; font-family: 'Helvetica Neue', sans-serif; letter-spacing: 2px; }
+    .pdf-header p { margin: 0; color: #555; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+    .pdf-row { display: flex; justify-content: space-between; margin-bottom: 25px; }
+    .pdf-col { width: 48%; }
+    .pdf-label { font-size: 10px; color: #777; text-transform: uppercase; margin-bottom: 3px; font-weight: bold; }
+    .pdf-val { font-size: 14px; font-weight: bold; padding-bottom: 5px; border-bottom: 1px solid #ddd; }
+    .pdf-scope-box { border: 1px solid #000; padding: 20px; margin: 30px 0; background: #fafafa; }
+    .pdf-scope-title { font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+    .pdf-scope-text { white-space: pre-wrap; font-size: 12px; line-height: 1.6; }
+    .pdf-signatures { display: flex; justify-content: space-between; margin-top: 50px; }
+    .pdf-sig-line { width: 45%; border-top: 1px solid #000; padding-top: 5px; font-size: 10px; text-transform: uppercase; color: #555; }
   </style>
 </head>
 <body>
@@ -96,21 +115,71 @@
 
   <div class="action-bar">
     <button class="action-btn" onclick="saveDraft()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7ee787" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7ee787" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline></svg>
       Save Draft
     </button>
-    <button class="action-btn" onclick="shareInvoice()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#58a6ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-      Export Document
+    <button class="action-btn" onclick="generateAndSharePDF()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bc8cff" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+      Generate PDF
     </button>
     <button class="action-btn" onclick="sendSMS()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d29922" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d29922" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
       Dispatch SMS
     </button>
     <button class="action-btn" onclick="sendEmail()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bc8cff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#58a6ff" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
       Dispatch Email
     </button>
+  </div>
+
+  <!-- THE HIDDEN PDF TEMPLATE -->
+  <div id="pdf-template">
+    <div class="pdf-header">
+      <h1>SOFTWARE DEPLOYMENT AGREEMENT</h1>
+      <p>Quintan Middle | Tucson, Arizona | (520) 634-9490 | Offline-First Architecture</p>
+    </div>
+    <div class="pdf-row">
+      <div class="pdf-col">
+        <div class="pdf-label">Client Organization</div>
+        <div class="pdf-val" id="pdf-client"></div>
+        <div class="pdf-label" style="margin-top:10px;">Contact</div>
+        <div class="pdf-val" id="pdf-contact"></div>
+      </div>
+      <div class="pdf-col">
+        <div class="pdf-label">Document ID</div>
+        <div class="pdf-val" id="pdf-inv"></div>
+        <div class="pdf-label" style="margin-top:10px;">Date Generated</div>
+        <div class="pdf-val" id="pdf-date"></div>
+      </div>
+    </div>
+    <div class="pdf-row">
+      <div class="pdf-col">
+        <div class="pdf-label">Total Deployment Fee</div>
+        <div class="pdf-val" id="pdf-fee"></div>
+      </div>
+      <div class="pdf-col">
+        <div class="pdf-label">Deposit Required (50%)</div>
+        <div class="pdf-val" id="pdf-dep"></div>
+      </div>
+    </div>
+    <div class="pdf-row">
+      <div class="pdf-col">
+        <div class="pdf-label">Payment Routing (CashApp)</div>
+        <div class="pdf-val" id="pdf-tag"></div>
+      </div>
+      <div class="pdf-col">
+        <div class="pdf-label">Status</div>
+        <div class="pdf-val" id="pdf-status"></div>
+      </div>
+    </div>
+    <div class="pdf-scope-box">
+      <div class="pdf-scope-title">Binding Scope of Work</div>
+      <div class="pdf-scope-text" id="pdf-scope"></div>
+    </div>
+    <div class="pdf-signatures">
+      <div class="pdf-sig-line">Client Authorization Signature<br><br>Date:</div>
+      <div class="pdf-sig-line">Developer Authorization Signature<br><br>Date:</div>
+    </div>
   </div>
 
   <script>
@@ -124,7 +193,7 @@
     }
 
     window.onload = () => {
-      const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
       document.getElementById('docDate').value = today;
       
       const saved = localStorage.getItem('invoice_draft');
@@ -145,60 +214,88 @@
       document.getElementById('deposit').value = (fee * 0.5).toFixed(2);
     }
 
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.style.opacity = '1';
+      setTimeout(() => toast.style.opacity = '0', 2500);
+    }
+
     function saveDraft() {
       const data = {};
       ['invNum', 'docDate', 'clientName', 'contactName', 'contactInfo', 'cashTag', 'status', 'totalFee', 'deposit', 'scope'].forEach(id => {
         data[id] = document.getElementById(id).value;
       });
       localStorage.setItem('invoice_draft', JSON.stringify(data));
-      
-      const toast = document.getElementById('toast');
-      toast.style.opacity = '1';
-      setTimeout(() => toast.style.opacity = '0', 2500);
+      showToast("Draft Saved Locally");
     }
 
-    function buildPayload() {
-      const inv = document.getElementById('invNum').value;
-      const date = document.getElementById('docDate').value;
-      const client = document.getElementById('clientName').value || 'Client';
-      const contact = document.getElementById('contactName').value || 'N/A';
-      const fee = document.getElementById('totalFee').value;
-      const dep = document.getElementById('deposit').value;
-      const tag = document.getElementById('cashTag').value;
-      const scope = document.getElementById('scope').value;
-
-      return `SOFTWARE DEPLOYMENT AGREEMENT\n===============================\nInvoice: ${inv}\nDate: ${date}\nClient: ${client}\nContact: ${contact}\n\nFINANCIALS:\nTotal Deployment Fee: $${fee}\nDeposit Required (50%): $${dep}\nPayment Routing: ${tag}\n\nBINDING SCOPE OF WORK:\n${scope}\n\n===============================\nEngineered by Quintan Middle\nTucson, Arizona\n(520) 634-9490\n\n*By rendering the deposit, the client authorizes commencement of the scope defined above.*`;
-    }
-
-    async function shareInvoice() {
-      const payload = buildPayload();
-      const inv = document.getElementById('invNum').value;
+    async function generateAndSharePDF() {
+      showToast("Rendering PDF Engine...");
       
-      if (navigator.share) {
-        try {
+      // 1. Populate the hidden template
+      document.getElementById('pdf-client').innerText = document.getElementById('clientName').value || 'N/A';
+      document.getElementById('pdf-contact').innerText = document.getElementById('contactName').value || 'N/A';
+      document.getElementById('pdf-inv').innerText = document.getElementById('invNum').value;
+      document.getElementById('pdf-date').innerText = document.getElementById('docDate').value;
+      document.getElementById('pdf-fee').innerText = "$" + (document.getElementById('totalFee').value || '0');
+      document.getElementById('pdf-dep').innerText = "$" + (document.getElementById('deposit').value || '0');
+      document.getElementById('pdf-tag').innerText = document.getElementById('cashTag').value;
+      document.getElementById('pdf-status').innerText = document.getElementById('status').value;
+      document.getElementById('pdf-scope').innerText = document.getElementById('scope').value;
+
+      // 2. Unhide template temporarily off-screen
+      const element = document.getElementById('pdf-template');
+      element.style.display = 'block';
+
+      const filename = `${document.getElementById('invNum').value}.pdf`;
+      const opt = {
+        margin:       0,
+        filename:     filename,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+
+      // 3. Generate PDF Blob
+      try {
+        const pdfBlob = await html2pdf().set(opt).from(element).output('blob');
+        element.style.display = 'none'; // Re-hide it
+        
+        const file = new File([pdfBlob], filename, { type: 'application/pdf' });
+
+        // 4. Trigger Android Share Sheet
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
           await navigator.share({
-            title: `Agreement_${inv}`,
-            text: payload,
+            files: [file],
+            title: filename,
+            text: 'Please review and sign the attached deployment agreement.'
           });
-        } catch (err) { console.log('Share canceled or failed', err); }
-      } else {
-        navigator.clipboard.writeText(payload);
-        alert("Document payload copied to clipboard.");
+          showToast("PDF Exported successfully.");
+        } else {
+          // Fallback if Android refuses File share
+          html2pdf().set(opt).from(element).save();
+          showToast("PDF Download Triggered.");
+        }
+      } catch (err) {
+        element.style.display = 'none';
+        console.error(err);
+        showToast("PDF Generation Failed");
       }
+    }
+
+    function buildTextPayload() {
+      return `Invoice: ${document.getElementById('invNum').value}\nTotal: $${document.getElementById('totalFee').value}\nDeposit: $${document.getElementById('deposit').value}\nCashApp: ${document.getElementById('cashTag').value}`;
     }
 
     function sendSMS() {
       const phone = document.getElementById('contactInfo').value;
-      const body = encodeURIComponent(buildPayload());
-      window.location.href = `sms:${phone}?body=${body}`;
+      window.location.href = `sms:${phone}?body=${encodeURIComponent(buildTextPayload())}`;
     }
 
     function sendEmail() {
       const email = document.getElementById('contactInfo').value;
-      const inv = document.getElementById('invNum').value;
-      const subject = encodeURIComponent(`Deployment Agreement & Invoice: ${inv}`);
-      const body = encodeURIComponent(buildPayload());
-      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+      window.location.href = `mailto:${email}?subject=Deployment Agreement&body=${encodeURIComponent(buildTextPayload())}`;
     }
   </script>
 </body>
