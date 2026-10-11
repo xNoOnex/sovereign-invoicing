@@ -1,0 +1,17 @@
+    @media print {
+      body { background: #fff !important; padding: 0 !important; color: #000 !important; }
+      .container, .sticky-bar { display: none !important; }
+      #quote-modal {
+        display: block !important;
+        position: relative !important;
+        border: none !important;
+        padding: 10px !important;
+        width: 100% !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+      }
+      #quote-modal::before { display: none !important; }
+      .quote-actions { display: none !important; }
+      .quote-row { break-inside: avoid; }
+    }
+  </style>

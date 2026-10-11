@@ -1,0 +1,43 @@
+    const listContainer = document.getElementById('qList');
+    let html = '';
+    let textPayload = '';
+
+    const baseRadio = document.querySelector('input[name="platform"]:checked');
+    if (baseRadio) {
+      html += `<div class="quote-row"><span class="qr-label">• ${baseRadio.dataset.name}</span><span class="qr-val">$${parseFloat(baseRadio.value).toFixed(2)}</span></div>`;
+      textPayload += `- ${baseRadio.dataset.name}\n`;
+    }
+
+    document.querySelectorAll('.addon:checked').forEach(box => {
+      const val = parseFloat(box.value || 0);
+      const type = box.dataset.type;
+
+      if (type === 'retainer-mo' || type === 'retainer-yr') {
+        return; 
+      }
+
+      let priceLabel = `+$${val.toFixed(2)}`;
+      if (val === 0) priceLabel = 'Included';
+
+      html += `<div class="quote-row"><span class="qr-label">• ${box.dataset.name}</span><span class="qr-val">${priceLabel}</span></div>`;
+      textPayload += `- ${box.dataset.name}\n`;
+    });
+
+    const ownershipRadio = document.querySelector('input[name="ownership"]:checked');
+    if (ownershipRadio) {
+      const val = parseFloat(ownershipRadio.value);
+      if (val > 0) {
+        html += `<div class="quote-row"><span class="qr-label">• ${ownershipRadio.dataset.name}</span><span class="qr-val">+$${val.toFixed(2)}</span></div>`;
+        textPayload += `- ${ownershipRadio.dataset.name}\n`;
+      }
+    }
+
+    listContainer.innerHTML = html;
+
+    const smsMessage = encodeURIComponent(
+      `Hello Quintan, here is my scope estimate for ${client}:\n\n` +
+      `SCOPE:\n${textPayload}\n` +
+      `Total: $${total.toFixed(2)} (50% Deposit: $${deposit.toFixed(2)})\n` +
+      `Turnaround: ${deliveryStr}\n` +
+      (activeRetainerStr ? `Retainer: ${activeRetainerStr}\n` : '')
+    );
