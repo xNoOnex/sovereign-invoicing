@@ -8,13 +8,16 @@
   <style>
     :root {
       --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9;
-      --accent: #238636; --blue: #58a6ff; --purple: #bc8cff; --amber: #d29922;
+      --accent: #238636; --blue: #58a6ff; --purple: #bc8cff; --amber: #d29922; --red: #f85149;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, monospace; background: var(--bg); color: var(--text); padding-bottom: 100px; }
-    .header { padding: 20px 16px 10px 16px; border-bottom: 1px solid var(--border); background: var(--card); }
+    
+    .header { padding: 20px 16px 15px 16px; border-bottom: 1px solid var(--border); background: var(--card); display: flex; align-items: center; justify-content: space-between; }
     h1 { font-size: 1.1rem; color: var(--text); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; }
     h1 span { color: var(--blue); margin-left: 8px; }
+    
+    .back-btn { background: #010409; color: var(--text); border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; font-family: monospace; }
     
     .container { padding: 16px; max-width: 600px; margin: 0 auto; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
@@ -34,7 +37,6 @@
       font-size: 0.8rem; font-weight: bold; font-family: monospace; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 1000;
     }
     
-    /* Sticky Action Bar */
     .action-bar {
       position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border);
       padding: 12px 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; z-index: 100; max-width: 600px; margin: 0 auto;
@@ -47,7 +49,26 @@
     .action-btn:active { background: var(--border); }
     .action-btn svg { margin-bottom: 6px; }
 
-    /* Hidden Corporate PDF Template */
+    /* DASHBOARD STYLES */
+    .view { display: none; }
+    .view.active { display: block; }
+    .hero-btn { width: 100%; background: var(--accent); color: #fff; border: none; padding: 18px; border-radius: 8px; font-size: 1rem; font-family: monospace; font-weight: bold; text-transform: uppercase; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .section-title { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 12px; margin-top: 20px;}
+    
+    .invoice-card { background: #010409; border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .invoice-card:active { background: #0d1117; }
+    .inv-details h3 { font-size: 1rem; color: var(--blue); margin-bottom: 4px; }
+    .inv-details p { font-size: 0.75rem; color: #8b949e; }
+    
+    .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+    .badge.due { background: rgba(210, 153, 34, 0.15); color: var(--amber); border: 1px solid rgba(210, 153, 34, 0.4); }
+    .badge.pending { background: rgba(88, 166, 255, 0.15); color: var(--blue); border: 1px solid rgba(88, 166, 255, 0.4); }
+    .badge.paid { background: rgba(35, 134, 54, 0.15); color: var(--accent); border: 1px solid rgba(35, 134, 54, 0.4); }
+
+    .app-footer { text-align: center; font-size: 0.7rem; color: #8b949e; margin-top: 40px; padding-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+    .app-footer span { color: var(--purple); font-weight: bold; }
+
+    /* PDF Template hidden off-screen */
     #pdf-template {
       display: none; width: 8.5in; padding: 0.6in; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       background: #ffffff; color: #000000; box-sizing: border-box;
@@ -68,68 +89,98 @@
 </head>
 <body>
 
-  <div class="header">
-    <h1>Contract <span>Dispatcher</span></h1>
-  </div>
-
-  <div class="container">
-    <div class="grid">
-      <div><label>Invoice ID</label><input type="text" id="invNum" style="color: var(--blue); font-weight: bold;"></div>
-      <div><label>Date</label><input type="text" id="docDate"></div>
-    </div>
-
-    <div class="grid">
-      <div class="full-width"><label>Client Business Name</label><input type="text" id="clientName" placeholder="e.g. Desert Logistics LLC"></div>
-      <div><label>Contact Name</label><input type="text" id="contactName" placeholder="e.g. Yvette Soto"></div>
-      <div><label>Phone / Email</label><input type="text" id="contactInfo" placeholder="520-555-0199"></div>
-    </div>
-
-    <div class="grid">
-      <div><label>Total Fee ($)</label><input type="number" id="totalFee" placeholder="1500" oninput="calculateDeposit()"></div>
-      <div><label>50% Deposit ($)</label><input type="number" id="deposit" placeholder="750" style="color: #7ee787;"></div>
-      <div><label>Payment Routing</label><input type="text" id="cashTag" value="$QuintanMiddle"></div>
-      <div>
-        <label>Status</label>
-        <select id="status">
-          <option>Deposit Due</option>
-          <option>Paid in Full</option>
-          <option>Pending Delivery</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="grid">
-      <div class="full-width">
-        <label>Binding Scope Statement</label>
-        <textarea id="scope">1. Standalone Native Android Application (.apk)
-2. Offline-First Database Architecture
-3. Sign-on-Glass Bill of Lading (BOL) Module
-4. Automated PDF / CSV Export Engine
-5. Configuration of local branding, crew rates, and service matrices.
-6. Zero recurring software licenses, hosting fees, or monthly overhead.</textarea>
-      </div>
-    </div>
-  </div>
-
   <div id="toast">State Saved Locally</div>
 
-  <div class="action-bar">
-    <button class="action-btn" onclick="saveDraft()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7ee787" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline></svg>
-      Save Draft
-    </button>
-    <button class="action-btn" onclick="generateAndSharePDF()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bc8cff" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-      Generate PDF
-    </button>
-    <button class="action-btn" onclick="sendSMS()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d29922" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-      Dispatch SMS
-    </button>
-    <button class="action-btn" onclick="sendEmail()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#58a6ff" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-      Dispatch Email
-    </button>
+  <!-- DASHBOARD VIEW -->
+  <div id="home-view" class="view active">
+    <div class="header" style="justify-content: center;">
+      <h1>Contract <span>Dispatcher</span></h1>
+    </div>
+    
+    <div class="container">
+      <button class="hero-btn" onclick="openNewInvoice()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Generate New Invoice
+      </button>
+
+      <h3 class="section-title">Active Invoices</h3>
+      <div id="active-list"></div>
+
+      <h3 class="section-title">Old Invoices</h3>
+      <div id="old-list"></div>
+
+      <div class="app-footer">
+        Created by <span>QM Offline First</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDITOR VIEW -->
+  <div id="editor-view" class="view">
+    <div class="header">
+      <h1>Invoice <span>Editor</span></h1>
+      <button class="back-btn" onclick="goHome()">&#8592; Back</button>
+    </div>
+
+    <div class="container">
+      <div class="grid">
+        <div><label>Invoice ID</label><input type="text" id="invNum" style="color: var(--blue); font-weight: bold;" readonly></div>
+        <div><label>Date</label><input type="text" id="docDate"></div>
+      </div>
+
+      <div class="grid">
+        <div class="full-width"><label>Client Business Name</label><input type="text" id="clientName" placeholder="e.g. Desert Logistics LLC"></div>
+        <div><label>Contact Name</label><input type="text" id="contactName" placeholder="e.g. Yvette Soto"></div>
+        <div><label>Phone / Email</label><input type="text" id="contactInfo" placeholder="520-555-0199"></div>
+      </div>
+
+      <div class="grid">
+        <div><label>Total Fee ($)</label><input type="number" id="totalFee" placeholder="1500" oninput="calculateDeposit()"></div>
+        <div><label>50% Deposit ($)</label><input type="number" id="deposit" placeholder="750" style="color: #7ee787;"></div>
+        <div><label>Payment Routing</label><input type="text" id="cashTag" value="$QuintanMiddle"></div>
+        <div>
+          <label>Status</label>
+          <select id="status">
+            <option>Deposit Due</option>
+            <option>Pending Delivery</option>
+            <option>Paid in Full</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="full-width">
+          <label>Load Scope Preset</label>
+          <select id="preset-selector" onchange="loadPreset()" style="margin-bottom: 8px; border-color: var(--purple);">
+            <option value="custom">-- Select a Preset to Auto-Fill --</option>
+            <option value="android">Native Android App (Offline-First)</option>
+            <option value="web">Single-Page Web Utility</option>
+            <option value="retainer">Annual Retainer / Code Rot Defense</option>
+          </select>
+          <label>Binding Scope Statement</label>
+          <textarea id="scope" placeholder="Manually type deliverables or select a preset above..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <button class="action-btn" onclick="saveInvoice()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7ee787" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline></svg>
+        Save Invoice
+      </button>
+      <button class="action-btn" onclick="generateAndSharePDF()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bc8cff" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line></svg>
+        Generate PDF
+      </button>
+      <button class="action-btn" onclick="sendSMS()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d29922" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        Dispatch SMS
+      </button>
+      <button class="action-btn" onclick="sendEmail()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#58a6ff" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        Dispatch Email
+      </button>
+    </div>
   </div>
 
   <!-- THE HIDDEN PDF TEMPLATE -->
@@ -158,13 +209,13 @@
         <div class="pdf-val" id="pdf-fee"></div>
       </div>
       <div class="pdf-col">
-        <div class="pdf-label">Deposit Required (50%)</div>
+        <div class="pdf-label">Deposit Required</div>
         <div class="pdf-val" id="pdf-dep"></div>
       </div>
     </div>
     <div class="pdf-row">
       <div class="pdf-col">
-        <div class="pdf-label">Payment Routing (CashApp)</div>
+        <div class="pdf-label">Payment Routing</div>
         <div class="pdf-val" id="pdf-tag"></div>
       </div>
       <div class="pdf-col">
@@ -183,31 +234,93 @@
   </div>
 
   <script>
-    function generateAutoID() {
-      const d = new Date();
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
-      const rand = Math.floor(Math.random() * 90 + 10);
-      return `QM-${yyyy}${mm}${dd}-${rand}`;
-    }
+    const PRESETS = {
+      android: "1. Standalone Native Android Application (.apk)\n2. Offline-First Database Architecture\n3. Sign-on-Glass Bill of Lading (BOL) Module\n4. Automated PDF / CSV Export Engine\n5. Configuration of local branding and crew rates.\n6. Zero recurring software licenses, hosting fees, or monthly overhead.",
+      web: "1. Mobile-Optimized Single-Page Web Utility\n2. Deployed to dedicated subdomain (GH Pages)\n3. Ephemeral state logic (No cloud persistence)\n4. Interactive payload generation (Estimates/Quotes)\n5. Flat-rate deployment. Zero SaaS seat licensing.",
+      retainer: "1. Annual Retainer for Code Rot Defense\n2. Guaranteed OS API upgrade patching\n3. Priority bench hours for feature modifications\n4. Covers 12 months of structural maintenance."
+    };
+
+    let db = JSON.parse(localStorage.getItem('qm_invoices')) || [];
 
     window.onload = () => {
-      const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-      document.getElementById('docDate').value = today;
-      
-      const saved = localStorage.getItem('invoice_draft');
-      if (saved) {
-        const data = JSON.parse(saved);
-        ['invNum', 'docDate', 'clientName', 'contactName', 'contactInfo', 'cashTag', 'status', 'totalFee', 'deposit', 'scope'].forEach(id => {
-          if (data[id]) document.getElementById(id).value = data[id];
-        });
-      }
-      
-      if (!document.getElementById('invNum').value) {
-        document.getElementById('invNum').value = generateAutoID();
-      }
+      renderDashboard();
     };
+
+    function generateAutoID() {
+      const d = new Date();
+      return `QM-${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}-${Math.floor(Math.random() * 90 + 10)}`;
+    }
+
+    function switchView(viewName) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById(viewName).classList.add('active');
+    }
+
+    function goHome() {
+      renderDashboard();
+      switchView('home-view');
+    }
+
+    function renderDashboard() {
+      const activeList = document.getElementById('active-list');
+      const oldList = document.getElementById('old-list');
+      activeList.innerHTML = ''; oldList.innerHTML = '';
+      
+      if(db.length === 0) {
+        activeList.innerHTML = '<p style="color:#8b949e; font-size:0.8rem;">No active invoices.</p>';
+        oldList.innerHTML = '<p style="color:#8b949e; font-size:0.8rem;">No history.</p>';
+        return;
+      }
+
+      db.forEach(inv => {
+        let badgeClass = inv.status === 'Paid in Full' ? 'paid' : (inv.status === 'Pending Delivery' ? 'pending' : 'due');
+        const card = `
+          <div class="invoice-card" onclick="openInvoice('${inv.invNum}')">
+            <div class="inv-details">
+              <h3>${inv.invNum}</h3>
+              <p>${inv.clientName || 'Unknown Client'} &bull; $${inv.totalFee || 0}</p>
+            </div>
+            <div class="badge ${badgeClass}">${inv.status}</div>
+          </div>
+        `;
+        if(inv.status === 'Paid in Full') {
+          oldList.insertAdjacentHTML('beforeend', card);
+        } else {
+          activeList.insertAdjacentHTML('beforeend', card);
+        }
+      });
+    }
+
+    function openNewInvoice() {
+      const formFields = ['invNum', 'docDate', 'clientName', 'contactName', 'contactInfo', 'cashTag', 'status', 'totalFee', 'deposit', 'scope'];
+      formFields.forEach(id => document.getElementById(id).value = '');
+      
+      document.getElementById('docDate').value = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      document.getElementById('invNum').value = generateAutoID();
+      document.getElementById('cashTag').value = '$QuintanMiddle';
+      document.getElementById('status').value = 'Deposit Due';
+      document.getElementById('preset-selector').value = 'custom';
+      
+      switchView('editor-view');
+    }
+
+    function openInvoice(id) {
+      const inv = db.find(i => i.invNum === id);
+      if(inv) {
+        Object.keys(inv).forEach(key => {
+          if(document.getElementById(key)) document.getElementById(key).value = inv[key];
+        });
+        document.getElementById('preset-selector').value = 'custom';
+        switchView('editor-view');
+      }
+    }
+
+    function loadPreset() {
+      const selection = document.getElementById('preset-selector').value;
+      if (PRESETS[selection]) {
+        document.getElementById('scope').value = PRESETS[selection];
+      }
+    }
 
     function calculateDeposit() {
       const fee = parseFloat(document.getElementById('totalFee').value) || 0;
@@ -221,19 +334,27 @@
       setTimeout(() => toast.style.opacity = '0', 2500);
     }
 
-    function saveDraft() {
+    function saveInvoice() {
       const data = {};
       ['invNum', 'docDate', 'clientName', 'contactName', 'contactInfo', 'cashTag', 'status', 'totalFee', 'deposit', 'scope'].forEach(id => {
         data[id] = document.getElementById(id).value;
       });
-      localStorage.setItem('invoice_draft', JSON.stringify(data));
-      showToast("Draft Saved Locally");
+      
+      const existingIndex = db.findIndex(i => i.invNum === data.invNum);
+      if(existingIndex >= 0) {
+        db[existingIndex] = data;
+      } else {
+        db.push(data);
+      }
+      
+      localStorage.setItem('qm_invoices', JSON.stringify(db));
+      showToast("Invoice Saved & Synced Locally");
     }
 
+    // PDF and Dispatch logic remains exactly the same
     async function generateAndSharePDF() {
       showToast("Rendering PDF Engine...");
       
-      // 1. Populate the hidden template
       document.getElementById('pdf-client').innerText = document.getElementById('clientName').value || 'N/A';
       document.getElementById('pdf-contact').innerText = document.getElementById('contactName').value || 'N/A';
       document.getElementById('pdf-inv').innerText = document.getElementById('invNum').value;
@@ -244,36 +365,22 @@
       document.getElementById('pdf-status').innerText = document.getElementById('status').value;
       document.getElementById('pdf-scope').innerText = document.getElementById('scope').value;
 
-      // 2. Unhide template temporarily off-screen
       const element = document.getElementById('pdf-template');
       element.style.display = 'block';
 
       const filename = `${document.getElementById('invNum').value}.pdf`;
-      const opt = {
-        margin:       0,
-        filename:     filename,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-      };
+      const opt = { margin: 0, filename: filename, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } };
 
-      // 3. Generate PDF Blob
       try {
         const pdfBlob = await html2pdf().set(opt).from(element).output('blob');
-        element.style.display = 'none'; // Re-hide it
+        element.style.display = 'none';
         
         const file = new File([pdfBlob], filename, { type: 'application/pdf' });
 
-        // 4. Trigger Android Share Sheet
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            files: [file],
-            title: filename,
-            text: 'Please review and sign the attached deployment agreement.'
-          });
+          await navigator.share({ files: [file], title: filename, text: 'Please review and sign the attached deployment agreement.' });
           showToast("PDF Exported successfully.");
         } else {
-          // Fallback if Android refuses File share
           html2pdf().set(opt).from(element).save();
           showToast("PDF Download Triggered.");
         }
@@ -288,15 +395,8 @@
       return `Invoice: ${document.getElementById('invNum').value}\nTotal: $${document.getElementById('totalFee').value}\nDeposit: $${document.getElementById('deposit').value}\nCashApp: ${document.getElementById('cashTag').value}`;
     }
 
-    function sendSMS() {
-      const phone = document.getElementById('contactInfo').value;
-      window.location.href = `sms:${phone}?body=${encodeURIComponent(buildTextPayload())}`;
-    }
-
-    function sendEmail() {
-      const email = document.getElementById('contactInfo').value;
-      window.location.href = `mailto:${email}?subject=Deployment Agreement&body=${encodeURIComponent(buildTextPayload())}`;
-    }
+    function sendSMS() { window.location.href = `sms:${document.getElementById('contactInfo').value}?body=${encodeURIComponent(buildTextPayload())}`; }
+    function sendEmail() { window.location.href = `mailto:${document.getElementById('contactInfo').value}?subject=Deployment Agreement&body=${encodeURIComponent(buildTextPayload())}`; }
   </script>
 </body>
 </html>
